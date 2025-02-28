@@ -1,7 +1,6 @@
 
 using System.ComponentModel.DataAnnotations;
 
-
 namespace EduFusion.Repositories.Models
 {
     public class Teacher
