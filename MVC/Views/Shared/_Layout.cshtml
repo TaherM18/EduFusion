@@ -1,0 +1,47 @@
+﻿@using Microsoft.AspNetCore.Mvc.RazorPages
+@{
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - EduTrack</title>
+
+    <!-- Bootstrap & Kendo UI -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/lib/kendo/kendo.default-v2.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" /> <!-- Custom CSS -->
+
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/lib/kendo/kendo.all.min.js"></script>
+</head>
+
+<body>
+
+    <!-- Navbar -->
+    @await Html.PartialAsync("_Navbar")
+
+    <!-- Layout Container -->
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            @await Html.PartialAsync("_Sidebar")
+
+            <!-- Main Content -->
+            <main class="col-md-10 content">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+    <script src="~/js/theme.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+
+</body>
+
+</html>
