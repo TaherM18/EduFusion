@@ -91,8 +91,10 @@ namespace API.Controller
                 return BadRequest(new { message = "Invalid student data" });
             }
 
-            string? fileName = await _fileHelper.UploadProfileImage(_profileImagePath, student.User.ImageFile, student.User.Image);
-            student.User.Image = fileName;
+            if (student.User?.ImageFile != null)
+            {
+                student.User.Image = await _fileHelper.UploadProfileImage(_profileImagePath, student.User.ImageFile, student.User?.Image);
+            }
 
             var studentId = await _studRepo.Add(student);
 
@@ -116,9 +118,11 @@ namespace API.Controller
                 return BadRequest(new { message = "Invalid request data" });
             }
 
-            string? fileName = await _fileHelper.UploadProfileImage(_profileImagePath, student.User.ImageFile, student.User.Image);
-            student.User.Image = fileName;
-            
+            if (student.User?.ImageFile != null)
+            {
+                student.User.Image = await _fileHelper.UploadProfileImage(_profileImagePath, student.User.ImageFile, student.User?.Image);
+            }
+
             var updated = await _studRepo.Update(student);
             if (updated <= 0)
             {
