@@ -17,6 +17,8 @@ namespace Repositories.Implementations
             _helper = new DatabaseHelper(_con);
         }
 
+        private static object GetDbValue(object? value) => value ?? DBNull.Value;
+
         #region Register
         public async Task<int> Register(Teacher teacher)
         {
@@ -35,15 +37,15 @@ namespace Repositories.Implementations
                     "c_role"
                 },
                 new List<object> {
-                    teacher.User.FirstName,
-                    teacher.User.LastName,
-                    teacher.User.BirthDate,
-                    teacher.User.Contact,
-                    teacher.User.Email,
-                    teacher.User.Password,
-                    teacher.User.Gender,
-                    teacher.User.Image ?? (object)DBNull.Value,
-                    teacher.User.Address,
+                    teacher.User?.FirstName ?? (object)DBNull.Value,
+                    teacher.User?.LastName ?? (object)DBNull.Value,
+                    teacher.User?.BirthDate ?? (object)DBNull.Value,
+                    teacher.User?.Contact ?? (object)DBNull.Value,
+                    teacher.User?.Email ?? (object)DBNull.Value,
+                    teacher.User?.Password ?? (object)DBNull.Value,
+                    teacher.User?.Gender ?? (object)DBNull.Value,
+                    teacher.User?.Image ?? (object)DBNull.Value,
+                    teacher.User?.Address ?? (object)DBNull.Value,
                     "T"
                 },
                 "c_userid"
@@ -227,16 +229,19 @@ namespace Repositories.Implementations
                 int userId;
                 await using (var userCmd = new NpgsqlCommand(userQuery, _con, transaction))
                 {
-                    userCmd.Parameters.AddWithValue("@FirstName", data.User.FirstName);
-                    userCmd.Parameters.AddWithValue("@LastName", data.User.LastName);
-                    userCmd.Parameters.AddWithValue("@BirthDate", data.User.BirthDate);
-                    userCmd.Parameters.AddWithValue("@Contact", data.User.Contact);
-                    userCmd.Parameters.AddWithValue("@Email", data.User.Email);
-                    userCmd.Parameters.AddWithValue("@Gender", data.User.Gender);
-                    userCmd.Parameters.AddWithValue("@Image", (object?)data.User.Image ?? DBNull.Value);
-                    userCmd.Parameters.AddWithValue("@Address", data.User.Address);
-                    userCmd.Parameters.AddWithValue("@Pincode", data.User.Pincode);
-                    userCmd.Parameters.AddWithValue("@Role", "T");
+                    if (data.User is null)
+                        throw new ArgumentException("User data is required for adding a teacher.");
+
+                    userCmd.Parameters.AddWithValue("@FirstName", GetDbValue(data.User.FirstName));
+                    userCmd.Parameters.AddWithValue("@LastName", GetDbValue(data.User.LastName));
+                    userCmd.Parameters.AddWithValue("@BirthDate", GetDbValue(data.User.BirthDate));
+                    userCmd.Parameters.AddWithValue("@Contact", GetDbValue(data.User.Contact));
+                    userCmd.Parameters.AddWithValue("@Email", GetDbValue(data.User.Email));
+                    userCmd.Parameters.AddWithValue("@Gender", GetDbValue(data.User.Gender));
+                    userCmd.Parameters.AddWithValue("@Image", GetDbValue(data.User.Image));
+                    userCmd.Parameters.AddWithValue("@Address", GetDbValue(data.User.Address));
+                    userCmd.Parameters.AddWithValue("@Pincode", GetDbValue(data.User.Pincode));
+                    userCmd.Parameters.AddWithValue("@Role", "T");  // Explicitly setting "T" for Teacher role
 
                     userId = Convert.ToInt32(await userCmd.ExecuteScalarAsync());
                 }
@@ -277,7 +282,7 @@ namespace Repositories.Implementations
             UPDATE t_user 
             SET c_first_name = @FirstName, c_last_name = @LastName, c_birth_date = @BirthDate, 
                 c_contact = @Contact, c_email = @Email, c_gender = @Gender, 
-                c_image = @Image, c_address = @Address, c_pincode = @Pincode, c_role = @Role
+                c_image = @Image, c_address = @Address, c_pincode = @Pincode
             WHERE c_userid = @UserId;";
 
             const string teacherQuery = @"
@@ -302,15 +307,14 @@ namespace Repositories.Implementations
                     userCmd.Parameters.AddWithValue("@Image", (object?)data.User.Image ?? DBNull.Value);
                     userCmd.Parameters.AddWithValue("@Address", data.User.Address);
                     userCmd.Parameters.AddWithValue("@Pincode", data.User.Pincode);
-                    userCmd.Parameters.AddWithValue("@Role", data.User.Role);
-                    userCmd.Parameters.AddWithValue("@UserId", data.User.UserID);
+                    userCmd.Parameters.AddWithValue("@UserId", data.TeacherID);
 
                     await userCmd.ExecuteNonQueryAsync();
                 }
 
                 await using (var teacherCmd = new NpgsqlCommand(teacherQuery, _con, transaction))
                 {
-                    teacherCmd.Parameters.AddWithValue("@UserId", data.User.UserID);
+                    teacherCmd.Parameters.AddWithValue("@UserId", data.TeacherID);
                     teacherCmd.Parameters.AddWithValue("@Salary", data.Salary);
                     teacherCmd.Parameters.AddWithValue("@Qualification", data.Qualification);
                     teacherCmd.Parameters.AddWithValue("@ExperienceYears", data.ExperienceYears);

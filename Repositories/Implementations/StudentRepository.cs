@@ -17,6 +17,8 @@ namespace Repositories.Implementations
             _helper = new DatabaseHelper(_con);
         }
 
+        private static object GetDbValue(object? value) => value ?? DBNull.Value;
+
         #region Register
         public async Task<int> Register(Student student)
         {
@@ -237,22 +239,25 @@ namespace Repositories.Implementations
 
                 await using var cmd = new NpgsqlCommand(query, _con);
 
+                if (data.StudentID is null)
+                    throw new ArgumentException("User data is required for updating a student.");
+
                 // Parameters for t_users table
-                cmd.Parameters.AddWithValue("@UserId", data.User.UserID);
-                cmd.Parameters.AddWithValue("@FirstName", data.User.FirstName);
-                cmd.Parameters.AddWithValue("@LastName", data.User.LastName);
-                cmd.Parameters.AddWithValue("@BirthDate", data.User.BirthDate);
-                cmd.Parameters.AddWithValue("@Contact", data.User.Contact);
-                cmd.Parameters.AddWithValue("@Email", data.User.Email);
-                cmd.Parameters.AddWithValue("@Gender", data.User.Gender);
-                cmd.Parameters.AddWithValue("@Image", string.IsNullOrEmpty(data.User.Image) ? DBNull.Value : data.User.Image);
-                cmd.Parameters.AddWithValue("@Address", data.User.Address);
+                cmd.Parameters.AddWithValue("@UserId", data.StudentID);
+                cmd.Parameters.AddWithValue("@FirstName", GetDbValue(data.User.FirstName));
+                cmd.Parameters.AddWithValue("@LastName", GetDbValue(data.User.LastName));
+                cmd.Parameters.AddWithValue("@BirthDate", GetDbValue(data.User.BirthDate));
+                cmd.Parameters.AddWithValue("@Contact", GetDbValue(data.User.Contact));
+                cmd.Parameters.AddWithValue("@Email", GetDbValue(data.User.Email));
+                cmd.Parameters.AddWithValue("@Gender", GetDbValue(data.User.Gender));
+                cmd.Parameters.AddWithValue("@Image", GetDbValue(data.User.Image));
+                cmd.Parameters.AddWithValue("@Address", GetDbValue(data.User.Address));
 
                 // Parameters for t_student table
-                cmd.Parameters.AddWithValue("@RollNumber", data.RollNumber);
-                cmd.Parameters.AddWithValue("@GuardianName", data.GuardianName);
-                cmd.Parameters.AddWithValue("@GuardianContact", data.GuardianContact);
-                cmd.Parameters.AddWithValue("@Section", data.Section);
+                cmd.Parameters.AddWithValue("@RollNumber", GetDbValue(data.RollNumber));
+                cmd.Parameters.AddWithValue("@GuardianName", GetDbValue(data.GuardianName));
+                cmd.Parameters.AddWithValue("@GuardianContact", GetDbValue(data.GuardianContact));
+                cmd.Parameters.AddWithValue("@Section", GetDbValue(data.Section));
 
                 int rowsAffected = await cmd.ExecuteNonQueryAsync();
                 return rowsAffected;
@@ -296,15 +301,18 @@ namespace Repositories.Implementations
                 // Insert into t_users
                 await using (var userCmd = new NpgsqlCommand(userQuery, _con, transaction))
                 {
-                    userCmd.Parameters.AddWithValue("@FirstName", data.User.FirstName);
-                    userCmd.Parameters.AddWithValue("@LastName", data.User.LastName);
-                    userCmd.Parameters.AddWithValue("@BirthDate", data.User.BirthDate);
-                    userCmd.Parameters.AddWithValue("@Contact", data.User.Contact);
-                    userCmd.Parameters.AddWithValue("@Email", data.User.Email);
-                    userCmd.Parameters.AddWithValue("@Password", data.User.Password);
-                    userCmd.Parameters.AddWithValue("@Gender", data.User.Gender);
-                    userCmd.Parameters.AddWithValue("@Image", string.IsNullOrEmpty(data.User.Image) ? DBNull.Value : data.User.Image);
-                    userCmd.Parameters.AddWithValue("@Address", data.User.Address);
+                    if (data.User is null)
+                        throw new ArgumentException("User data is required for adding a student.");
+
+                    userCmd.Parameters.AddWithValue("@FirstName", GetDbValue(data.User.FirstName));
+                    userCmd.Parameters.AddWithValue("@LastName", GetDbValue(data.User.LastName));
+                    userCmd.Parameters.AddWithValue("@BirthDate", GetDbValue(data.User.BirthDate));
+                    userCmd.Parameters.AddWithValue("@Contact", GetDbValue(data.User.Contact));
+                    userCmd.Parameters.AddWithValue("@Email", GetDbValue(data.User.Email));
+                    userCmd.Parameters.AddWithValue("@Password", GetDbValue(data.User.Password));
+                    userCmd.Parameters.AddWithValue("@Gender", GetDbValue(data.User.Gender));
+                    userCmd.Parameters.AddWithValue("@Image", GetDbValue(data.User.Image));
+                    userCmd.Parameters.AddWithValue("@Address", GetDbValue(data.User.Address));
 
                     userId = Convert.ToInt32(await userCmd.ExecuteScalarAsync());
                 }
@@ -313,10 +321,10 @@ namespace Repositories.Implementations
                 await using (var studentCmd = new NpgsqlCommand(studentQuery, _con, transaction))
                 {
                     studentCmd.Parameters.AddWithValue("@UserId", userId);
-                    studentCmd.Parameters.AddWithValue("@RollNumber", data.RollNumber);
-                    studentCmd.Parameters.AddWithValue("@GuardianName", data.GuardianName);
-                    studentCmd.Parameters.AddWithValue("@GuardianContact", data.GuardianContact);
-                    studentCmd.Parameters.AddWithValue("@Section", data.Section);
+                    studentCmd.Parameters.AddWithValue("@RollNumber", GetDbValue(data.RollNumber));
+                    studentCmd.Parameters.AddWithValue("@GuardianName", GetDbValue(data.GuardianName));
+                    studentCmd.Parameters.AddWithValue("@GuardianContact", GetDbValue(data.GuardianContact));
+                    studentCmd.Parameters.AddWithValue("@Section", GetDbValue(data.Section));
 
                     await studentCmd.ExecuteNonQueryAsync();
                 }
