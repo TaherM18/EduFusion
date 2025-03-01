@@ -12,11 +12,13 @@ namespace API.Controller
     {
         private readonly IStudentInterface _studRepo;
         private readonly FileHelper _fileHelper;
+        private readonly string _profileImagePath;
 
         public StudentApiController(IStudentInterface student, IWebHostEnvironment env)
         {
+            _profileImagePath = Path.Combine(env.WebRootPath, "profile_images");
             _studRepo = student;
-            _fileHelper = new FileHelper(env.WebRootPath);
+            _fileHelper = new FileHelper();
         }
 
         #region Register
@@ -89,7 +91,11 @@ namespace API.Controller
                 return BadRequest(new { message = "Invalid student data" });
             }
 
+            string? fileName = await _fileHelper.UploadProfileImage(_profileImagePath, student.User.ImageFile, student.User.Image);
+            student.User.Image = fileName;
+
             var studentId = await _studRepo.Add(student);
+
             if (studentId <= 0)
             {
                 return StatusCode(500, new { message = "Failed to add student" });
@@ -110,6 +116,9 @@ namespace API.Controller
                 return BadRequest(new { message = "Invalid request data" });
             }
 
+            string? fileName = await _fileHelper.UploadProfileImage(_profileImagePath, student.User.ImageFile, student.User.Image);
+            student.User.Image = fileName;
+            
             var updated = await _studRepo.Update(student);
             if (updated <= 0)
             {

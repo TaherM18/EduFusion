@@ -7,21 +7,15 @@ namespace Helpers.Files
 {
     public class FileHelper
     {
-        private readonly string _profileImagePath;
-        
-        public FileHelper(string webRootPath)
-        {
-            _profileImagePath = Path.Combine(webRootPath, "profile_images");
 
+        public async Task<string?> UploadProfileImage(string directoryPath, IFormFile? imageFile, string? existingFileName)
+        {
             // Ensure directory exists
-            if (!Directory.Exists(_profileImagePath))
+            if (!Directory.Exists(directoryPath))
             {
-                Directory.CreateDirectory(_profileImagePath);
+                Directory.CreateDirectory(directoryPath);
             }
-        }
 
-        public async Task<string?> UploadProfileImage(IFormFile? imageFile, string? existingFileName)
-        {
             if (imageFile == null || imageFile.Length == 0)
             {
                 return existingFileName; // No new file uploaded, keep existing
@@ -30,7 +24,7 @@ namespace Helpers.Files
             // Delete existing image if available
             if (!string.IsNullOrEmpty(existingFileName))
             {
-                string existingFilePath = Path.Combine(_profileImagePath, existingFileName);
+                string existingFilePath = Path.Combine(directoryPath, existingFileName);
                 if (File.Exists(existingFilePath))
                 {
                     File.Delete(existingFilePath);
@@ -39,7 +33,7 @@ namespace Helpers.Files
 
             // Generate new file name (UUID + extension)
             string newFileName = $"{Guid.NewGuid()}{Path.GetExtension(imageFile.FileName)}";
-            string newFilePath = Path.Combine(_profileImagePath, newFileName);
+            string newFilePath = Path.Combine(directoryPath, newFileName);
 
             // Save the new image
             await using var stream = new FileStream(newFilePath, FileMode.Create);
