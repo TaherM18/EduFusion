@@ -21,7 +21,7 @@ namespace API.Controller
         }
 
         #region Register
-        [HttpPost]
+        [HttpPost("Register")]
         public async Task<IActionResult> Register([FromForm] Teacher teacher)
         {
             try

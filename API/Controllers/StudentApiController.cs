@@ -22,7 +22,7 @@ namespace API.Controller
         }
 
         #region Register
-        [HttpPost("/Register")]
+        [HttpPost("Register")]
         public async Task<IActionResult> Register([FromForm] Student student)
         {
             try
