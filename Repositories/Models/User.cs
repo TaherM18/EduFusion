@@ -15,7 +15,7 @@ namespace Repositories.Models
         public string LastName { get; set; } = "";
 
         [Required]
-        public DateTime BirthDate { get; set; }
+        public DateTime? BirthDate { get; set; }
 
         [Required, MaxLength(255)]
         public string Gender { get; set; } = "";
@@ -31,7 +31,6 @@ namespace Repositories.Models
         [Required, MaxLength(15)]
         public string Contact { get; set; } = "0000000000";
 
-        public bool Status { get; set; } = true;
 
         [Required, MaxLength(1)]
         public string Role { get; set; } = "S"; // "A"=Admin, "S"=Student, "T"=Teacher

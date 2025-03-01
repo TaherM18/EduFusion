@@ -14,9 +14,9 @@ namespace API.Controller
         private readonly FileHelper _fileHelper;
         private readonly string _profileImagePath;
 
-        public StudentApiController(IStudentInterface student, IWebHostEnvironment env)
+        public StudentApiController(IStudentInterface student)
         {
-            _profileImagePath = Path.Combine(env.WebRootPath, "profile_images");
+            _profileImagePath = "../MVC/wwwroot/profile_images";
             _studRepo = student;
             _fileHelper = new FileHelper();
         }
@@ -68,7 +68,7 @@ namespace API.Controller
 
         #region Get
         // GET: api/students/{id}
-        [HttpGet("{id}")]
+        [HttpGet("{id:int}")]
         public async Task<ActionResult<Student>> GetStudent(int id)
         {
             var student = await _studRepo.GetOne(id);

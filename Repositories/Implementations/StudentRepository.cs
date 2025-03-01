@@ -90,7 +90,7 @@ namespace Repositories.Implementations
             const string query = @"
             SELECT 
                 u.c_userid, u.c_first_name, u.c_last_name, u.c_birth_date, 
-                u.c_contact, u.c_email, u.c_gender, u.c_image, u.c_address, c_pincode, c_role
+                u.c_contact, u.c_email, u.c_gender, u.c_image, u.c_address, u.c_pincode, u.c_role,
                 s.c_studentID, s.c_roll_number, s.c_guardian_name, s.c_guardian_contact, s.c_section
             FROM t_user u
             INNER JOIN t_student s ON u.c_userid = s.c_studentID
@@ -112,22 +112,22 @@ namespace Repositories.Implementations
                         User = new User
                         {
                             UserID = reader.GetInt32("c_userid"),
-                            FirstName = reader.GetString("c_first_name"),
-                            LastName = reader.GetString("c_last_name"),
-                            BirthDate = reader.GetDateTime("c_birth_date"),
-                            Contact = reader.GetString("c_contact"),
-                            Email = reader.GetString("c_email"),
-                            Gender = reader.GetString("c_gender"),
+                            FirstName = reader.IsDBNull("c_first_name") ? "" : reader.GetString("c_first_name"),
+                            LastName = reader.IsDBNull("c_last_name") ? "" : reader.GetString("c_last_name"),
+                            BirthDate = reader.IsDBNull("c_birth_date") ? null : reader.GetDateTime("c_birth_date"),
+                            Contact = reader.IsDBNull("c_contact") ? "" : reader.GetString("c_contact"),
+                            Email = reader.IsDBNull("c_email") ? "" : reader.GetString("c_email"),
+                            Gender = reader.IsDBNull("c_gender") ? "" : reader.GetString("c_gender"),
                             Image = reader.IsDBNull("c_image") ? null : reader.GetString("c_image"),
-                            Address = reader.GetString("c_address"),
-                            Pincode = reader.GetString("c_pincode"),
+                            Address = reader.IsDBNull("c_address") ? "" : reader.GetString("c_address"),
+                            Pincode = reader.IsDBNull("c_pincode") ? "" : reader.GetString("c_pincode"),
                             Role = reader.GetString("c_role")
                         },
                         StudentID = reader.GetInt32("c_studentID"),
-                        RollNumber = reader.GetString("c_roll_number"),
-                        GuardianName = reader.GetString("c_guardian_name"),
-                        GuardianContact = reader.GetString("c_guardian_contact"),
-                        Section = reader.GetString("c_section")
+                        RollNumber = reader.IsDBNull("c_roll_number") ? "" : reader.GetString("c_roll_number"),
+                        GuardianName = reader.IsDBNull("c_guardian_name") ? "" : reader.GetString("c_guardian_name"),
+                        GuardianContact = reader.IsDBNull("c_guardian_contact") ? "" : reader.GetString("c_guardian_contact"),
+                        Section = reader.GetString("c_section") ?? ""
                     };
                 }
 
@@ -152,7 +152,7 @@ namespace Repositories.Implementations
             const string query = @"
             SELECT 
                 u.c_userid, u.c_first_name, u.c_last_name, u.c_birth_date, 
-                u.c_contact, u.c_email, u.c_gender, u.c_image, u.c_address, c_pincode, c_role
+                u.c_contact, u.c_email, u.c_gender, u.c_image, u.c_address, u.c_pincode, u.c_role,
                 s.c_studentID, s.c_roll_number, s.c_guardian_name, s.c_guardian_contact, s.c_section
             FROM t_user u
             INNER JOIN t_student s ON u.c_userid = s.c_studentID";
@@ -173,22 +173,22 @@ namespace Repositories.Implementations
                         User = new User
                         {
                             UserID = reader.GetInt32("c_userid"),
-                            FirstName = reader.GetString("c_first_name"),
-                            LastName = reader.GetString("c_last_name"),
-                            BirthDate = reader.GetDateTime("c_birth_date"),
-                            Contact = reader.GetString("c_contact"),
-                            Email = reader.GetString("c_email"),
-                            Gender = reader.GetString("c_gender"),
+                            FirstName = reader.IsDBNull("c_first_name") ? "" : reader.GetString("c_first_name"),
+                            LastName = reader.IsDBNull("c_last_name") ? "" : reader.GetString("c_last_name"),
+                            BirthDate = reader.IsDBNull("c_birth_date") ? null : reader.GetDateTime("c_birth_date"),
+                            Contact = reader.IsDBNull("c_contact") ? "" : reader.GetString("c_contact"),
+                            Email = reader.IsDBNull("c_email") ? "" : reader.GetString("c_email"),
+                            Gender = reader.IsDBNull("c_gender") ? "" : reader.GetString("c_gender"),
                             Image = reader.IsDBNull("c_image") ? null : reader.GetString("c_image"),
-                            Address = reader.GetString("c_address"),
-                            Pincode = reader.GetString("c_pincode"),
+                            Address = reader.IsDBNull("c_address") ? "" : reader.GetString("c_address"),
+                            Pincode = reader.IsDBNull("c_pincode") ? "" : reader.GetString("c_pincode"),
                             Role = reader.GetString("c_role")
                         },
                         StudentID = reader.GetInt32("c_studentID"),
-                        RollNumber = reader.GetString("c_roll_number"),
-                        GuardianName = reader.GetString("c_guardian_name"),
-                        GuardianContact = reader.GetString("c_guardian_contact"),
-                        Section = reader.GetString("c_section")
+                        RollNumber = reader.IsDBNull("c_roll_number") ? "" : reader.GetString("c_roll_number"),
+                        GuardianName = reader.IsDBNull("c_guardian_name") ? "" : reader.GetString("c_guardian_name"),
+                        GuardianContact = reader.IsDBNull("c_guardian_contact") ? "" : reader.GetString("c_guardian_contact"),
+                        Section = reader.GetString("c_section") ?? ""
                     };
 
                     studentList.Add(student);
@@ -199,7 +199,7 @@ namespace Repositories.Implementations
             catch (Exception ex)
             {
                 // Log the error (assuming you have a LoggerHelper or any logging mechanism)
-                Console.WriteLine($"StudentRepository - GetOne() : {ex.Message}");
+                Console.WriteLine($"StudentRepository - GetAll() : {ex.Message}");
                 return null;
             }
             finally
@@ -264,7 +264,7 @@ namespace Repositories.Implementations
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"Error in Update: {ex.Message}");
+                Console.WriteLine($"StudentRepository - Update() : {ex.Message}");
                 return 0;
             }
             finally

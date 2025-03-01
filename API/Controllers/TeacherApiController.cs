@@ -16,7 +16,7 @@ namespace API.Controller
         public TeacherApiController(ITeacherInterface teacher, IWebHostEnvironment env)
         {
             _teacherRepo = teacher;
-            _profileImagePath = Path.Combine(env.WebRootPath, "profile_images");
+            _profileImagePath = "../MVC/wwwroot/profile_images";
             _fileHelper = new FileHelper();
         }
 
