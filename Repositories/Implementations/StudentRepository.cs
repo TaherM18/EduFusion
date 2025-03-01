@@ -2,7 +2,7 @@ using Npgsql;
 using Repositories.Interfaces;
 using Helpers.Databases;
 using Repositories.Models;
-using System.Collections;
+using System.Data;
 
 namespace Repositories.Implementations
 {
@@ -83,37 +83,284 @@ namespace Repositories.Implementations
         #endregion
 
         #region GetOne
-        public Task<Student> GetOne(int id)
+        public async Task<Student?> GetOne(int id)
         {
-            throw new NotImplementedException();
+            const string query = @"
+            SELECT 
+                u.c_userid, u.c_first_name, u.c_last_name, u.c_birth_date, 
+                u.c_contact, u.c_email, u.c_gender, u.c_image, u.c_address, c_pincode, c_role
+                s.c_studentID, s.c_roll_number, s.c_guardian_name, s.c_guardian_contact, s.c_section
+            FROM t_user u
+            INNER JOIN t_student s ON u.c_userid = s.c_studentID
+            WHERE u.c_userid = @id AND u.c_is_active = TRUE;";
+
+            try
+            {
+                await _con.OpenAsync();
+
+                await using var cmd = new NpgsqlCommand(query, _con);
+                cmd.Parameters.AddWithValue("@id", id);
+
+                await using var reader = await cmd.ExecuteReaderAsync();
+
+                if (await reader.ReadAsync())
+                {
+                    return new Student
+                    {
+                        User = new User
+                        {
+                            UserID = reader.GetInt32("c_userid"),
+                            FirstName = reader.GetString("c_first_name"),
+                            LastName = reader.GetString("c_last_name"),
+                            BirthDate = reader.GetDateTime("c_birth_date"),
+                            Contact = reader.GetString("c_contact"),
+                            Email = reader.GetString("c_email"),
+                            Gender = reader.GetString("c_gender"),
+                            Image = reader.IsDBNull("c_image") ? null : reader.GetString("c_image"),
+                            Address = reader.GetString("c_address"),
+                            Pincode = reader.GetString("c_pincode"),
+                            Role = reader.GetString("c_role")
+                        },
+                        StudentID = reader.GetInt32("c_studentID"),
+                        RollNumber = reader.GetString("c_roll_number"),
+                        GuardianName = reader.GetString("c_guardian_name"),
+                        GuardianContact = reader.GetString("c_guardian_contact"),
+                        Section = reader.GetString("c_section")
+                    };
+                }
+
+                return null; // Student not found
+            }
+            catch (Exception ex)
+            {
+                // Log the error (assuming you have a LoggerHelper or any logging mechanism)
+                Console.WriteLine($"StudentRepository - GetOne() : {ex.Message}");
+                return null;
+            }
+            finally
+            {
+                await _con.CloseAsync();
+            }
         }
         #endregion
 
         #region GetAll
-        public Task<List<Student>> GetAll()
+        public async Task<List<Student>?> GetAll()
         {
-            throw new NotImplementedException();
+            const string query = @"
+            SELECT 
+                u.c_userid, u.c_first_name, u.c_last_name, u.c_birth_date, 
+                u.c_contact, u.c_email, u.c_gender, u.c_image, u.c_address, c_pincode, c_role
+                s.c_studentID, s.c_roll_number, s.c_guardian_name, s.c_guardian_contact, s.c_section
+            FROM t_user u
+            INNER JOIN t_student s ON u.c_userid = s.c_studentID";
+
+            List<Student> studentList = new List<Student>();
+            try
+            {
+                await _con.OpenAsync();
+
+                await using var cmd = new NpgsqlCommand(query, _con);
+
+                await using var reader = await cmd.ExecuteReaderAsync();
+
+                while (await reader.ReadAsync())
+                {
+                    Student student = new Student()
+                    {
+                        User = new User
+                        {
+                            UserID = reader.GetInt32("c_userid"),
+                            FirstName = reader.GetString("c_first_name"),
+                            LastName = reader.GetString("c_last_name"),
+                            BirthDate = reader.GetDateTime("c_birth_date"),
+                            Contact = reader.GetString("c_contact"),
+                            Email = reader.GetString("c_email"),
+                            Gender = reader.GetString("c_gender"),
+                            Image = reader.IsDBNull("c_image") ? null : reader.GetString("c_image"),
+                            Address = reader.GetString("c_address"),
+                            Pincode = reader.GetString("c_pincode"),
+                            Role = reader.GetString("c_role")
+                        },
+                        StudentID = reader.GetInt32("c_studentID"),
+                        RollNumber = reader.GetString("c_roll_number"),
+                        GuardianName = reader.GetString("c_guardian_name"),
+                        GuardianContact = reader.GetString("c_guardian_contact"),
+                        Section = reader.GetString("c_section")
+                    };
+
+                    studentList.Add(student);
+                }
+
+                return studentList; // Student not found
+            }
+            catch (Exception ex)
+            {
+                // Log the error (assuming you have a LoggerHelper or any logging mechanism)
+                Console.WriteLine($"StudentRepository - GetOne() : {ex.Message}");
+                return null;
+            }
+            finally
+            {
+                await _con.CloseAsync();
+            }
         }
         #endregion
 
         #region Update
-        public Task<int> Update(Student data)
+        public async Task<int> Update(Student data)
         {
-            throw new NotImplementedException();
+            const string query = @"
+            UPDATE t_user
+            SET 
+                c_first_name = @FirstName, 
+                c_last_name = @LastName, 
+                c_birth_date = @BirthDate, 
+                c_contact = @Contact, 
+                c_email = @Email, 
+                c_gender = @Gender, 
+                c_image = @Image, 
+                c_address = @Address
+            WHERE c_userid = @UserId;
+
+            UPDATE t_student
+            SET 
+                c_roll_number = @RollNumber, 
+                c_guardian_name = @GuardianName, 
+                c_guardian_contact = @GuardianContact, 
+                c_section = @Section
+            WHERE c_studentID = @UserId;";
+
+            try
+            {
+                await _con.OpenAsync();
+
+                await using var cmd = new NpgsqlCommand(query, _con);
+
+                // Parameters for t_users table
+                cmd.Parameters.AddWithValue("@UserId", data.User.UserID);
+                cmd.Parameters.AddWithValue("@FirstName", data.User.FirstName);
+                cmd.Parameters.AddWithValue("@LastName", data.User.LastName);
+                cmd.Parameters.AddWithValue("@BirthDate", data.User.BirthDate);
+                cmd.Parameters.AddWithValue("@Contact", data.User.Contact);
+                cmd.Parameters.AddWithValue("@Email", data.User.Email);
+                cmd.Parameters.AddWithValue("@Gender", data.User.Gender);
+                cmd.Parameters.AddWithValue("@Image", string.IsNullOrEmpty(data.User.Image) ? DBNull.Value : data.User.Image);
+                cmd.Parameters.AddWithValue("@Address", data.User.Address);
+
+                // Parameters for t_student table
+                cmd.Parameters.AddWithValue("@RollNumber", data.RollNumber);
+                cmd.Parameters.AddWithValue("@GuardianName", data.GuardianName);
+                cmd.Parameters.AddWithValue("@GuardianContact", data.GuardianContact);
+                cmd.Parameters.AddWithValue("@Section", data.Section);
+
+                int rowsAffected = await cmd.ExecuteNonQueryAsync();
+                return rowsAffected;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error in Update: {ex.Message}");
+                return 0;
+            }
+            finally
+            {
+                await _con.CloseAsync();
+            }
         }
         #endregion
 
         #region Add
-        public Task<int> Add(Student data)
+        public async Task<int> Add(Student data)
         {
-            throw new NotImplementedException();
+            const string userQuery = @"
+            INSERT INTO t_user
+                (c_first_name, c_last_name, c_birth_date, c_contact, c_email, c_password, c_gender, c_image, c_address) 
+            VALUES 
+                (@FirstName, @LastName, @BirthDate, @Contact, @Email, @Password, @Gender, @Image, @Address)
+            RETURNING c_userid;";
+
+            const string studentQuery = @"
+            INSERT INTO t_student 
+                (c_studentID, c_roll_number, c_guardian_name, c_guardian_contact, c_section) 
+            VALUES 
+                (@UserId, @RollNumber, @GuardianName, @GuardianContact, @Section);
+        ";
+
+            await _con.OpenAsync();
+            await using var transaction = await _con.BeginTransactionAsync();
+
+            try
+            {
+                int userId;
+
+                // Insert into t_users
+                await using (var userCmd = new NpgsqlCommand(userQuery, _con, transaction))
+                {
+                    userCmd.Parameters.AddWithValue("@FirstName", data.User.FirstName);
+                    userCmd.Parameters.AddWithValue("@LastName", data.User.LastName);
+                    userCmd.Parameters.AddWithValue("@BirthDate", data.User.BirthDate);
+                    userCmd.Parameters.AddWithValue("@Contact", data.User.Contact);
+                    userCmd.Parameters.AddWithValue("@Email", data.User.Email);
+                    userCmd.Parameters.AddWithValue("@Password", data.User.Password);
+                    userCmd.Parameters.AddWithValue("@Gender", data.User.Gender);
+                    userCmd.Parameters.AddWithValue("@Image", string.IsNullOrEmpty(data.User.Image) ? DBNull.Value : data.User.Image);
+                    userCmd.Parameters.AddWithValue("@Address", data.User.Address);
+
+                    userId = Convert.ToInt32(await userCmd.ExecuteScalarAsync());
+                }
+
+                // Insert into t_student
+                await using (var studentCmd = new NpgsqlCommand(studentQuery, _con, transaction))
+                {
+                    studentCmd.Parameters.AddWithValue("@UserId", userId);
+                    studentCmd.Parameters.AddWithValue("@RollNumber", data.RollNumber);
+                    studentCmd.Parameters.AddWithValue("@GuardianName", data.GuardianName);
+                    studentCmd.Parameters.AddWithValue("@GuardianContact", data.GuardianContact);
+                    studentCmd.Parameters.AddWithValue("@Section", data.Section);
+
+                    await studentCmd.ExecuteNonQueryAsync();
+                }
+
+                await transaction.CommitAsync();
+                return userId;
+            }
+            catch (Exception ex)
+            {
+                await transaction.RollbackAsync();
+                Console.WriteLine($"StudentRepository - Add() : {ex.Message}");
+                return 0;
+            }
+            finally
+            {
+                await _con.CloseAsync();
+            }
         }
         #endregion
 
         #region Delete
-        public Task<int> Delete(int id)
+        public async Task<int> Delete(int id)
         {
-            throw new NotImplementedException();
+            const string softDeleteQuery = "UPDATE t_user SET c_is_active = FALSE WHERE c_userid = @Id;";
+
+            await _con.OpenAsync();
+
+            try
+            {
+                await using var command = new NpgsqlCommand(softDeleteQuery, _con);
+                command.Parameters.AddWithValue("@Id", id);
+
+                int rowsAffected = await command.ExecuteNonQueryAsync();
+                return rowsAffected;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] StudentRepository - Delete() :\n{ex.Message}");
+                return 0;
+            }
+            finally
+            {
+                await _con.CloseAsync();
+            }
         }
         #endregion
     }

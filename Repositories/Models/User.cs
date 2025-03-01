@@ -41,6 +41,8 @@ namespace Repositories.Models
         [MaxLength(6)]
         public string Pincode { get; set; } = "000000";
 
+        public bool IsActive { get; set; } = true;
+
         public IFormFile? ImageFile { get; set; }
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;

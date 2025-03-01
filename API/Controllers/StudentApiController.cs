@@ -16,6 +16,7 @@ namespace API.Controller
             _studRepo = student;
         }
 
+        #region Register
         [HttpPost]
         public async Task<IActionResult> Register([FromForm] Student student)
         {
@@ -44,5 +45,8 @@ namespace API.Controller
                 return BadRequest(ex.Message);
             }
         }
+        #endregion
+
+        
     }
 }

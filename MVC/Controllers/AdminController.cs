@@ -1,12 +1,18 @@
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 
 namespace MVC.Controllers
 {
-    public class StudentController : Controller
+    public class AdminController : Controller
     {
-        private readonly ILogger<StudentController> _logger;
+        private readonly ILogger<AdminController> _logger;
 
-        public StudentController(ILogger<StudentController> logger)
+        public AdminController(ILogger<AdminController> logger)
         {
             _logger = logger;
         }
