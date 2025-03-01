@@ -1,4 +1,7 @@
-using Microsfot.AspNetCore.Http;
+using Microsoft.AspNetCore.Http;
+using System;
+using System.IO;
+using System.Threading.Tasks;
 
 namespace Helpers.Files
 {
@@ -6,9 +9,11 @@ namespace Helpers.Files
     {
         private readonly string _profileImagePath;
 
-        public FileHelper(IWebHostEnvironment env)
+        public FileHelper() {}
+        
+        public FileHelper(string webRootPath)
         {
-            _profileImagePath = Path.Combine(env.WebRootPath, "profile_images");
+            _profileImagePath = Path.Combine(webRootPath, "profile_images");
 
             // Ensure directory exists
             if (!Directory.Exists(_profileImagePath))
