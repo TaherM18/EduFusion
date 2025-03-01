@@ -1,9 +1,6 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Repositories.Models;
 
-namespace EduFusion.Repositories.Interfaces
+namespace Repositories.Interfaces
 {
     public interface ITeacherInterface : IBaseInterface<Teacher>
     {

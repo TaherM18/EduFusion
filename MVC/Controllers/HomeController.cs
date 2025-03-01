@@ -1,8 +1,8 @@
 using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
-using EduFusion.Models;
+using MVC.Models;
 
-namespace EduFusion.MVC.Controllers;
+namespace MVC.Controllers;
 
 public class HomeController : Controller
 {

@@ -1,12 +1,13 @@
 
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EduFusion.Repositories.Models
+namespace Repositories.Models
 {
     public class Teacher
     {
         [Key]
-        public int TeacherID { get; set; }
+        public int? TeacherID { get; set; }
 
         [Required, Range(1, int.MaxValue)]
         public int Salary { get; set; }
@@ -15,12 +16,12 @@ namespace EduFusion.Repositories.Models
         public int ExperienceYears { get; set; }
 
         [Required, MaxLength(255)]
-        public string Qualification { get; set; }
+        public string Qualification { get; set; } = "N/A";
 
         [Required, MaxLength(255)]
-        public string Expertise { get; set; }
+        public string Expertise { get; set; } = "N/A";
 
         [ForeignKey("TeacherID")]
-        public User User { get; set; }
+        public User? User { get; set; }
     }
 }

@@ -1,14 +1,15 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EduFusion.Repositories.Models
+namespace Repositories.Models
 {
     public class Subject
     {
         [Key]
-        public int SubjectID { get; set; }
+        public int? SubjectID { get; set; }
 
         [MaxLength(255)]
-        public string SubjectName { get; set; }
+        public string SubjectName { get; set; } = "N/A";
 
         [Range(0, 100)]
         public decimal? Marks { get; set; } = 100;
@@ -17,9 +18,9 @@ namespace EduFusion.Repositories.Models
         public int? TeacherID { get; set; }
 
         [ForeignKey("StandardID")]
-        public Standard Standard { get; set; }
+        public Standard? Standard { get; set; }
 
         [ForeignKey("TeacherID")]
-        public Teacher Teacher { get; set; }
+        public Teacher? Teacher { get; set; }
     }
 }

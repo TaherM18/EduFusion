@@ -1,14 +1,14 @@
 using System.ComponentModel.DataAnnotations;
 
-namespace EduFusion.Repositories.Models
+namespace Repositories.Models
 {
     public class Standard
     {
         [Key]
-        public int StandardID { get; set; }
+        public int? StandardID { get; set; }
 
         [Required, MaxLength(255)]
-        public string StandardName { get; set; }
+        public string StandardName { get; set; } = "N/A";
     }
 
 }

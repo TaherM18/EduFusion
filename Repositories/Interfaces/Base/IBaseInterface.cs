@@ -1,4 +1,4 @@
-namespace EduFusion.Repositories.Interfaces
+namespace Repositories.Interfaces
 {
     public interface IBaseInterface<T>
     {

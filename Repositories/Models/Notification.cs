@@ -1,14 +1,15 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EduFusion.Repositories.Models
+namespace Repositories.Models
 {
     public class Notification
     {
         [Key]
-        public int NotificationID { get; set; }
+        public int? NotificationID { get; set; }
 
         [Required]
-        public string Message { get; set; }
+        public string Message { get; set; } = "N/A";
 
         [Required]
         public int UserID { get; set; }
@@ -17,6 +18,6 @@ namespace EduFusion.Repositories.Models
         public bool IsRead { get; set; } = false;
 
         [ForeignKey("UserID")]
-        public User User { get; set; }
+        public User? User { get; set; }
     }
 }

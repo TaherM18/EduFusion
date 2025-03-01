@@ -1,11 +1,12 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EduFusion.Repositories.Models
+namespace Repositories.Models
 {
     public class SubjectTracking
     {
         [Key]
-        public int TrackingID { get; set; }
+        public int? TrackingID { get; set; }
 
         [Required]
         public int SubjectID { get; set; }
@@ -17,6 +18,6 @@ namespace EduFusion.Repositories.Models
         public DateTime UpdatedAt { get; set; } = DateTime.UtcNow;
 
         [ForeignKey("SubjectID")]
-        public Subject Subject { get; set; }
+        public Subject? Subject { get; set; }
     }
 }

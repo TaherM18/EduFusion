@@ -1,13 +1,13 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+
+
+using Repositories.Interfaces;
+using Repositories.Models;
 
 namespace Repositories.Implementations
 {
     public class AuthRepository : IAuthInterface<User, LoginVM>
     {
-        public async Task<Student> Login(LoginVM vm)
+        public async Task<User> Login(LoginVM vm)
         {
             return null;
         }

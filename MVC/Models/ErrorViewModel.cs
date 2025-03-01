@@ -1,4 +1,4 @@
-namespace EduFusion.Models;
+namespace MVC.Models;
 
 public class ErrorViewModel
 {

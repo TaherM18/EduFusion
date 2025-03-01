@@ -1,27 +1,28 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EduFusion.Repositories.Models
+namespace Repositories.Models
 {
     public class Student
     {
         [Key]
-        public int StudentID { get; set; }
+        public int? StudentID { get; set; }
 
         [Required]
         public int StandardID { get; set; }
 
-        [Required, Range(1, int.MaxValue)]
-        public int RollNumber { get; set; }
+        [Required]
+        public string RollNumber { get; set; } = "0";
 
-        public string GuardianName { get; set; }
+        public string GuardianName { get; set; } = "N/A";
 
         [MaxLength(15)]
-        public string GuardianContact { get; set; }
+        public string GuardianContact { get; set; } = "0000000000";
 
         [MaxLength(10)]
-        public string Section { get; set; }
+        public string Section { get; set; } = "N/A";
 
         [ForeignKey("StudentID")]
-        public User User { get; set; }
+        public User? User { get; set; }
     }
 }

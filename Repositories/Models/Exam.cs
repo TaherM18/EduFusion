@@ -1,14 +1,15 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EduFusion.Repositories.Models
+namespace Repositories.Models
 {
     public class Exam
     {
         [Key]
-        public int ExamID { get; set; }
+        public int? ExamID { get; set; }
 
         [MaxLength(255)]
-        public string ExamName { get; set; }
+        public string ExamName { get; set; } = "N/A";
 
         [Required]
         public int SubjectID { get; set; }
@@ -23,9 +24,9 @@ namespace EduFusion.Repositories.Models
         public TimeSpan StartTime { get; set; }
 
         [Required, Range(0, 500)]
-        public decimal Duration { get; set; }
+        public float Duration { get; set; } = 1.0f;
 
         [ForeignKey("SubjectID")]
-        public Subject Subject { get; set; }
+        public Subject? Subject { get; set; }
     }
 }

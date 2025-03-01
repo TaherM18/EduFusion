@@ -1,16 +1,15 @@
 using System.ComponentModel.DataAnnotations;
-using Microsoft.AspNetCore.Http;
 
-namespace EduFusion.Repositories.Models
+namespace Repositories.Models
 {
     public class LoginVM
     {
         [Required]
         [Display(Name = "User email")]
-        public string Email { get; set; }
+        public string Email { get; set; } = "N/A";
 
         [Required]
         [Display(Name = "User password")]
-        public string Password { get; set; }
+        public string Password { get; set; } = "N/A";
     }
 }

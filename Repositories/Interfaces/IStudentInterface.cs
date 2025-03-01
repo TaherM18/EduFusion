@@ -1,6 +1,6 @@
-using EduFusion.Repositories.Models;
+using Repositories.Models;
 
-namespace EduFusion.Repositories.Interfaces
+namespace Repositories.Interfaces
 {
     public interface IStudentInterface : IBaseInterface<Student>
     {

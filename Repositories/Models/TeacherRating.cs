@@ -1,11 +1,12 @@
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace EduFusion.Repositories.Models
+namespace Repositories.Models
 {
     public class TeacherRating
     {
         [Key]
-        public int RatingID { get; set; }
+        public int? RatingID { get; set; }
 
         [Required]
         public int StudentID { get; set; }
@@ -19,9 +20,9 @@ namespace EduFusion.Repositories.Models
         public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
 
         [ForeignKey("StudentID")]
-        public Student Student { get; set; }
+        public Student? Student { get; set; }
 
         [ForeignKey("TeacherID")]
-        public Teacher Teacher { get; set; }
+        public Teacher? Teacher { get; set; }
     }
 }

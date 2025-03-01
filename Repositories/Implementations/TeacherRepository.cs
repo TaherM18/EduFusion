@@ -1,17 +1,26 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+using Repositories.Interfaces;
+using Repositories.Models;
+using Npgsql;
+using Helpers.Databases;
 
 namespace Repositories.Implementations
 {
     public class TeacherRepository : ITeacherInterface
     {
+        private readonly DatabaseHelper _helper;
+        private readonly NpgsqlConnection _con;
+
+        public TeacherRepository(NpgsqlConnection connection)
+        {
+            _con = connection;
+            _helper = new DatabaseHelper(_con);
+        }
+
         #region Register
         public async Task<int> Register(Teacher teacher)
         {
             int userId = await _helper.InsertGetId(
-                "t_users",
+                "t_user",
                 new string[] {
                     "c_first_name",
                     "c_last_name",
@@ -25,28 +34,40 @@ namespace Repositories.Implementations
                     "c_role"
                 },
                 new List<object> {
-                    teacher.user.FirstName,
-                    teacher.user.LastName,
-                    teacher.user.BirthDate,
-                    teacher.user.Contact,
-                    teacher.user.Email,
-                    teacher.user.Password,
-                    teacher.user.Gender,
-                    teacher.user.Image ?? (object)DBNull.Value,
-                    teacher.user.Address,
-                    teacher.user.Role
+                    teacher.User.FirstName,
+                    teacher.User.LastName,
+                    teacher.User.BirthDate,
+                    teacher.User.Contact,
+                    teacher.User.Email,
+                    teacher.User.Password,
+                    teacher.User.Gender,
+                    teacher.User.Image ?? (object)DBNull.Value,
+                    teacher.User.Address,
+                    "T"
                 },
                 "c_userid"
             );
 
-            Console.WriteLine("TeacherRepository - Register - userId=" + userId);
+            Console.WriteLine("TeacherRepository - Register - userId = " + userId);
 
             if (userId > 0) // Ensure a valid userId before inserting teacher data
             {
                 await _helper.InsertOne(
-                    "t_teachers",
-                    new string[] { "c_userID", "c_salary", "c_qualification", "c_experience", "c_expertise" },
-                    new List<object> { userId, teacher.Salary, teacher.Qualification, teacher.Experience, teacher.SubjectExpertise }
+                    "t_teacher",
+                    new string[] { 
+                        "c_teacherid", 
+                        "c_salary", 
+                        "c_experience_years",
+                        "c_qualification", 
+                        "c_expertise" 
+                    },
+                    new List<object> { 
+                        userId, 
+                        teacher.Salary, 
+                        teacher.ExperienceYears, 
+                        teacher.Qualification, 
+                        teacher.Expertise 
+                    }
                 );
             }
             else
@@ -58,33 +79,38 @@ namespace Repositories.Implementations
         }
         #endregion
 
+
         #region GetOne
-        public Task<Student> GetOne(int id)
+        public Task<Teacher> GetOne(int id)
         {
             throw new NotImplementedException();
         }
         #endregion
+
 
         #region GetAll
-        public Task<List<Student>> GetAll()
+        public Task<List<Teacher>> GetAll()
         {
             throw new NotImplementedException();
         }
         #endregion
 
-        #region Update
-        public Task<int> Update(Student data)
-        {
-            throw new NotImplementedException();
-        }
-        #endregion
 
         #region Add
-        public Task<int> Add(Student data)
+        public Task<int> Add(Teacher data)
         {
             throw new NotImplementedException();
         }
         #endregion
+
+
+        #region Update
+        public Task<int> Update(Teacher data)
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
 
         #region Delete
         public Task<int> Delete(int id)
