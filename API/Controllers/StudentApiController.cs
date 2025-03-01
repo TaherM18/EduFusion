@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Repositories.Models;
 using Repositories.Interfaces;
+using Helpers.Files;
 
 
 namespace API.Controller
@@ -10,10 +11,12 @@ namespace API.Controller
     public class StudentApiController : ControllerBase
     {
         private readonly IStudentInterface _studRepo;
+        private readonly FileHelper _fileHelper;
 
-        public StudentApiController(IStudentInterface student)
+        public StudentApiController(IStudentInterface student, IWebHostEnvironment env)
         {
             _studRepo = student;
+            _fileHelper = new FileHelper(env.WebRootPath);
         }
 
         #region Register

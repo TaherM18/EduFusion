@@ -8,8 +8,6 @@ namespace Helpers.Files
     public class FileHelper
     {
         private readonly string _profileImagePath;
-
-        public FileHelper() {}
         
         public FileHelper(string webRootPath)
         {
