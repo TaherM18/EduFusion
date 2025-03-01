@@ -91,7 +91,7 @@ namespace Repositories.Implementations
             SELECT 
                 u.c_userid, u.c_first_name, u.c_last_name, u.c_birth_date, 
                 u.c_contact, u.c_email, u.c_gender, u.c_image, u.c_address, u.c_pincode, u.c_role,
-                s.c_studentID, s.c_roll_number, s.c_guardian_name, s.c_guardian_contact, s.c_section
+                s.c_studentID, s.c_standardID, s.c_roll_number, s.c_guardian_name, s.c_guardian_contact, s.c_section
             FROM t_user u
             INNER JOIN t_student s ON u.c_userid = s.c_studentID
             WHERE u.c_userid = @id AND u.c_is_active = TRUE;";
@@ -124,6 +124,7 @@ namespace Repositories.Implementations
                             Role = reader.GetString("c_role")
                         },
                         StudentID = reader.GetInt32("c_studentID"),
+                        StandardID = reader.GetInt32("c_standardID"),
                         RollNumber = reader.IsDBNull("c_roll_number") ? "" : reader.GetString("c_roll_number"),
                         GuardianName = reader.IsDBNull("c_guardian_name") ? "" : reader.GetString("c_guardian_name"),
                         GuardianContact = reader.IsDBNull("c_guardian_contact") ? "" : reader.GetString("c_guardian_contact"),
@@ -153,7 +154,7 @@ namespace Repositories.Implementations
             SELECT 
                 u.c_userid, u.c_first_name, u.c_last_name, u.c_birth_date, 
                 u.c_contact, u.c_email, u.c_gender, u.c_image, u.c_address, u.c_pincode, u.c_role,
-                s.c_studentID, s.c_roll_number, s.c_guardian_name, s.c_guardian_contact, s.c_section
+                s.c_studentID, s.c_standardID, s.c_roll_number, s.c_guardian_name, s.c_guardian_contact, s.c_section
             FROM t_user u
             INNER JOIN t_student s ON u.c_userid = s.c_studentID";
 
@@ -185,6 +186,7 @@ namespace Repositories.Implementations
                             Role = reader.GetString("c_role")
                         },
                         StudentID = reader.GetInt32("c_studentID"),
+                        StandardID = reader.GetInt32("c_standardID"),
                         RollNumber = reader.IsDBNull("c_roll_number") ? "" : reader.GetString("c_roll_number"),
                         GuardianName = reader.IsDBNull("c_guardian_name") ? "" : reader.GetString("c_guardian_name"),
                         GuardianContact = reader.IsDBNull("c_guardian_contact") ? "" : reader.GetString("c_guardian_contact"),

@@ -93,7 +93,7 @@ namespace Repositories.Implementations
                 u.c_is_active, u.c_role, u.c_pincode, 
                 t.c_salary, t.c_qualification, t.c_experience_years, t.c_expertise
             FROM t_user u
-            INNER JOIN t_teachers t ON u.c_userid = t.c_userid
+            INNER JOIN t_teacher t ON u.c_userid = t.c_teacherid
             WHERE u.c_userid = @Id AND u.c_is_active = TRUE;";
 
 
@@ -112,22 +112,23 @@ namespace Repositories.Implementations
                     {
                         User = new User()
                         {
-                            UserID = reader.GetInt32(reader.GetOrdinal("c_userid")),
-                            FirstName = reader.GetString(reader.GetOrdinal("c_first_name")),
-                            LastName = reader.GetString(reader.GetOrdinal("c_last_name")),
-                            BirthDate = reader.GetDateTime(reader.GetOrdinal("c_birth_date")),
-                            Contact = reader.GetString(reader.GetOrdinal("c_contact")),
-                            Email = reader.GetString(reader.GetOrdinal("c_email")),
-                            Gender = reader.GetString(reader.GetOrdinal("c_gender")),
-                            Image = reader.IsDBNull(reader.GetOrdinal("c_image")) ? null : reader.GetString(reader.GetOrdinal("c_image")),
-                            Address = reader.GetString(reader.GetOrdinal("c_address")),
-                            Pincode = reader.GetString(reader.GetOrdinal("c_pincode")),
-                            Role = reader.GetString(reader.GetOrdinal("c_role"))
+                            UserID = reader.GetInt32("c_userid"),
+                            FirstName = reader.IsDBNull("c_first_name") ? "" : reader.GetString("c_first_name"),
+                            LastName = reader.IsDBNull("c_last_name") ? "" : reader.GetString("c_last_name"),
+                            BirthDate = reader.IsDBNull("c_birth_date") ? null : reader.GetDateTime("c_birth_date"),
+                            Contact = reader.IsDBNull("c_contact") ? "" : reader.GetString("c_contact"),
+                            Email = reader.IsDBNull("c_email") ? "" : reader.GetString("c_email"),
+                            Gender = reader.IsDBNull("c_gender") ? "" : reader.GetString("c_gender"),
+                            Image = reader.IsDBNull("c_image") ? null : reader.GetString("c_image"),
+                            Address = reader.IsDBNull("c_address") ? "" : reader.GetString("c_address"),
+                            Pincode = reader.IsDBNull("c_pincode") ? "" : reader.GetString("c_pincode"),
+                            Role = reader.GetString("c_role")
                         },
-                        Salary = reader.GetFloat(reader.GetOrdinal("c_salary")),
-                        Qualification = reader.GetString(reader.GetOrdinal("c_qualification")),
-                        ExperienceYears = reader.GetInt32(reader.GetOrdinal("c_experience_years")),
-                        Expertise = reader.GetString(reader.GetOrdinal("c_expertise"))
+                        TeacherID = reader.GetInt32("c_userid"),
+                        Salary = reader.IsDBNull("c_salary") ? 0f : reader.GetFloat("c_salary"),
+                        Qualification = reader.IsDBNull("c_qualification") ? "" : reader.GetString("c_qualification"),
+                        ExperienceYears = reader.IsDBNull("c_experience_years") ? 0 : reader.GetInt32("c_experience_years"),
+                        Expertise = reader.IsDBNull("c_expertise") ? "" : reader.GetString("c_expertise")
                     };
                 }
                 return null; // Teacher not found
@@ -156,7 +157,7 @@ namespace Repositories.Implementations
                 u.c_is_active, u.c_role, u.c_pincode, 
                 t.c_salary, t.c_qualification, t.c_experience_years, t.c_expertise
             FROM t_user u
-            INNER JOIN t_teachers t ON u.c_userid = t.c_userid
+            INNER JOIN t_teacher t ON u.c_userid = t.c_teacherid
             WHERE u.c_is_active = TRUE;";
 
             var teachers = new List<Teacher>();
@@ -173,22 +174,23 @@ namespace Repositories.Implementations
                     {
                         User = new User()
                         {
-                            UserID = reader.GetInt32(reader.GetOrdinal("c_userid")),
-                            FirstName = reader.GetString(reader.GetOrdinal("c_first_name")),
-                            LastName = reader.GetString(reader.GetOrdinal("c_last_name")),
-                            BirthDate = reader.GetDateTime(reader.GetOrdinal("c_birth_date")),
-                            Contact = reader.GetString(reader.GetOrdinal("c_contact")),
-                            Email = reader.GetString(reader.GetOrdinal("c_email")),
-                            Gender = reader.GetString(reader.GetOrdinal("c_gender")),
-                            Image = reader.IsDBNull(reader.GetOrdinal("c_image")) ? null : reader.GetString(reader.GetOrdinal("c_image")),
-                            Address = reader.GetString(reader.GetOrdinal("c_address")),
-                            Pincode = reader.GetString(reader.GetOrdinal("c_pincode")),
-                            Role = reader.GetString(reader.GetOrdinal("c_role"))
+                            UserID = reader.GetInt32("c_userid"),
+                            FirstName = reader.IsDBNull("c_first_name") ? "" : reader.GetString("c_first_name"),
+                            LastName = reader.IsDBNull("c_last_name") ? "" : reader.GetString("c_last_name"),
+                            BirthDate = reader.IsDBNull("c_birth_date") ? null : reader.GetDateTime("c_birth_date"),
+                            Contact = reader.IsDBNull("c_contact") ? "" : reader.GetString("c_contact"),
+                            Email = reader.IsDBNull("c_email") ? "" : reader.GetString("c_email"),
+                            Gender = reader.IsDBNull("c_gender") ? "" : reader.GetString("c_gender"),
+                            Image = reader.IsDBNull("c_image") ? null : reader.GetString("c_image"),
+                            Address = reader.IsDBNull("c_address") ? "" : reader.GetString("c_address"),
+                            Pincode = reader.IsDBNull("c_pincode") ? "" : reader.GetString("c_pincode"),
+                            Role = reader.GetString("c_role")
                         },
-                        Salary = reader.GetFloat(reader.GetOrdinal("c_salary")),
-                        Qualification = reader.GetString(reader.GetOrdinal("c_qualification")),
-                        ExperienceYears = reader.GetInt32(reader.GetOrdinal("c_experience_years")),
-                        Expertise = reader.GetString(reader.GetOrdinal("c_expertise"))
+                        TeacherID = reader.GetInt32("c_userid"),
+                        Salary = reader.IsDBNull("c_salary") ? 0f : reader.GetFloat("c_salary"),
+                        Qualification = reader.IsDBNull("c_qualification") ? "" : reader.GetString("c_qualification"),
+                        ExperienceYears = reader.IsDBNull("c_experience_years") ? 0 : reader.GetInt32("c_experience_years"),
+                        Expertise = reader.IsDBNull("c_expertise") ? "" : reader.GetString("c_expertise")
                     });
                 }
             }
@@ -218,7 +220,7 @@ namespace Repositories.Implementations
             RETURNING c_userid;";
 
             const string teacherQuery = @"
-            INSERT INTO t_teachers (c_userid, c_salary, c_qualification, c_experience, c_expertise)
+            INSERT INTO t_teacher (c_teacherid, c_salary, c_qualification, c_experience, c_expertise)
             VALUES (@UserId, @Salary, @Qualification, @Experience, @Expertise);";
 
             await _con.OpenAsync();
@@ -286,10 +288,10 @@ namespace Repositories.Implementations
             WHERE c_userid = @UserId;";
 
             const string teacherQuery = @"
-            UPDATE t_teachers 
+            UPDATE t_teacher
             SET c_salary = @Salary, c_qualification = @Qualification, 
                 c_experience_years = @ExperienceYears, c_expertise = @Expertise
-            WHERE c_userid = @UserId;";
+            WHERE c_teacherid = @UserId;";
 
             await _con.OpenAsync();
             await using var transaction = await _con.BeginTransactionAsync();
