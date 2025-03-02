@@ -20,6 +20,7 @@ builder.Services.AddSingleton<NpgsqlConnection>((service) => {
 builder.Services.AddSingleton<IStudentInterface, StudentRepository>();
 builder.Services.AddSingleton<ITeacherInterface, TeacherRepository>();
 builder.Services.AddSingleton<ITimeTableInterface, TimeTableRepository>();
+builder.Services.AddSingleton<IExamInterface, ExamRepository>();
 
 var app = builder.Build();
 

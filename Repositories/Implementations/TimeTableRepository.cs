@@ -115,6 +115,12 @@ namespace Repositories.Implementations
 
             var result = new Dictionary<string, List<TimeTable>>();
 
+            for (int i = 1; i <= 7; i++)
+            {
+                string dayName = GetDayOfWeekName(i);
+                result[dayName] = new List<TimeTable>();
+            }
+
             try
             {
                 await _connection.OpenAsync();

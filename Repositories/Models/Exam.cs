@@ -11,6 +11,8 @@ namespace Repositories.Models
         [MaxLength(255)]
         public string ExamName { get; set; } = "N/A";
 
+        public float TotalMarks { get; set; } = 100.0f;
+
         [Required]
         public int SubjectID { get; set; }
 
@@ -28,5 +30,6 @@ namespace Repositories.Models
 
         [ForeignKey("SubjectID")]
         public Subject? Subject { get; set; }
+        public ClassModel? ClassModel { get; set; }
     }
 }
