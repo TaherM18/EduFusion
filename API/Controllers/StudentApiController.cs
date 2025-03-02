@@ -56,7 +56,7 @@ namespace API.Controller
 
 
         #region GetAll
-        // GET: api/students
+        // GET: api/student
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Student>>> GetAllStudents()
         {
@@ -67,7 +67,7 @@ namespace API.Controller
 
 
         #region Get
-        // GET: api/students/{id}
+        // GET: api/student/{id}
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Student>> GetStudent(int id)
         {
@@ -82,7 +82,7 @@ namespace API.Controller
 
 
         #region Create
-        // POST: api/students
+        // POST: api/student
         [HttpPost]
         public async Task<ActionResult<int>> CreateStudent([FromForm] Student student)
         {
@@ -109,7 +109,7 @@ namespace API.Controller
 
 
         #region Update
-        // PUT: api/students/{id}
+        // PUT: api/student/{id}
         [HttpPut]
         public async Task<IActionResult> UpdateStudent([FromForm] Student student)
         {
@@ -135,7 +135,7 @@ namespace API.Controller
 
 
         #region Delete
-        // DELETE (Soft Delete): api/students/{id}
+        // DELETE (Soft Delete): api/student/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> SoftDeleteStudent(int id)
         {

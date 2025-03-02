@@ -20,7 +20,7 @@ namespace API.Controllers
         }
 
         #region GetAll
-        // GET: api/exams
+        // GET: api/exam
         [HttpGet]
         public async Task<IActionResult> GetAll()
         {
@@ -34,7 +34,7 @@ namespace API.Controllers
 
 
         #region GetOne
-        // GET: api/exams/{id}
+        // GET: api/exam/{id}
         [HttpGet("{id}")]
         public async Task<IActionResult> GetOne(int id)
         {
@@ -48,7 +48,7 @@ namespace API.Controllers
 
 
         #region GetAllByStandard
-        // GET: api/exams/standard/{standardID}
+        // GET: api/exam/standard/{standardID}
         [HttpGet("standard/{id}")]
         public async Task<IActionResult> GetAllByStandard(int id)
         {
@@ -62,7 +62,7 @@ namespace API.Controllers
 
 
         #region Add
-        // POST: api/exams
+        // POST: api/exam
         [HttpPost]
         public async Task<IActionResult> Add([FromBody] Exam exam)
         {
@@ -79,16 +79,16 @@ namespace API.Controllers
 
 
         #region Update
-        // PUT: api/exams/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromBody] Exam exam)
+        // PUT: api/exam
+        [HttpPut]
+        public async Task<IActionResult> Update([FromBody] Exam exam)
         {
-            if (exam == null || id != exam.ExamID)
+            if (exam == null)
                 return BadRequest(new { message = "Invalid request data." });
 
             var updatedRows = await _examRepository.Update(exam);
             if (updatedRows <= 0)
-                return StatusCode(500, new { message = $"Failed to update exam with ID {id}." });
+                return StatusCode(500, new { message = $"Failed to update exam with ID {exam.ExamID}." });
 
             return Ok(new { message = "Exam updated successfully." });
         }
@@ -96,7 +96,7 @@ namespace API.Controllers
 
 
         #region Delete
-        // DELETE: api/exams/{id}
+        // DELETE: api/exam/{id}
         [HttpDelete("{id}")]
         public async Task<IActionResult> Delete(int id)
         {
