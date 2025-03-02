@@ -243,7 +243,7 @@ namespace Repositories.Implementations
                     userCmd.Parameters.AddWithValue("@Image", GetDbValue(data.User.Image));
                     userCmd.Parameters.AddWithValue("@Address", GetDbValue(data.User.Address));
                     userCmd.Parameters.AddWithValue("@Pincode", GetDbValue(data.User.Pincode));
-                    userCmd.Parameters.AddWithValue("@Role", "T");  // Explicitly setting "T" for Teacher role
+                    userCmd.Parameters.AddWithValue("@Role", 'T');  // Explicitly setting "T" for Teacher role
 
                     userId = Convert.ToInt32(await userCmd.ExecuteScalarAsync());
                 }

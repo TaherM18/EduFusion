@@ -281,17 +281,16 @@ namespace Repositories.Implementations
         {
             const string userQuery = @"
             INSERT INTO t_user
-                (c_first_name, c_last_name, c_birth_date, c_contact, c_email, c_password, c_gender, c_image, c_address) 
+                (c_first_name, c_last_name, c_birth_date, c_contact, c_email, c_password, c_gender, c_image, c_address, c_role) 
             VALUES 
-                (@FirstName, @LastName, @BirthDate, @Contact, @Email, @Password, @Gender, @Image, @Address)
+                (@FirstName, @LastName, @BirthDate, @Contact, @Email, @Password, @Gender, @Image, @Address, @Role)
             RETURNING c_userid;";
 
             const string studentQuery = @"
             INSERT INTO t_student 
-                (c_studentID, c_roll_number, c_guardian_name, c_guardian_contact, c_section) 
+                (c_studentID, c_standardID, c_roll_number, c_guardian_name, c_guardian_contact, c_section) 
             VALUES 
-                (@UserId, @RollNumber, @GuardianName, @GuardianContact, @Section);
-        ";
+                (@UserID, @StandardID, @RollNumber, @GuardianName, @GuardianContact, @Section);";
 
             await _con.OpenAsync();
             await using var transaction = await _con.BeginTransactionAsync();
@@ -315,6 +314,7 @@ namespace Repositories.Implementations
                     userCmd.Parameters.AddWithValue("@Gender", GetDbValue(data.User.Gender));
                     userCmd.Parameters.AddWithValue("@Image", GetDbValue(data.User.Image));
                     userCmd.Parameters.AddWithValue("@Address", GetDbValue(data.User.Address));
+                    userCmd.Parameters.AddWithValue("@Role", 'S');
 
                     userId = Convert.ToInt32(await userCmd.ExecuteScalarAsync());
                 }
@@ -322,7 +322,8 @@ namespace Repositories.Implementations
                 // Insert into t_student
                 await using (var studentCmd = new NpgsqlCommand(studentQuery, _con, transaction))
                 {
-                    studentCmd.Parameters.AddWithValue("@UserId", userId);
+                    studentCmd.Parameters.AddWithValue("@UserID", userId);
+                    studentCmd.Parameters.AddWithValue("@StandardID", data.StandardID);
                     studentCmd.Parameters.AddWithValue("@RollNumber", GetDbValue(data.RollNumber));
                     studentCmd.Parameters.AddWithValue("@GuardianName", GetDbValue(data.GuardianName));
                     studentCmd.Parameters.AddWithValue("@GuardianContact", GetDbValue(data.GuardianContact));

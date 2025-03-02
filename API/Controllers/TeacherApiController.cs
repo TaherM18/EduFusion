@@ -100,21 +100,19 @@ namespace API.Controller
         #endregion
 
         #region Update
-        [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, [FromForm] Teacher teacher)
+        [HttpPut]
+        public async Task<IActionResult> Update([FromForm] Teacher teacher)
         {
             try
             {
-                var existingTeacher = await _teacherRepo.GetOne(id);
-                if (existingTeacher == null)
-                    return NotFound(new { message = "Teacher not found" });
+                if (teacher == null)
+                    return BadRequest(new { message = "Invalid request data" });
 
                 if (teacher.User?.ImageFile != null)
                 {
-                    teacher.User.Image = await _fileHelper.UploadProfileImage(_profileImagePath, teacher.User.ImageFile, existingTeacher.User?.Image);
+                    teacher.User.Image = await _fileHelper.UploadProfileImage(_profileImagePath, teacher.User.ImageFile, teacher.User?.Image);
                 }
 
-                teacher.User.UserID = id;
                 int result = await _teacherRepo.Update(teacher);
 
                 if (result > 0)

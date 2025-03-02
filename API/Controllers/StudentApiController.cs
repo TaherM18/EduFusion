@@ -103,17 +103,17 @@ namespace API.Controller
                 return StatusCode(500, new { message = "Failed to add student" });
             }
 
-            return CreatedAtAction(nameof(GetStudent), new { id = studentId }, student);
+            return CreatedAtAction(nameof(GetStudent), new { id = studentId }, new { message = "Student added successfully", id = studentId });
         }
         #endregion
 
 
         #region Update
         // PUT: api/students/{id}
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateStudent(int id, [FromForm] Student student)
+        [HttpPut]
+        public async Task<IActionResult> UpdateStudent([FromForm] Student student)
         {
-            if (student == null || id != student.StudentID)
+            if (student == null)
             {
                 return BadRequest(new { message = "Invalid request data" });
             }
