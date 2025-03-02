@@ -25,7 +25,7 @@ namespace API.Controllers
         public async Task<IActionResult> GetAll()
         {
             var exams = await _examRepository.GetAll();
-            if (exams == null || !exams.Any())
+            if (exams == null)
                 return NotFound(new { message = "No exams found." });
 
             return Ok(exams);
@@ -53,7 +53,7 @@ namespace API.Controllers
         public async Task<IActionResult> GetAllByStandard(int id)
         {
             var exams = await _examRepository.GetAllByStandard(id);
-            if (exams == null || !exams.Any())
+            if (exams == null)
                 return NotFound(new { message = $"No exams found for standard ID {id}." });
 
             return Ok(exams);
@@ -70,7 +70,7 @@ namespace API.Controllers
                 return BadRequest(new { message = "Invalid exam data." });
 
             var examId = await _examRepository.Add(exam);
-            if (examId == -1)
+            if (examId <= 0)
                 return StatusCode(500, new { message = "Failed to add exam." });
 
             return CreatedAtAction(nameof(GetOne), new { id = examId }, new { message = "Exam added successfully.", examId });

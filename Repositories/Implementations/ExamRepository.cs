@@ -143,7 +143,7 @@ namespace Repositories.Implementations
             catch (Exception ex)
             {
                 Console.WriteLine($"[ERROR] ExamRepository - GetAll() : {ex.Message}");
-                return new List<Exam>();
+                return null;
             }
             finally
             {
@@ -201,7 +201,7 @@ namespace Repositories.Implementations
             catch (Exception ex)
             {
                 Console.WriteLine($"[ERROR] ExamRepository - GetAllByStandard() : {ex.Message}");
-                return new List<Exam>();
+                return null;
             }
             finally
             {
@@ -237,7 +237,7 @@ namespace Repositories.Implementations
                         ExamDate = reader.GetDateTime(reader.GetOrdinal("c_exam_date"))
                     };
                 }
-
+                Console.WriteLine($"[ERROR] ExamRepository - GetOne() : No Data");
                 return null;
             }
             catch (Exception ex)
@@ -257,10 +257,10 @@ namespace Repositories.Implementations
         public async Task<int> Update(Exam data)
         {
             const string query = @"
-        UPDATE t_exam 
-        SET c_exam_name = @ExamName, c_SubjectID = @SubjectID, 
-            c_total_marks = @TotalMarks, c_exam_date = @ExamDate
-        WHERE c_examID = @ExamID;";
+            UPDATE t_exam 
+            SET c_exam_name = @ExamName, c_SubjectID = @SubjectID, 
+                c_total_marks = @TotalMarks, c_exam_date = @ExamDate
+            WHERE c_examID = @ExamID;";
 
             try
             {
