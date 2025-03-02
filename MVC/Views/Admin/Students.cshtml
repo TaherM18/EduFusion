@@ -1,4 +1,221 @@
 @{
     ViewData["Title"] = "Students";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
+<div class="mb-4">
+    <h3>Students</h3>
+    <button type="button" id="btnAdd" class="k-button k-button-lg k-button-solid-info" onclick="openAddForm()">✚</button>
+</div>
+
+<!-- Kendo Grid for Student Data -->
+<div id="studentGrid"></div>
+
+<!-- Kendo Notification -->
+<span id="notification"></span>
+
+<!-- Kendo Window Modal -->
+<div id="myKModal">
+    <form id="studentForm"></form>
+</div>
+
+@section Scripts {
+<script>
+    const baseUrl = "http://localhost:5190/api/student";
+
+    $(document).ready(function () {
+        initializeKendoComponents();
+    });
+
+    // Initialize Kendo Components
+    function initializeKendoComponents() {
+        loadWindowAndNotification();
+        loadStudentGrid();
+    }
+
+    // Load Kendo Window & Notification
+    function loadWindowAndNotification() {
+        $("#myKModal").kendoWindow({
+            width: "600px",
+            title: "Student Form",
+            visible: false,
+            modal: true,
+            actions: ["Close"]
+        });
+
+        $("#notification").kendoNotification({
+            allowHideAfter: 1000,
+            width: 300,
+            position: { pinned: true, top: 30, right: 30 }
+        });
+    }
+
+    // Load Kendo Grid
+    function loadStudentGrid() {
+        $("#studentGrid").kendoGrid({
+            dataSource: {
+                transport: {
+                    read: {
+                        url: baseUrl,
+                        type: "GET",
+                        dataType: "json"
+                    }
+                },
+                schema: {
+                    model: {
+                        id: "studentId",
+                        fields: {
+                            studentId: { type: "number" },
+                            standardId: { type: "number" },
+                            rollNumber: { type: "string" },
+                            guardianName: { type: "string" },
+                            guardianContact: { type: "string" },
+                            section: { type: "string" }
+                        }
+                    }
+                },
+                pageSize: 10
+            },
+            height: 400,
+            pageable: true,
+            sortable: true,
+            filterable: true,
+            columns: [
+                { field: "studentId", title: "ID", width: "80px" },
+                { field: "standardId", title: "Standard", width: "100px" },
+                { field: "rollNumber", title: "Roll No.", width: "120px" },
+                { field: "guardianName", title: "Guardian", width: "150px" },
+                { field: "guardianContact", title: "Contact", width: "150px" },
+                { field: "section", title: "Section", width: "100px" },
+                {
+                    title: "Actions",
+                    template: `
+                        <button class='k-button k-button-solid-info' onclick='openEditForm(#=studentId#)'>Edit</button>
+                        <button class='k-button k-button-solid-error' onclick='deleteStudent(#=studentId#)'>Delete</button>
+                    `,
+                    width: 160
+                }
+            ]
+        });
+    }
+
+    // Load Kendo Form
+    function loadStudentForm(studentData) {
+        $("#studentForm").kendoForm({
+            formData: studentData,
+            items: [
+                { field: "studentId", label: "Student ID", hidden: true },
+                { field: "standardId", label: "Standard ID", validation: { required: true } },
+                { field: "rollNumber", label: "Roll Number", validation: { required: true } },
+                { field: "guardianName", label: "Guardian Name" },
+                { field: "guardianContact", label: "Guardian Contact" },
+                { field: "section", label: "Section" }
+            ],
+            buttonsTemplate: `
+                <button type="submit" class="k-button k-button-lg k-button-solid-info">Save</button>
+                <button type="button" class="k-button k-button-lg k-button-solid-base" onclick="closeModal()">Cancel</button>
+            `,
+            submit: function (e) {
+                e.preventDefault();
+                saveStudent(e.model);
+            }
+        });
+    }
+
+    // Open Modal for Adding New Student
+    function openAddForm() {
+        loadStudentForm({
+            studentId: 0,
+            standardId: "",
+            rollNumber: "",
+            guardianName: "",
+            guardianContact: "",
+            section: ""
+        });
+        openModal();
+    }
+
+    // Open Modal for Editing Existing Student
+    function openEditForm(id) {
+        $.ajax({
+            url: `${baseUrl}/${id}`,
+            type: "GET",
+            success: function (response) {
+                loadStudentForm(response);
+                openModal();
+            },
+            error: function () {
+                showNotification("Failed to load student data.", "error");
+            }
+        });
+    }
+
+    // Open Modal
+    function openModal() {
+        $("#myKModal").data("kendoWindow").center().open();
+    }
+
+    // Close Modal
+    function closeModal() {
+        $("#myKModal").data("kendoWindow").close();
+    }
+
+    // Save Student (Create/Update)
+    function saveStudent(student) {
+        let isNew = student.studentId === 0;
+        let url = isNew
+            ? baseUrl
+            : `${baseUrl}/${student.studentId}`;
+
+        $.ajax({
+            url: url,
+            method: isNew ? "POST" : "PUT",
+            contentType: "application/json",
+            data: JSON.stringify(student),
+            success: function (response) {
+                if (response.success) {
+                    showNotification(isNew ? "Student added successfully!" : "Student updated successfully!", "success");
+                    closeModal();
+                    reloadGrid();
+                } else {
+                    showNotification(response.message, "error");
+                }
+            },
+            error: function () {
+                showNotification("An error occurred. Please try again.", "error");
+            }
+        });
+    }
+
+    // Delete Student
+    function deleteStudent(id) {
+        if (confirm("Are you sure you want to delete this student?")) {
+            $.ajax({
+                url: `${baseUrl}/${id}`,
+                type: "DELETE",
+                success: function (response) {
+                    if (response.success) {
+                        showNotification("Student deleted successfully!", "success");
+                        reloadGrid();
+                    } else {
+                        showNotification(response.message, "error");
+                    }
+                },
+                error: function () {
+                    showNotification("An error occurred. Please try again.", "error");
+                }
+            });
+        }
+    }
+
+    // Show Kendo Notification
+    function showNotification(message, type) {
+        $("#notification").data("kendoNotification").show(message, type);
+    }
+
+    // Reload Grid Data
+    function reloadGrid() {
+        $("#studentGrid").data("kendoGrid").dataSource.read();
+    }
+</script>
+}
