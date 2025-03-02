@@ -9,6 +9,8 @@ namespace Repositories.Models
 
         [Required, MaxLength(255)]
         public string StandardName { get; set; } = "N/A";
+
+        public List<Subject>? Subjects { get; set; }
     }
 
 }
