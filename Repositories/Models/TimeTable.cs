@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Repositories.Models
 {
-    public class Timetable
+    public class TimeTable
 {
     public int TimetableID { get; set; }  // Maps to c_timetableID
     public int SubjectID { get; set; }    // Maps to c_subjectID
