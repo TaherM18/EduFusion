@@ -19,6 +19,7 @@ builder.Services.AddSingleton<NpgsqlConnection>((service) => {
 // Configure Repositories
 builder.Services.AddSingleton<IStudentInterface, StudentRepository>();
 builder.Services.AddSingleton<ITeacherInterface, TeacherRepository>();
+builder.Services.AddSingleton<ITimeTableInterface, TimeTableRepository>();
 
 var app = builder.Build();
 
