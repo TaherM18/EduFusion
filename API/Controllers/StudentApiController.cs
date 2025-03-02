@@ -84,7 +84,7 @@ namespace API.Controller
         #region Create
         // POST: api/students
         [HttpPost]
-        public async Task<ActionResult<int>> CreateStudent([FromBody] Student student)
+        public async Task<ActionResult<int>> CreateStudent([FromForm] Student student)
         {
             if (student == null)
             {
@@ -111,7 +111,7 @@ namespace API.Controller
         #region Update
         // PUT: api/students/{id}
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateStudent(int id, [FromBody] Student student)
+        public async Task<IActionResult> UpdateStudent(int id, [FromForm] Student student)
         {
             if (student == null || id != student.StudentID)
             {
