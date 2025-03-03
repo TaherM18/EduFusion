@@ -59,7 +59,7 @@ namespace Repositories.Implementations
             const string query = @"
             SELECT 
                 st.c_trackingID, st.c_subjectID, st.c_percentage, st.c_created_at, st.c_updated_at,
-                s.c_subject_name,
+                s.c_subject_name, s.c_standardID, s.c_teacherID,
                 std.c_standard_name,
                 u.c_first_name, u.c_last_name
             FROM 
@@ -132,7 +132,7 @@ namespace Repositories.Implementations
             const string query = @"
             SELECT 
                 st.c_trackingID, st.c_subjectID, st.c_percentage, st.c_created_at, st.c_updated_at,
-                s.c_subject_name,
+                s.c_subject_name, s.c_standardID, s.c_teacherID,
                 std.c_standard_name,
                 u.c_first_name, u.c_last_name
             FROM 
@@ -209,7 +209,7 @@ namespace Repositories.Implementations
             const string query = @"
             SELECT 
                 st.c_trackingID, st.c_subjectID, st.c_percentage, st.c_created_at, st.c_updated_at,
-                s.c_subject_name,
+                s.c_subject_name, s.c_standardID, s.c_teacherID,
                 std.c_standard_name,
                 u.c_first_name, u.c_last_name
             FROM 
@@ -283,7 +283,21 @@ namespace Repositories.Implementations
         #region GetOne(id)
         public async Task<SubjectTracking?> GetOne(int id)
         {
-            const string query = "SELECT * FROM t_subject_tracking WHERE c_trackingID = @TrackingID";
+            const string query = @"
+            SELECT 
+                st.c_trackingID, st.c_subjectID, st.c_percentage, st.c_created_at, st.c_updated_at,
+                s.c_subject_name, s.c_standardID, s.c_teacherID,
+                std.c_standard_name,
+                u.c_first_name, u.c_last_name
+            FROM 
+                t_subject_tracking st
+            INNER JOIN
+                t_subject s ON s.c_subjectID = st.c_subjectID
+            INNER JOIN
+                t_standard std ON s.c_standardID = std.c_standardID
+            INNER JOIN
+                t_user u ON s.c_teacherID = u.c_userID
+            WHERE st.c_trackingID = @TrackingID";
 
             try
             {
