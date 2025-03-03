@@ -1,0 +1,163 @@
+@{
+    ViewData["Title"] = "Index";
+}
+
+@section Scripts {
+    <link rel="stylesheet" href="~/lib/kendo/kendo.default-v2.min.css" />
+    <script src="~/lib/kendo/kendo.all.min.js"></script>
+
+    <script>
+        $(document).ready(function () {
+            // Kendo Grid for Class Schedule
+            $("#scheduleGrid").kendoGrid({
+                dataSource: {
+                    transport: {
+                        read: { url: "/Teacher/GetTeacherSchedule", dataType: "json" }
+                    },
+                    pageSize: 5
+                },
+                height: 300,
+                pageable: true,
+                columns: [
+                    { field: "subject", title: "Subject" },
+                    { field: "class", title: "Class" },
+                    { field: "time", title: "Time" }
+                ]
+            });
+        });
+
+        // Initialize Kendo Splitter
+        $("#chartContainer").kendoSplitter({
+            orientation: "horizontal",
+            panes: [
+                {
+                    size: "50%",
+                    collapsible: true
+                },
+                {
+                    size: "50%",
+                    collapsible: true
+                }
+            ]
+        });
+
+        $.ajax({
+            url: "http://localhost:5078/api/Teacher/GetStudentRatings",
+            type: "GET",
+            success: function (data) {
+                // Categorize Ratings
+                var ratingCategories = {
+                    "Excellent": 0, // 4 & above
+                    "Good": 0,      // 3
+                    "Average": 0,   // 2
+                    "Poor": 0       // 1
+                };
+
+                // Process API Data
+                data.forEach(function (item) {
+                    if (item.rating >= 4) {
+                        ratingCategories["Excellent"]++;
+                    } else if (item.rating >= 3) {
+                        ratingCategories["Good"]++;
+                    } else if (item.rating >= 2) {
+                        ratingCategories["Average"]++;
+                    } else {
+                        ratingCategories["Poor"]++;
+                    }
+                });
+
+                // Convert into Kendo Pie Chart Format
+                var pieChartData = Object.keys(ratingCategories).map(function (key) {
+                    return { Category: key, Count: ratingCategories[key] };
+                });
+
+                // Render Kendo Pie Chart with Custom Colors
+                $("#pieChart").kendoChart({
+                    title: {
+                        text: "Student Rating Distribution"
+                    },
+                    legend: {
+                        position: "bottom"
+                    },
+                    seriesDefaults: {
+                        labels: {
+                            visible: true,
+                            format: "{0} ratings",
+                            background: "transparent"
+                        }
+                    },
+                    series: [
+                        {
+                            type: "pie",
+                            field: "Count",
+                            categoryField: "Category"
+                        }
+                    ],
+                    seriesColors: ["#28a745", "#ffc107", "#fd7e14", "#dc3545"], // Green, Yellow, Orange, Red
+                    dataSource: {
+                        data: pieChartData
+                    }
+                });
+
+                // Kendo Chart for Student Progress
+                $("#progressChart").kendoChart({
+                    title: {
+                        text: "Student Progress Chart"
+                    },
+                    legend: {
+                        position: "bottom"
+                    },
+                    seriesDefaults: {
+                        type: "column"
+                    },
+                    dataSource: {
+                        transport: {
+                            read: {
+                                url: "http://localhost:5078/api/Teacher/GetStudentProgress", // Ensure this endpoint returns JSON data
+                                dataType: "json"
+                            }
+                        }
+                    },
+                    series: [
+                        {
+                            field: "percentage",
+                            name: "Progress (%)"
+                        }
+                    ],
+                    categoryAxis: {
+                        field: "subject.subjectName",
+                        title: {
+                            text: "Subjects"
+                        }
+                    },
+                    valueAxis: {
+                        title: {
+                            text: "Progress (%)"
+                        },
+                        min: 0,
+                        max: 100
+                    },
+                    tooltip: {
+                        visible: true,
+                        format: "{0}%"
+                    }
+                });
+            },
+            error: function (xhr, status, error) {
+                console.error("Error fetching data:", error);
+            }
+        });
+
+    </script>
+}
+
+<h2 class="text-center">Teacher Dashboard</h2>
+
+<!-- Teacher Schedule Grid -->
+<div id="scheduleGrid"></div>
+
+<!-- Splitter Layout for Side-by-Side Graphs -->
+<div id="chartContainer" style="height: 400px; margin-top: 20px;">
+    <div id="progressChart"></div>
+    <div id="pieChart"></div>
+</div>

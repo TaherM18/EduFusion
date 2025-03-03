@@ -1,9 +1,191 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Home";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<!-- Main Content -->
+<div class="container mt-5">
+    <section class="hero-section text-white text-center py-5" style="background-color: #2c3e50;">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <h1 class="display-4 fw-bold mb-3">Welcome to <span class="text-warning">EduTrackPro</span></h1>
+                    <p class="lead">Your complete school management solution.</p>
+                    <div class="d-flex justify-content-center gap-3">
+                        <a href="#features" class="btn btn-warning btn-lg text-dark">
+                            <i class="fas fa-info-circle"></i> Explore Features
+                        </a>
+                        <a class="btn btn-outline-light btn-lg" asp-controller="User" asp-action="Login">
+                            <i class="fas fa-sign-in-alt"></i> Login
+                        </a>
+                    </div>
+                </div>
+                <div class="col-lg-6">
+                    <img src="~/Logo3.png" alt="EduTrack Dashboard" class="img-fluid rounded-3 shadow-lg">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Key Features Section -->
+    <section id="features" class="py-5 bg-light">
+        <div class="container">
+            <div class="text-center mb-5">
+                <h2 class="fw-bold">Why Choose EduTrackPro?</h2>
+                <p class="lead text-muted">A modern solution for educational excellence.</p>
+            </div>
+            <div class="row g-4">
+                <div class="col-md-4">
+                    <div class="card shadow-lg p-4 text-center">
+                        <i class="fas fa-graduation-cap fa-3x text-primary mb-3"></i>
+                        <h4>Student Management</h4>
+                        <p>Track attendance, grades, and student performance easily.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-lg p-4 text-center">
+                        <i class="fas fa-chalkboard-teacher fa-3x text-success mb-3"></i>
+                        <h4>Teacher Portal</h4>
+                        <p>Efficiently manage classes, grading, and communication.</p>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card shadow-lg p-4 text-center">
+                        <i class="fas fa-chart-line fa-3x text-danger mb-3"></i>
+                        <h4>Administration Tools</h4>
+                        <p>Optimize scheduling, resource allocation, and reporting.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Call to Action -->
+    <section class="cta-section text-center py-5 text-white" style="background-color: #34495e;">
+        <div class="container">
+            <h2 class="fw-bold">Start Managing Your Institution Today!</h2>
+            <p class="lead">Join thousands of educators using EduTrackPro for seamless management.</p>
+            <a href="#" class="btn btn-warning btn-lg text-dark mt-3">Get Started Now</a>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials py-5 bg-light">
+        <div class="container text-center">
+            <h2 class="fw-bold">What Our Users Say</h2>
+            <div class="row mt-4">
+                <div class="col-md-4">
+                    <div class="card p-4 shadow-lg">
+                        <p>"EduTrackPro transformed our school management! Highly recommended."</p>
+                        <strong>- Principal Sharma</strong>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-4 shadow-lg">
+                        <p>"Amazing tool! It made managing students and teachers a breeze."</p>
+                        <strong>- Mr. Rakesh, Teacher</strong>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card p-4 shadow-lg">
+                        <p>"The best decision we made for our institution!"</p>
+                        <strong>- Mrs. Anjali, Administrator</strong>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+<!-- Meet Our Team Section with Carousel -->
+    <section class="team-section mt-5 text-center">
+        <h2 class="fw-bold text-primary"><span style="color:#2c3e50;">Meet Our Team</span></h2>
+        <div id="teamCarousel" class="carousel slide " style="margin-bottom: 100px; "data-bs-ride="carousel">
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="d-flex justify-content-center gap-4 flex-wrap">
+                        <div class="card shadow-lg p-3" style="width: 15rem;">
+                           <img src="/images/team/Taher.jpg" class="card-img-top rounded-circle mx-auto d-block" style="width: 120px; height: 120px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">Taher</h5>
+                                <p class="card-text text-muted">Team Leader / Admin Module</p>
+                            </div>
+                        </div>
+                        <div class="card shadow-lg p-3" style="width: 15rem;">
+                            <img src="/images/team/Soham.jpg"class="card-img-top rounded-circle mx-auto d-block" style="width: 120px; height: 120px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">Soham</h5>
+                                <p class="card-text text-muted">Admin Module</p>
+                            </div>
+                        </div>
+                        <div class="card shadow-lg p-3" style="width: 15rem;">
+                            <img src="/images/team/Hirva.jpg" class="card-img-top rounded-circle mx-auto d-block" style="width: 120px; height: 120px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">Hirva</h5>
+                                <p class="card-text text-muted">Admin Module</p>
+                            </div>
+                        </div>
+                         <div class="card shadow-lg p-3" style="width: 15rem;">
+                            <img src="/images/team/Ronak.jpg" class="card-img-top rounded-circle mx-auto d-block" style="width: 120px; height: 120px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">Ronak</h5>
+                                <p class="card-text text-muted">Team Leader / Teacher Module</p>
+                            </div>
+                        </div>
+                        <div class="card shadow-lg p-3" style="width: 15rem;">
+                            <img src="/images/team/Hetvi.jpg" class="card-img-top rounded-circle mx-auto d-block" style="width: 120px; height: 120px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">Hetvi</h5>
+                                <p class="card-text text-muted">Team Leader / Teacher Module</p>
+                            </div>
+                        </div>
+                        <div class="card shadow-lg p-3" style="width: 15rem;">
+                            <img src="/images/team/Prasan.jpg" class="card-img-top rounded-circle mx-auto d-block" style="width: 120px; height: 120px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">Prasan</h5>
+                                <p class="card-text text-muted"> Teacher Module</p>
+                            </div>
+                        </div>
+                         <div class="card shadow-lg p-3" style="width: 15rem;">
+                            <img src="/images/team/Gyanshu.jpg" class="card-img-top rounded-circle mx-auto d-block" style="width: 120px; height: 120px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">Gyanshu</h5>
+                                <p class="card-text text-muted"> Student Module</p>
+                            </div>
+                        </div>
+                         <div class="card shadow-lg p-3" style="width: 15rem;">
+                            <img src="/images/team/Maulik.jpg" class="card-img-top rounded-circle mx-auto d-block" style="width: 120px; height: 120px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">Maulik</h5>
+                                <p class="card-text text-muted"> Student Module</p>
+                            </div>
+                        </div>
+                         <div class="card shadow-lg p-3" style="width: 15rem;">
+                            <img src="/images/team/Yash.jpg" class="card-img-top rounded-circle mx-auto d-block" style="width: 120px; height: 120px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">Yash</h5>
+                                <p class="card-text text-muted"> Student Module</p>
+                            </div>
+                        </div>
+                         <div class="card shadow-lg p-3" style="width: 15rem;">
+                            <img src="/images/team/Jigansha.jpg" class="card-img-top rounded-circle mx-auto d-block" style="width: 120px; height: 120px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">Jigansha</h5>
+                                <p class="card-text text-muted"> Student Module</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
 </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            // Initialize carousel
+            $('#teamCarousel').carousel();
+        });
+    </script>
+}
+

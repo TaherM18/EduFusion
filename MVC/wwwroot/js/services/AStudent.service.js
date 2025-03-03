@@ -78,6 +78,7 @@ function loadStudentGrid() {
             {
                 title: "Actions",
                 template: `
+                            <button type="submit" class="k-button k-button-solid-info" onclick='Approve(#=studentID#)'>✔</button>
                             <button class='k-button k-button-solid-info' onclick='openEditForm(#=studentID#)'>Edit</button>
                             <button class='k-button k-button-solid-error' onclick='deleteStudent(#=studentID#)'>Delete</button>
                         `,
@@ -85,6 +86,10 @@ function loadStudentGrid() {
             }
         ]
     });
+}
+
+async function Approve(id) {
+    
 }
 
 // Load Kendo Form
@@ -110,9 +115,10 @@ function loadStudentForm(studentData) {
             {
                 field: "studentID",
                 editor: function (container) {
-                    $(container).append('<input type="text" name="studentID" readonly/>');
+                    $(container).append('<input type="hidden" name="studentID" readonly/>');
                 },
-                hidden: true
+                hidden: true,
+                label: false,
             },
             { field: "user.firstName", label: "First Name", validation: { required: true } },
             { field: "user.lastName", label: "Last Name", validation: { required: true } },

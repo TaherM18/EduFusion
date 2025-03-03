@@ -1,0 +1,120 @@
+@{
+    ViewData["Title"] = "Classes";
+}
+
+@section Scripts {
+    <link rel="stylesheet" href="~/lib/kendo/kendo.default-v2.min.css" />
+    <script src="~/lib/kendo/kendo.all.min.js"></script>
+
+    <script>
+        var standardApi = "http://localhost:5078/api/Teacher/GetStudentStandards";
+        var subjectApi = "http://localhost:5078/api/Teacher/GetStudentSubjects";
+        var teacherApi = "http://localhost:5078/api/Teacher/GetTeacherBySubject";
+
+        // Initialize Kendo Window
+        var formWindow = $("#container").kendoWindow({
+            title: "Add Class",
+            width: "400px",
+            height: "450px",
+            visible: false,
+            modal: true,
+            actions: ["Close"]
+        }).data("kendoWindow");
+
+        $("#add-class").click(function () {
+            formWindow.center().open();
+        });
+
+        $("#form-container").kendoForm({
+            orientation: "vertical",
+            formData: {
+                classID: null,
+                subjectID: null,
+                teacher: "",
+                timeSlot: null
+            },
+            items: [
+                {
+                    field: "standardID",
+                    label: "Standard",
+                    editor: "DropDownList",
+                    editorOptions: {
+                        optionLabel: "Select Standard",
+                        dataTextField: "standardName",
+                        dataValueField: "standardID",
+                        dataSource: {
+                            transport: { read: standardApi }
+                        },
+                        change: function (e) {
+                            var selectedStandard = this.value();
+                            fetchSubject(selectedStandard);
+                        }
+                    }
+                },
+                {
+                    field: "subjectID",
+                    label: "Subject",
+                    editor: "DropDownList",
+                    editorOptions: {
+                        optionLabel: "Select Subject",
+                        dataTextField: "subjectName",
+                        dataValueField: "subjectID",
+                        dataSource: [],
+                        change: function (e) {
+                            var selectedSubject = this.value();
+                            fetchTeacher(selectedSubject);
+                        }
+                    }
+                },
+                {
+                    field: "teacher",
+                    label: "Teacher",
+                    editor: "TextBox",
+                    editorOptions: { readonly: true }
+                },
+                {
+                    field: "startTime",
+                    label: "Start Time",
+                    editor: "TimePicker"
+                },
+                {
+                    field: "endTime",
+                    label: "End Time",
+                    editor: "TimePicker"
+                }
+            ]
+        });
+
+        function fetchSubject(selectedStandard) {
+            $.ajax({
+                url: subjectApi + "/" + selectedStandard,
+                type: "GET",
+                success: function (data) {
+                    var subjectDropdown = $("#form-container").find("[name=subjectID]").data("kendoDropDownList");
+                    subjectDropdown.setDataSource(new kendo.data.DataSource({ data: data }));
+                    subjectDropdown.value(""); // Reset value
+                }
+            });
+        }
+
+        function fetchTeacher(selectedSubject) {
+            $.ajax({
+                url: teacherApi + "/" + selectedSubject,
+                type: "GET",
+                success: function (data) {
+                    var teacherTextBox = $("#form-container").find("[name=teacher]").data("kendoTextBox");
+                    teacherTextBox.value(data.user.firstName);
+                }
+            })
+        }
+    </script>
+}
+
+<h1>Classes</h1>
+
+<button id="add-class" class="k-button k-button-solid-primary">Add Class</button>
+
+<div id="container">
+    <div id="form-container"></div>
+</div>
+

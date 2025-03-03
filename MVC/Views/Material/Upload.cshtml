@@ -1,0 +1,162 @@
+@{
+    ViewData["Title"] = "Material Management";
+}
+
+@section Scripts {
+    <script src="~/lib/pdf.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#materialForm').kendoForm({
+                validatable: {
+                    validateOnBlur: true,
+                    validationSummary: true,
+                    errorTemplate: "<small class='error' data-for='#=name#'>#=message#</small>"
+                },
+                items: [
+                    {
+                        field: "fileUpload",
+                        label: "Upload File",
+                        editor: function (container, options) {
+                            $('<input name="files" id="fileUpload" type="file" />')
+                                .appendTo(container)
+                                .kendoUpload({
+                                    select: function (e) {
+                                        var file = e.files[0];
+                                        $("#fileName").val(file.name);
+                                        $("#fileType").text(file.extension || "Unknown");
+                                    }
+                                });
+                        }
+                    },
+                    {
+                        field: "fileName",
+                        label: "File Name",
+                        editor: "TextBox",
+                        attributes: { readonly: true }
+                    },
+                    {
+                        field: "fileType",
+                        label: "File Type",
+                        editor: function (container) {
+                            $('<span id="fileType" class="k-label"></span>').appendTo(container);
+                        }
+                    },
+                    {
+                        field: "uploadDate",
+                        label: "Upload Date",
+                        editor: function (container, options) {
+                            $('<input id="uploadDate" />')
+                                .appendTo(container)
+                                .kendoDatePicker();
+                        }
+                    },
+                    {
+                        field: "subject",
+                        label: "Subject",
+                        editor: function (container, options) {
+                            $('<input id="subject" name="subject" />')
+                                .appendTo(container)
+                                .kendoDropDownList({
+                                    dataSource: ["Mathematics", "English", "Physics", "Economics"],
+                                    optionLabel: "Select Subject"
+                                });
+                        }
+                    }
+                ],
+                buttonsTemplate: '<button type="submit" class="k-button k-button-lg k-button-solid-warning">Submit</button>' +
+                    ' <button type="button" class="k-button-solid-base k-button-lg k-form-clear">Clear</button>',
+                submit: function (e) {
+                    e.preventDefault();
+
+                    let formData = new FormData();
+                    formData.append('fileName', $("#fileName").val());
+                    formData.append('fileType', $("#fileType").text());
+                    formData.append('uploadDate', $("#uploadDate").val());
+
+                    let subjectDropDown = $("#subject").data("kendoDropDownList");
+                    let subjectValue = subjectDropDown ? subjectDropDown.value() : "";
+
+                    if (!subjectValue) {
+                        alert("Please select a subject before submitting.");
+                        return;
+                    }
+
+                    formData.append('subject', subjectValue);
+
+                    let fileUploadWidget = $("#fileUpload").data("kendoUpload");
+                    let files = fileUploadWidget ? fileUploadWidget.getFiles() : [];
+
+                    if (files.length === 0) {
+                        alert("Please select a file before submitting.");
+                        return;
+                    }
+
+                    let file = files[0].rawFile;
+                    formData.append('file', file);
+
+                    $.ajax({
+                        url: 'http://localhost:5078/api/materials/AddMaterial',
+                        type: 'POST',
+                        contentType: false,
+                        processData: false,
+                        data: formData,
+                        success: function (response) {
+                            alert("Material uploaded successfully");
+                            loadMaterials();
+                        },
+                        error: function (xhr, error, status) {
+                            console.log(xhr.responseText);
+                        }
+                    });
+                }
+            });
+
+            function loadMaterials() {
+                $.ajax({
+                    url: 'http://localhost:5078/api/materials/GetAllMaterials',
+                    type: 'GET',
+                    success: function (data) {
+                        $("#fileManager").kendoFileManager({
+                            dataSource: data.map(m => ({
+                                name: m.fileName,
+                                size: m.fileSize + " KB",
+                                type: m.fileType,
+                                date: m.uploadDate,
+                                id: m.id
+                            })),
+                            toolbar: {
+                                items: [
+                                    { name: "delete", text: "Delete", command: "deleteMaterial" }
+                                ]
+                            },
+                            remove: function (e) {
+                                let fileId = e.target.dataItem.id;
+                                $.ajax({
+                                    url: 'http://localhost:5078/api/materials/DeleteMaterial?id=' + fileId,
+                                    type: 'DELETE',
+                                    success: function () {
+                                        alert("Material deleted successfully");
+                                        loadMaterials();
+                                    },
+                                    error: function (xhr) {
+                                        console.log(xhr.responseText);
+                                    }
+                                });
+                            }
+                        });
+                    },
+                    error: function (xhr) {
+                        console.log(xhr.responseText);
+                    }
+                });
+            }
+
+            loadMaterials();
+        });
+    </script>
+}
+
+<br>
+<h2>Material Management</h2>
+<form id="materialForm"></form>
+<div id="fileManager"></div>
