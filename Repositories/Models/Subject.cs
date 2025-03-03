@@ -12,7 +12,7 @@ namespace Repositories.Models
         public string SubjectName { get; set; } = "N/A";
 
         [Range(0, 100)]
-        public decimal? Marks { get; set; } = 100;
+        public float? Marks { get; set; } = 100;
 
         public int? StandardID { get; set; }
         public int? TeacherID { get; set; }
