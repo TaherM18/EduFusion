@@ -1,0 +1,63 @@
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
+using System.Text;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.IdentityModel.Tokens;
+using Repositories.Models;
+using Repositories.Interfaces;
+
+namespace API.Controllers
+{
+    [Route("api/[controller]")]
+    [ApiController]
+    public class UserController : ControllerBase
+    {
+        private readonly IUserInterface _user;
+        private readonly IConfiguration _config;
+
+        public UserController(IConfiguration configuration, IUserInterface userInterface)
+        {
+            _config = configuration;
+            _user = userInterface;
+        }
+
+        [HttpPost]
+        [Route("login")]
+        public async Task<IActionResult> Login([FromForm] LoginVM user)
+        {
+            User UserData = await _user.Login(user);
+            if (UserData.UserID != 0)
+            {
+                var claims = new[]
+                {
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                    new Claim("Userid", UserData.UserID.ToString()),
+                    new Claim("UserName", UserData.FirstName),
+                    new Claim(ClaimTypes.Role, UserData.Role)
+                };
+                var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["Jwt:Key"]));
+                var signIn = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
+                var token = new JwtSecurityToken(
+                issuer: _config["Jwt:Issuer"],
+                audience: _config["Jwt:Audience"],
+                claims: claims,
+                expires: DateTime.UtcNow.AddDays(1),
+                signingCredentials: signIn
+                );
+                return Ok(new
+                {
+                    success = true,
+                    message = "Login Success",
+                    UserData = UserData,
+                    token = new JwtSecurityTokenHandler().WriteToken(token)
+                });
+            }
+            return BadRequest(new
+            {
+                message = "Login unsuccessfull"
+            });
+        }
+
+    }
+}
