@@ -7,7 +7,7 @@ namespace Helpers.Files
 {
     public class FileHelper
     {
-
+        #region UploadFile
         public async Task<string?> UploadFile(string directoryPath, IFormFile? imageFile, string? existingFileName)
         {
             // Ensure directory exists
@@ -41,6 +41,24 @@ namespace Helpers.Files
 
             return newFileName; // Return new file name to store in the database
         }
+        #endregion
+
+
+        #region DeleteFile
+        public async Task<bool> DeleteFile(string filePath)
+        {
+            // Delete existing image if available
+            if (!string.IsNullOrEmpty(filePath))
+            {
+                if (File.Exists(filePath))
+                {
+                    File.Delete(filePath);
+                    return true;
+                }
+            }
+            return false;
+        }
+        #endregion
 
 
         public void Test()

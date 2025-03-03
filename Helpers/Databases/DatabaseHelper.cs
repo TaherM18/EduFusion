@@ -25,6 +25,7 @@ namespace Helpers.Databases
             {
                 await _con.CloseAsync();
                 await _con.OpenAsync();
+                
                 using (NpgsqlCommand cm = new NpgsqlCommand(query, _con))
                 {
                     if (parameters != null) cm.Parameters.AddRange(parameters);
@@ -36,6 +37,10 @@ namespace Helpers.Databases
             {
                 LogHelper.AppendLog("ERROR", ex.Message);
                 throw new Exception("Exception from GetTableCustom :::> \n" + ex.Message + " <::::::>");
+            }
+            finally
+            {
+                await _con.CloseAsync();
             }
             return dt;
         }

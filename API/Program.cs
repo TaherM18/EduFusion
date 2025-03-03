@@ -84,6 +84,7 @@ builder.Services.AddSingleton<IExamInterface, ExamRepository>();
 builder.Services.AddSingleton<IStandardInterface, StandardRepository>();
 builder.Services.AddSingleton<ISubjectTrackingInterface, SubjectTrackingRepository>();
 builder.Services.AddSingleton<IUserInterface, AuthRepository>();
+builder.Services.AddSingleton<IMaterialInterface, MaterialRepository>();
 
 var app = builder.Build();
 
