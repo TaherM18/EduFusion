@@ -123,6 +123,13 @@ namespace API.Controller
                 student.User.Image = await _fileHelper.UploadProfileImage(_profileImagePath, student.User.ImageFile, student.User?.Image);
             }
 
+
+            // Exclude password and other unnecessary fields during update
+            if (student.User != null)
+            {
+                student.User.Password = null; // Prevents validation errors on Password
+            }
+
             var updated = await _studRepo.Update(student);
             if (updated <= 0)
             {
@@ -140,9 +147,9 @@ namespace API.Controller
         public async Task<IActionResult> SoftDeleteStudent(int id)
         {
             var deleted = await _studRepo.Delete(id);
-            if (deleted <= 0)
+            if (deleted >= 0)
             {
-                return NotFound(new { message = "Student not found or already inactive" });
+                return Ok(new { message = "Successfully deleted", success = "true" });
             }
 
             return NoContent(); // 204 No Content

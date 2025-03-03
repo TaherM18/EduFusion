@@ -94,7 +94,7 @@ namespace Repositories.Implementations
                 s.c_studentID, s.c_standardID, s.c_roll_number, s.c_guardian_name, s.c_guardian_contact, s.c_section
             FROM t_user u
             INNER JOIN t_student s ON u.c_userid = s.c_studentID
-            WHERE u.c_userid = @id AND u.c_is_active = TRUE;";
+            WHERE u.c_userid = @id";
 
             try
             {
@@ -156,7 +156,9 @@ namespace Repositories.Implementations
                 u.c_contact, u.c_email, u.c_gender, u.c_image, u.c_address, u.c_pincode, u.c_role,
                 s.c_studentID, s.c_standardID, s.c_roll_number, s.c_guardian_name, s.c_guardian_contact, s.c_section
             FROM t_user u
-            INNER JOIN t_student s ON u.c_userid = s.c_studentID";
+            INNER JOIN t_student s ON u.c_userid = s.c_studentID
+            WHERE u.c_is_active = TRUE;
+            ";
 
             List<Student> studentList = new List<Student>();
             try
