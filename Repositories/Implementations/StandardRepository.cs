@@ -128,7 +128,7 @@ namespace Repositories.Implementations
             SELECT s.c_standardID, s.c_standard_name, sub.c_subjectID, sub.c_subject_name
             FROM t_standard s
             LEFT JOIN t_subject sub ON s.c_standardID = sub.c_standardID
-            WHERE s.standardID = @StandardID;";
+            WHERE s.c_standardID = @StandardID;";
 
             Standard? standard = null;
 
