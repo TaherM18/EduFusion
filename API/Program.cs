@@ -26,6 +26,7 @@ builder.Services.AddSingleton<ITeacherInterface, TeacherRepository>();
 builder.Services.AddSingleton<ITimeTableInterface, TimeTableRepository>();
 builder.Services.AddSingleton<IExamInterface, ExamRepository>();
 builder.Services.AddSingleton<IStandardInterface, StandardRepository>();
+builder.Services.AddSingleton<ISubjectTrackingInterface, SubjectTrackingRepository>();
 
 var app = builder.Build();
 

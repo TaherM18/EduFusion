@@ -247,9 +247,9 @@ namespace Repositories.Implementations
             INNER JOIN
                 t_class c ON e.c_classID = c.c_classID
             WHERE 
-                c_examID = @ExamID;
+                c_examID = @ExamID
             ORDER BY 
-                c_exam_date DESC;";
+                c_exam_date ASC;";
 
             try
             {
