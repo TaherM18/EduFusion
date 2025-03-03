@@ -112,70 +112,62 @@
         }
 
         // Load Kendo Form
-        function loadStudentForm(studentData) {
-            $("#studentForm").kendoForm({
-                formData: studentData,
-                items: [
-                    { 
-                        field: "studentID", 
-                        editor: function(container) {
-                            $(container).append('<input type="text" name="studentID" readonly/>');
-                        },
-                        hidden: true
-                    },
-                    { field: "user.firstName", label: "First Name", validation: { required: true } },
-                    { field: "user.lastName", label: "Last Name", validation: { required: true } },
-                    { field: "user.birthDate", label: "Birth Date", editor: "DatePicker" },
-                    // Gender Radio Buttons
-                    {
-                        field: "user.gender",
-                        label: "Gender",
-                        editor: function (container, options) {
-                            var genderValue = options.model.user?.gender || "";
-                            var genderHtml = `
-                            <label>
-                                <input type="radio" name="gender" value="Male" ${genderValue === "Male" ? "checked" : ""}/> Male
-                            </label>
-                            <label>
-                                <input type="radio" name="gender" value="Female" ${genderValue === "Female" ? "checked" : ""}/> Female
-                            </label>
-                            <label>
-                                <input type="radio" name="gender" value="Other" ${genderValue === "Other" ? "checked" : ""}/> Other
-                            </label>
-                            `;
-                            $(genderHtml).appendTo(container);
-                        }
-                    },
-                    // Image Upload Input
-                    {
-                        field: "user.image",
-                        label: "Image",
-                        editor: function (container) {
-                            $(container).append('<input type="file" class="" name="ImageFile" accept="image/*"/>');
-                        }
-                    },
+       function loadStudentForm(studentData) {
+    $("#studentForm").empty(); // Clear previous form fields before adding new ones
 
-                    { field: "user.email", label: "Email", validation: { required: true, email: true } },
-                    { field: "user.contact", label: "Contact", validation: { required: true } },
-                    { field: "user.address", label: "Address" },
-                    { field: "user.pincode", label: "Pin Code" },
-
-                    { field: "standardID", label: "Standard ID", validation: { required: true } },
-                    { field: "rollNumber", label: "Roll Number", validation: { required: true } },
-                    { field: "guardianName", label: "Guardian Name" },
-                    { field: "guardianContact", label: "Guardian Contact" },
-                    { field: "section", label: "Section" }
-                ],
-                buttonsTemplate: `
-                <button type="submit" class="k-button k-button-lg k-button-solid-info">Save</button>
-                <button type="button" class="k-button k-button-lg k-button-solid-base" onclick="closeModal()">Cancel</button>
-                `,
-                submit: function (e) {
-                    e.preventDefault();
-                    saveStudent(e.model);
+    $("#studentForm").kendoForm({
+        formData: studentData,
+        items: [
+            { 
+                field: "studentID", 
+                editor: function(container) {
+                    $(container).append('<input type="text" name="studentID" readonly/>');
+                },
+                hidden: true
+            },
+            { field: "user.firstName", label: "First Name", validation: { required: true } },
+            { field: "user.lastName", label: "Last Name", validation: { required: true } },
+            { field: "user.birthDate", label: "Birth Date", editor: "DatePicker" },
+            {
+                field: "user.gender",
+                label: "Gender",
+                editor: function (container, options) {
+                    var genderValue = options.model.user?.gender || "";
+                    var genderHtml = `
+                        <label><input type="radio" name="gender" value="Male" ${genderValue === "Male" ? "checked" : ""}/> Male</label>
+                        <label><input type="radio" name="gender" value="Female" ${genderValue === "Female" ? "checked" : ""}/> Female</label>
+                        <label><input type="radio" name="gender" value="Other" ${genderValue === "Other" ? "checked" : ""}/> Other</label>
+                    `;
+                    $(genderHtml).appendTo(container);
                 }
-            });
+            },
+            {
+                field: "user.image",
+                label: "Image",
+                editor: function (container) {
+                    $(container).append('<input type="file" name="ImageFile" accept="image/*"/>');
+                }
+            },
+            { field: "user.email", label: "Email", validation: { required: true, email: true } },
+            { field: "user.contact", label: "Contact", validation: { required: true } },
+            { field: "user.address", label: "Address" },
+            { field: "user.pincode", label: "Pin Code" },
+            { field: "standardID", label: "Standard ID", validation: { required: true } },
+            { field: "rollNumber", label: "Roll Number", validation: { required: true } },
+            { field: "guardianName", label: "Guardian Name" },
+            { field: "guardianContact", label: "Guardian Contact" },
+            { field: "section", label: "Section" }
+        ],
+        buttonsTemplate: `
+            <button type="submit" class="k-button k-button-lg k-button-solid-info">Save</button>
+            <button type="button" class="k-button k-button-lg k-button-solid-base" onclick="closeModal()">Cancel</button>
+        `,
+        submit: function (e) {
+            e.preventDefault();
+            saveStudent(e.model);
         }
+    });
+}
 
 
 
