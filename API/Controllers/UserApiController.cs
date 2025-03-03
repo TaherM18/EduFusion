@@ -29,6 +29,7 @@ namespace API.Controllers
             User UserData = await _user.Login(user);
             if (UserData.UserID != 0)
             {
+                Console.WriteLine($"UserID :: {UserData.UserID} :: {UserData.Role}");
                 var claims = new[]
                 {
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
@@ -45,6 +46,28 @@ namespace API.Controllers
                 expires: DateTime.UtcNow.AddDays(1),
                 signingCredentials: signIn
                 );
+
+                if (UserData.Role == "S")
+                {
+                    return Ok(new
+                    {
+                        success = true,
+                        message = "Login Success",
+                        UserData = await _user.GetStudent(UserData, UserData.UserID ?? 0),
+                        token = new JwtSecurityTokenHandler().WriteToken(token)
+                    });
+                }
+                if (UserData.Role == "T")
+                {
+                    return Ok(new
+                    {
+                        success = true,
+                        message = "Login Success",
+                        UserData = await _user.GetTeacher(UserData, UserData.UserID ?? 0),
+                        token = new JwtSecurityTokenHandler().WriteToken(token)
+                    });
+                }
+
                 return Ok(new
                 {
                     success = true,
