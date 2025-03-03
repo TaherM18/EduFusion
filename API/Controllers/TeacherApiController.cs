@@ -83,7 +83,7 @@ namespace API.Controller
             {
                 if (teacher.User?.ImageFile != null)
                 {
-                    teacher.User.Image = await _fileHelper.UploadProfileImage(_profileImagePath, teacher.User.ImageFile, teacher.User.Image);
+                    teacher.User.Image = await _fileHelper.UploadFile(_profileImagePath, teacher.User.ImageFile, teacher.User.Image);
                 }
 
                 int result = await _teacherRepo.Add(teacher);
@@ -110,7 +110,7 @@ namespace API.Controller
 
                 if (teacher.User?.ImageFile != null)
                 {
-                    teacher.User.Image = await _fileHelper.UploadProfileImage(_profileImagePath, teacher.User.ImageFile, teacher.User?.Image);
+                    teacher.User.Image = await _fileHelper.UploadFile(_profileImagePath, teacher.User.ImageFile, teacher.User?.Image);
                 }
 
                 int result = await _teacherRepo.Update(teacher);

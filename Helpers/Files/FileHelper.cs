@@ -8,7 +8,7 @@ namespace Helpers.Files
     public class FileHelper
     {
 
-        public async Task<string?> UploadProfileImage(string directoryPath, IFormFile? imageFile, string? existingFileName)
+        public async Task<string?> UploadFile(string directoryPath, IFormFile? imageFile, string? existingFileName)
         {
             // Ensure directory exists
             if (!Directory.Exists(directoryPath))
