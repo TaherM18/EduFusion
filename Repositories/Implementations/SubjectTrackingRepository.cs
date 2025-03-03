@@ -23,15 +23,27 @@ namespace Repositories.Implementations
             VALUES
                 (@SubjectID, @Percentage, NOW(), NOW()) RETURNING c_trackingID;";
 
-            await using var cmd = new NpgsqlCommand(query, _connection);
-            cmd.Parameters.AddWithValue("@SubjectID", data.SubjectID);
-            cmd.Parameters.AddWithValue("@Percentage", (object?)data.Percentage ?? DBNull.Value);
+            try
+            {
+                await using var cmd = new NpgsqlCommand(query, _connection);
+                cmd.Parameters.AddWithValue("@SubjectID", data.SubjectID);
+                cmd.Parameters.AddWithValue("@Percentage", (object?)data.Percentage ?? DBNull.Value);
 
-            await _connection.OpenAsync();
-            var result = await cmd.ExecuteScalarAsync();
-            await _connection.CloseAsync();
+                await _connection.OpenAsync();
+                var result = await cmd.ExecuteScalarAsync();
+                await _connection.CloseAsync();
 
-            return Convert.ToInt32(result);
+                return Convert.ToInt32(result);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] SubjectTrackingRepository - Add():\n{ex.Message}");
+                return -1;
+            }
+            finally
+            {
+                await _connection.CloseAsync();
+            }
         }
         #endregion
 
@@ -41,14 +53,25 @@ namespace Repositories.Implementations
         {
             const string query = "DELETE FROM t_subject_tracking WHERE c_trackingID = @TrackingID";
 
-            await using var cmd = new NpgsqlCommand(query, _connection);
-            cmd.Parameters.AddWithValue("@TrackingID", id);
+            try
+            {
+                await using var cmd = new NpgsqlCommand(query, _connection);
+                cmd.Parameters.AddWithValue("@TrackingID", id);
 
-            await _connection.OpenAsync();
-            var result = await cmd.ExecuteNonQueryAsync();
-            await _connection.CloseAsync();
+                await _connection.OpenAsync();
+                var result = await cmd.ExecuteNonQueryAsync();
 
-            return result;
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] SubjectTrackingRepository - Delete():\n{ex.Message}");
+                return -1;
+            }
+            finally
+            {
+                await _connection.CloseAsync();
+            }
         }
         #endregion
 
@@ -115,7 +138,7 @@ namespace Repositories.Implementations
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"SubjectTrackingRepository - GetAll():\n{ex.Message}");
+                Console.WriteLine($"[ERROR] SubjectTrackingRepository - GetAll():\n{ex.Message}");
                 return null;
             }
             finally
@@ -192,7 +215,7 @@ namespace Repositories.Implementations
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"SubjectTrackingRepository - GetAllByStandard():\n{ex.Message}");
+                Console.WriteLine($"[ERROR] SubjectTrackingRepository - GetAllByStandard():\n{ex.Message}");
                 return null;
             }
             finally
@@ -269,7 +292,7 @@ namespace Repositories.Implementations
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"SubjectTrackingRepository - GetAllByTeacher():\n{ex.Message}");
+                Console.WriteLine($"[ERROR] SubjectTrackingRepository - GetAllByTeacher():\n{ex.Message}");
                 return null;
             }
             finally
@@ -342,13 +365,13 @@ namespace Repositories.Implementations
                 }
                 else
                 {
-                    Console.WriteLine($"SubjectTrackingRepository - GetOne(): No Data");
+                    Console.WriteLine($"[ERROR] SubjectTrackingRepository - GetOne(): No Data");
                     return null;
                 }
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"SubjectTrackingRepository - GetOne():\n{ex.Message}");
+                Console.WriteLine($"[ERROR] SubjectTrackingRepository - GetOne():\n{ex.Message}");
                 return null;
             }
             finally
@@ -387,7 +410,7 @@ namespace Repositories.Implementations
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"SubjectTrackingRepository - Update():\n{ex.Message}");
+                Console.WriteLine($"[ERROR] SubjectTrackingRepository - Update():\n{ex.Message}");
                 return 0;
             }
             finally

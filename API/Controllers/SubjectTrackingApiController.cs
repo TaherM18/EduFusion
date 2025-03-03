@@ -81,6 +81,9 @@ namespace MVC.Controllers
 
             var result = await _subjectTrackingRepository.Add(data);
 
+            if (result == -1)
+                return StatusCode(500, new { message = "There was some error while adding subject tracking" });
+
             return result > 0 
                 ? Ok(new { message = "Added successfully" })
                 : BadRequest("Failed to add");
@@ -97,6 +100,9 @@ namespace MVC.Controllers
 
             var result = await _subjectTrackingRepository.Update(data);
 
+            if (result == -1)
+                return StatusCode(500, new { message = "There was some error while updating subject tracking" });
+
             return result > 0 
                 ? Ok(new { message = "Updated successfully" }) 
                 : BadRequest("Failed to update");
@@ -109,7 +115,7 @@ namespace MVC.Controllers
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _subjectTrackingRepository.Delete(id);
-            
+
             return result > 0 
                 ? Ok(new { message = "Deleted successfully" }) 
                 : BadRequest("Failed to delete");
