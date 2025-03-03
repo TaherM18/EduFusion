@@ -188,11 +188,29 @@ namespace Repositories.Implementations
                 {
                     result.Add(new Exam
                     {
-                        ExamID = reader.GetInt32(reader.GetOrdinal("c_examID")),
-                        ExamName = reader.GetString(reader.GetOrdinal("c_exam_name")),
-                        SubjectID = reader.GetInt32(reader.GetOrdinal("c_SubjectID")),
-                        TotalMarks = reader.GetInt32(reader.GetOrdinal("c_total_marks")),
-                        ExamDate = reader.GetDateTime(reader.GetOrdinal("c_exam_date"))
+                        ExamID = reader.IsDBNull("c_examID") ? 0 : reader.GetInt32("c_examID"),
+                        ExamName = reader.IsDBNull("c_exam_name") ? string.Empty : reader.GetString("c_exam_name"),
+                        SubjectID = reader.IsDBNull("c_subjectID") ? 0 : reader.GetInt32("c_subjectID"),
+                        TotalMarks = reader.IsDBNull("c_total_marks") ? 0 : reader.GetInt32("c_total_marks"),
+                        ExamDate = reader.IsDBNull("c_exam_date") ? DateTime.Today : reader.GetDateTime("c_exam_date"),
+                        Subject = new Subject()
+                        {
+                            SubjectID = reader.IsDBNull("c_subjectID") ? 0 : reader.GetInt32("c_subjectID"),
+                            SubjectName = reader.IsDBNull("c_subject_name") ? string.Empty : reader.GetString("c_subject_name"),
+                            StandardID = reader.IsDBNull("c_standardID") ? 0 : reader.GetInt32("c_standardID"),
+                            Standard = new Standard()
+                            {
+                                StandardID = reader.IsDBNull("c_subjectID") ? 0 : reader.GetInt32("c_subjectID"),
+                                StandardName = reader.IsDBNull("c_standard_name") ? string.Empty : reader.GetString("c_standard_name"),
+                            }
+                        },
+                        ClassModel = new ClassModel()
+                        {
+                            ClassID = reader.IsDBNull("c_classID") ? 0 : reader.GetInt32("c_classID"),
+                            ClassName = reader.IsDBNull("c_class_name") ? string.Empty : reader.GetString("c_class_name"),
+                            Wing = reader.IsDBNull("c_wing") ? string.Empty : reader.GetString("c_wing"),
+                            Floor = reader.IsDBNull("c_floor") ? 0 : reader.GetInt32("c_floor"),
+                        }
                     });
                 }
 
@@ -215,9 +233,23 @@ namespace Repositories.Implementations
         public async Task<Exam> GetOne(int id)
         {
             const string query = @"
-        SELECT c_examID, c_exam_name, c_SubjectID, c_total_marks, c_exam_date
-        FROM t_exam
-        WHERE c_examID = @ExamID;";
+            SELECT 
+                e.c_examID, e.c_exam_name, e.c_subjectID, e.c_classID, e.c_total_marks, e.c_exam_date, e.c_start_time, e.c_duration,
+                s.c_subject_name, s.c_standardID,
+                std.c_standard_name,
+                c.c_class_name, c.c_wing, c.c_floor
+            FROM 
+                t_exam e
+            INNER JOIN
+                t_subject s ON e.c_subjectID = s.c_subjectID
+            INNER JOIN
+                t_standard std ON s.c_standardID = std.c_standardID
+            INNER JOIN
+                t_class c ON e.c_classID = c.c_classID
+            WHERE 
+                c_examID = @ExamID;
+            ORDER BY 
+                c_exam_date DESC;";
 
             try
             {
@@ -234,7 +266,25 @@ namespace Repositories.Implementations
                         ExamName = reader.GetString(reader.GetOrdinal("c_exam_name")),
                         SubjectID = reader.GetInt32(reader.GetOrdinal("c_SubjectID")),
                         TotalMarks = reader.GetInt32(reader.GetOrdinal("c_total_marks")),
-                        ExamDate = reader.GetDateTime(reader.GetOrdinal("c_exam_date"))
+                        ExamDate = reader.GetDateTime(reader.GetOrdinal("c_exam_date")),
+                        Subject = new Subject()
+                        {
+                            SubjectID = reader.IsDBNull("c_subjectID") ? 0 : reader.GetInt32("c_subjectID"),
+                            SubjectName = reader.IsDBNull("c_subject_name") ? string.Empty : reader.GetString("c_subject_name"),
+                            StandardID = reader.IsDBNull("c_standardID") ? 0 : reader.GetInt32("c_standardID"),
+                            Standard = new Standard()
+                            {
+                                StandardID = reader.IsDBNull("c_subjectID") ? 0 : reader.GetInt32("c_subjectID"),
+                                StandardName = reader.IsDBNull("c_standard_name") ? string.Empty : reader.GetString("c_standard_name"),
+                            }
+                        },
+                        ClassModel = new ClassModel()
+                        {
+                            ClassID = reader.IsDBNull("c_classID") ? 0 : reader.GetInt32("c_classID"),
+                            ClassName = reader.IsDBNull("c_class_name") ? string.Empty : reader.GetString("c_class_name"),
+                            Wing = reader.IsDBNull("c_wing") ? string.Empty : reader.GetString("c_wing"),
+                            Floor = reader.IsDBNull("c_floor") ? 0 : reader.GetInt32("c_floor"),
+                        }
                     };
                 }
                 Console.WriteLine($"[ERROR] ExamRepository - GetOne() : No Data");
