@@ -89,7 +89,7 @@ namespace Repositories.Implementations
 
 
         #region GetAllGroupByDayOfWeek
-        public async Task<Dictionary<string, List<TimeTable>>> GetAllByStandardGroupByDayOfWeek(int standardID)
+        public async Task<List<TimeTable>> GetAllByStandardGroupByDayOfWeek(int standardID)
         {
             const string query = @"
             SELECT 
@@ -113,13 +113,7 @@ namespace Repositories.Implementations
             ORDER BY 
                 c_day_of_week, c_start_time;";
 
-            var result = new Dictionary<string, List<TimeTable>>();
-
-            for (int i = 1; i <= 7; i++)
-            {
-                string dayName = GetDayOfWeekName(i);
-                result[dayName] = new List<TimeTable>();
-            }
+            var result = new List<TimeTable>();
 
             try
             {
@@ -167,11 +161,9 @@ namespace Repositories.Implementations
                     // Console.WriteLine("TimeTableRepository - GetAllByStandardGroupByDayOfWeek() - TimeTableId="+timeTable.TimetableID);
 
                     string dayName = GetDayOfWeekName(timeTable.DayOfWeek);
-                    if (!result.ContainsKey(dayName))
-                    {
-                        result[dayName] = new List<TimeTable>();
-                    }
-                    result[dayName].Add(timeTable);
+                    timeTable.DayName = dayName;
+                    
+                    result.Add(timeTable);
                 }
 
                 return result;
