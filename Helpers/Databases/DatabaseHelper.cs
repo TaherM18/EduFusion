@@ -14,6 +14,7 @@ namespace Helpers.Databases
         public DatabaseHelper(NpgsqlConnection connection) => _con = connection;
 
 
+        #region GetTableCustom
         /// <summary>
         /// Method <c>GetTableAll</c> gives all columns from table.
         /// </summary>
@@ -38,6 +39,8 @@ namespace Helpers.Databases
             }
             return dt;
         }
+        #endregion
+        
 
         /// <summary>
         /// Method <c>GetTableAll</c> gives all columns from table.
