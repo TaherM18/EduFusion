@@ -1,11 +1,11 @@
-﻿using EduFusion.Repositories.Models;
+﻿using Repositories.Models;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
-namespace EduFusion.interfaces
+namespace Repositories.Interfaces
 {
 
-    public interface IMaterialRepository
+    public interface IMaterialInterface
     {
         Task<List<Material>> GetAllMaterialsAsync();
         Task<Material> GetMaterialByIdAsync(int id);

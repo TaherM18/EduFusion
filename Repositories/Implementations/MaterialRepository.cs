@@ -1,14 +1,13 @@
-using EduFusion.interfaces;
-using EduFusion.Repositories.Models;
+using Repositories.Interfaces;
+using Repositories.Models;
 using Npgsql;
-using Dapper;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 namespace EduFusion.Repositories
 {
 
 
-    public class MaterialRepository : IMaterialRepository
+    public class MaterialRepository : IMaterialInterface
     {
         private readonly NpgsqlConnection _dbConnection;
 

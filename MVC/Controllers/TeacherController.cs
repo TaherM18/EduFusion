@@ -17,6 +17,11 @@ namespace MVC.Controllers
             _logger = logger;
         }
 
+        public IActionResult Register()
+        {
+            return View();
+        }
+
         public IActionResult Dashboard()
         {
             return View();

@@ -1,0 +1,29 @@
+@{
+    ViewData["Title"] = "Teacher";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Teacher Registration</h2>
+
+<div id="registrationWizard">
+    <ul>
+        <li>Step 1: Personal Details</li>
+        <li>Step 2: Qualification & Experience</li>
+        <li>Step 3: Subject Expertise & Security</li>
+
+    </ul>
+
+    
+    <!-- Step 3: Subject Expertise & Security -->
+    <div>
+        <form id="expertiseForm">
+            <div id="expertiseDetails"></div>
+        </form>
+    </div>
+
+</div>
+
+@section Scripts {
+    <script src="~/js/TRegister.js">
+    </script>
+}

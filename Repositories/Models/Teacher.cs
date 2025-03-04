@@ -10,7 +10,7 @@ namespace Repositories.Models
         public int? TeacherID { get; set; }
 
         [Required, Range(1, float.MaxValue)]
-        public float Salary { get; set; }
+        public float Salary { get; set; } = 10;
 
         [Required, Range(0, 50)]
         public int ExperienceYears { get; set; }

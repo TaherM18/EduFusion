@@ -34,7 +34,9 @@ $(document).ready(function () {
             {
                 field: "password",
                 label: "Password",
-                editor: "TextBox",
+                editor: function (c, o) {
+                    $(`<input type="password" id="password" class="k-input-inner" name="${o.field}" />`).appendTo(c);
+                },
                 editorOptions: {
                     type: "password",
                     placeholder: "Enter your password",
@@ -96,7 +98,7 @@ $(document).ready(function () {
                         // Redirect with animation
                         setTimeout(function () {
                             $(".login-container").animate({ opacity: 0 }, 300, function () {
-                                // window.location.href = "/dashboard";
+                                window.location.href = "/home/index";
                             });
                         }, 1000);
                     } else {

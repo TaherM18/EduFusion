@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Http;
 
 namespace Repositories.Models
 {
@@ -21,5 +22,7 @@ namespace Repositories.Models
 
         [ForeignKey("SubjectID")]
         public Subject? Subject { get; set; }
+
+        public IFormFile File{get; set;}
     }
 }
