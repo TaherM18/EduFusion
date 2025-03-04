@@ -3,6 +3,7 @@ using Repositories.Interfaces;
 using Helpers.Databases;
 using Repositories.Models;
 using System.Data;
+using System.Collections;
 
 namespace Repositories.Implementations
 {
@@ -18,6 +19,20 @@ namespace Repositories.Implementations
         }
 
         private static object GetDbValue(object? value) => value ?? DBNull.Value;
+
+        #region Approve
+
+        public async Task<int> Approve(int sid)
+        {
+            return await _helper.UpdateOne("t_student", new string[]{
+                "c_is_approved"
+            },
+            new ArrayList{
+                true
+            }, "c_studentid" , sid.ToString());
+        }
+
+        #endregion
 
         #region Register
         public async Task<int> Register(Student student)

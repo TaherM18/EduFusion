@@ -78,7 +78,7 @@ function loadStudentGrid() {
             {
                 title: "Actions",
                 template: `
-                            <button type="submit" class="k-button k-button-solid-info" onclick='Approve(#=studentID#)'>✔</button>
+                            <button type="submit" class="k-button k-button-solid-info" onclick='Approve(#=studentID#)'>✅</button>
                             <button class='k-button k-button-solid-info' onclick='openEditForm(#=studentID#)'>Edit</button>
                             <button class='k-button k-button-solid-error' onclick='deleteStudent(#=studentID#)'>Delete</button>
                         `,
@@ -89,7 +89,16 @@ function loadStudentGrid() {
 }
 
 async function Approve(id) {
-    
+    $.ajax({
+        url: baseUrl + `/approve/${id}`,
+        method: "PUT",
+        success: function (response) {
+            showNotification("Approved Successfully", "success");
+        },
+        error: function (xhr) {
+            showNotification(xhr.responseJSON.message, "error");
+        }
+    })
 }
 
 // Load Kendo Form

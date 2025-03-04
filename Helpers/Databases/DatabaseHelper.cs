@@ -282,8 +282,9 @@ namespace Helpers.Databases
                         cm.Parameters.AddWithValue("@" + colnames[i], value);
                         Console.WriteLine($"Param {colnames[i]} ==> {value}");
                     }
-
+		    await _con.OpenAsync();
                     await cm.ExecuteNonQueryAsync();
+		    await _con.CloseAsync();
                     return 1;
                 }
             }

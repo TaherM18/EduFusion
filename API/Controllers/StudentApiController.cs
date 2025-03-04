@@ -65,6 +65,31 @@ namespace API.Controller
         }
         #endregion
 
+        #region Approve
+        // GET: api/student
+        [HttpPut("approve/{id}")]
+        public async Task<ActionResult<IEnumerable<Student>>> ApproveStudent(int id)
+        {
+            int result = await _studRepo.Approve(id);
+            if (result == 1)
+            {
+                return Ok(new
+                {
+                    message = "Student Aprroved successfully",
+                    success = "true"
+                });
+            }
+            else
+            {
+                return BadRequest(new
+                {
+                    message = "Something went wrong",
+                    success = "false"
+                });
+            }
+        }
+        #endregion
+
 
         #region Get
         // GET: api/student/{id}
