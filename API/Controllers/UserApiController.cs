@@ -49,13 +49,27 @@ namespace API.Controllers
 
                 if (UserData.Role == "S")
                 {
-                    return Ok(new
+                    Student s = await _user.GetStudent(UserData, UserData.UserID ?? 0);
+                    if (s.IsApproved == true)
                     {
-                        success = true,
-                        message = "Login Success",
-                        UserData = await _user.GetStudent(UserData, UserData.UserID ?? 0),
-                        token = new JwtSecurityTokenHandler().WriteToken(token)
-                    });
+                        return Ok(new
+                        {
+                            success = true,
+                            message = "Login Success",
+                            UserData = await _user.GetStudent(UserData, UserData.UserID ?? 0),
+                            token = new JwtSecurityTokenHandler().WriteToken(token)
+                        });
+                    }
+                    else
+                    {
+                        return BadRequest(new
+                        {
+                            success = false,
+                            message = "User is not approved yet",
+                            UserData = await _user.GetStudent(UserData, UserData.UserID ?? 0),
+                            token = new JwtSecurityTokenHandler().WriteToken(token)
+                        });
+                    }
                 }
                 if (UserData.Role == "T")
                 {

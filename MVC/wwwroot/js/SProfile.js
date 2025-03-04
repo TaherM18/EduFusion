@@ -1,8 +1,10 @@
 
 $(document).ready(function () {
     
+
+    let id = GetUserData().studentID
     $.ajax({
-        url: 'http://localhost:5190/api/student/45',
+        url: `http://localhost:5190/api/student/${id}`,
         type: 'GET',
         dataType: 'json',
         success: function (response) {

@@ -1,5 +1,3 @@
-const baseUrl = "http://localhost:5190/api/student";
-
 $(document).ready(function () {
     initializeKendoComponents();
 });
@@ -33,7 +31,7 @@ function loadStudentGrid() {
         dataSource: {
             transport: {
                 read: {
-                    url: baseUrl,
+                    url: baseUrl + "/student",
                     type: "GET",
                     dataType: "json"
                 }
@@ -79,12 +77,12 @@ function loadStudentGrid() {
                 title: "Actions",
                 template: `
                     # if(isApproved) { #
-                        <button class="k-button k-button-solid-warning" onclick='UnApprove(#=studentID#)'>❌ Unapprove</button>
+                        <button class="k-button k-button-solid-warning m-1" onclick='UnApprove(#=studentID#)'>❌ Unapprove</button>
                     # } else { #
-                        <button class="k-button k-button-solid-info" onclick='Approve(#=studentID#)'>✅ Approve</button>
+                        <button class="k-button k-button-solid-info m-1" onclick='Approve(#=studentID#)'>✅ Approve</button>
                     # } #
-                    <button class='k-button k-button-solid-primary' onclick='openEditForm(#=studentID#)'>✏️ Edit</button>
-                    <button class='k-button k-button-solid-error' onclick='deleteStudent(#=studentID#)'>🗑️ Delete</button>
+                    <button class='k-button k-button-solid-primary m-1' onclick='openEditForm(#=studentID#)'>✏️ Edit</button>
+                    <button class='k-button k-button-solid-error m-1' onclick='deleteStudent(#=studentID#)'>🗑️ Delete</button>
                 `,
                 width: 160
             }
@@ -94,7 +92,7 @@ function loadStudentGrid() {
 
 async function Approve(id) {
     $.ajax({
-        url: baseUrl + `/approve/${id}`,
+        url: baseUrl + `/student/approve/${id}`,
         method: "PUT",
         success: function (response) {
             showNotification("Approved Successfully", "success");
@@ -105,9 +103,59 @@ async function Approve(id) {
     })
 }
 
+$("#btnExport").click(function () {
+    // Get the Kendo UI Grid
+    var grid = $("#studentGrid").data("kendoGrid");
+
+    var data = grid.dataSource.view();
+    var csvContent = "Student Id," +
+        "First Name," +
+        "Last Name," +
+        "section," +
+        "BirthDate," +
+        "Gender," +
+        "Image," +
+        "Email," +
+        "Address," +
+        "Contact," +
+        "Pincode," +
+        "Standard," +
+        "Guardian Name," +
+        "Guardian Contact," +
+        "Roll Number," +
+        "Section" +
+        "\n";
+
+    data.forEach(function (row) {
+        csvContent += row.studentID + "," +
+            row.user.firstName + "," +
+            row.user.lastName + "," +
+            row.section + "," +
+            row.user.birthDate + "," +
+            row.user.gender + "," +
+            row.user.image + "," +
+            row.user.email + "," +
+            "${row.user.address}" + "," +
+            row.user.contact + "," +
+            row.user.pincode + "," +
+            row.standard.standardName + "," +
+            row.guardianName + "," +
+            row.guardianContact + "," +
+            row.rollNumber + "," +
+            row.section +
+            "\n";
+    });
+
+    var blob = new Blob([csvContent], { type: "text/csv;charset=utf-8;" });
+    var link = document.createElement("a");
+    link.href = URL.createObjectURL(blob);
+    link.download = "Student.csv";
+    link.click();
+});
+
 async function UnApprove(id) {
     $.ajax({
-        url: baseUrl + `/unapprove/${id}`,
+        url: baseUrl + `/student/unapprove/${id}`,
         method: "PUT",
         success: function (response) {
             showNotification("Approved Successfully", "success");
@@ -219,7 +267,7 @@ function openAddForm() {
 // Open Modal for Editing Existing Student
 function openEditForm(id) {
     $.ajax({
-        url: `${baseUrl}/${id}`,
+        url: `${baseUrl}/student/${id}`,
         type: "GET",
         success: function (response) {
             loadStudentForm(response);

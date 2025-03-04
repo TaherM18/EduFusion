@@ -179,6 +179,7 @@ namespace Repositories.Implementations
 
             try
             {
+                await _connection.CloseAsync();
                 await _connection.OpenAsync();
                 await using var cmd = new NpgsqlCommand(query, _connection);
                 cmd.Parameters.AddWithValue("@StandardID", standardID);
@@ -221,6 +222,7 @@ namespace Repositories.Implementations
 
             try
             {
+                await _connection.CloseAsync();
                 await _connection.OpenAsync();
                 await using var cmd = new NpgsqlCommand(query, _connection);
                 cmd.Parameters.AddWithValue("@ExamID", id);
@@ -264,6 +266,7 @@ namespace Repositories.Implementations
 
             try
             {
+                await _connection.CloseAsync();
                 await _connection.OpenAsync();
                 await using var cmd = new NpgsqlCommand(query, _connection);
                 cmd.Parameters.AddWithValue("@ExamName", data.ExamName);

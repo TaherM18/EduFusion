@@ -7,20 +7,24 @@
     <h3>Students</h3>
     <button type="button" id="btnAdd" class="k-button k-button-lg k-button-solid-info"
         onclick="openAddForm()">✚</button>
-</div>
+@* <button type="button" id="btnExport" class="k-button k-button-lg k-button-solid-primary"
+        onclick="openAddForm()">Export Data</button> *@
+    <button type="button" id="btnExport" class="k-button k-button-lg k-button-solid-primary">
+        Export Data
+    </button>
 
-<!-- Kendo Grid for Student Data -->
-<div id="studentGrid"></div>
+    <!-- Kendo Grid for Student Data -->
+    <div id="studentGrid"></div>
 
-<!-- Kendo Notification -->
-<span id="notification"></span>
+    <!-- Kendo Notification -->
+    <span id="notification"></span>
 
-<!-- Kendo Window Modal -->
-<div id="myKModal">
-    <form id="studentForm"></form>
-</div>
+    <!-- Kendo Window Modal -->
+    <div id="myKModal">
+        <form id="studentForm"></form>
+    </div>
 
 @section Scripts {
-    <script src="~/js/services/AStudent.service.js">
-    </script>
+        <script src="~/js/services/AStudent.service.js">
+        </script>
 }
