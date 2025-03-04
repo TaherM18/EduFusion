@@ -1,7 +1,6 @@
 using Npgsql;
 using Repositories.Interfaces;
 using Repositories.Models;
-using Helpers.Files;
 
 namespace Repositories.Implementations
 {
