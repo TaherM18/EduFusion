@@ -1,0 +1,402 @@
+
+@{
+    ViewData["Title"] = "Student Profile";
+}
+
+
+@section Scripts {
+    <script src="~/js/SProfile.js"></script>
+}
+
+@* <div id="editStudentDialog">
+    <h2>Edit Student Profile</h2>
+    <div class="input-container">
+        <div class="input-pair">
+            <div class="input-group">
+                <label for="editStudentId">Student ID</label>
+                <input type="text" id="editStudentId" placeholder="Student ID" disabled />
+            </div>
+            <div class="input-group">
+                <label for="editRollNumber">Roll Number</label>
+                <input type="text" id="editRollNumber" placeholder="Roll Number" disabled />
+            </div>
+        </div>
+        <div class="input-pair">
+            <div class="input-group">
+                <label for="editStudentFName">Student First Name</label>
+                <input type="text" id="editStudentFName" placeholder="Student First Name" />
+            </div>
+            <div class="input-group">
+                <label for="editStudentLName">Student Last Name</label>
+                <input type="text" id="editStudentLName" placeholder="Student Last Name" />
+            </div>
+        </div>
+        <div class="input-pair">
+            <div class="input-group">
+                <label for="editStandardName">Standard</label>
+                <input type="text" id="editStandardName" placeholder="Standard" disabled />
+            </div>
+            <div class="input-group">
+                <label for="editSection">Section</label>
+                <input type="text" id="editSection" placeholder="Section" disabled />
+            </div>
+
+        </div>
+        <div class="input-pair">
+            <div class="input-group">
+                <label for="editGuardianName">Guardian Name</label>
+                <input type="text" id="editGuardianName" placeholder="Guardian Name" />
+            </div>
+            <div class="input-group">
+                <label for="editGuardianContact">Guardian Contact</label>
+                <input type="text" id="editGuardianContact" placeholder="Guardian Contact" />
+            </div>
+        </div>
+        <div class="input-pair">
+
+            <div class="input-group">
+                <label for="editDateOfBirth">Date of Birth</label>
+                <input type="date" id="editDateOfBirth" />
+            </div>
+        </div>
+        <div class="input-pair">
+            <div class="input-group">
+                <label for="editGender">Gender</label>
+                <input type="text" id="editGender" placeholder="Gender" />
+            </div>
+            <div class="input-group">
+                <label for="editEmail">Email</label>
+                <input type="email" id="editEmail" placeholder="Email" />
+            </div>
+        </div>
+        <div class="input-pair">
+            <div class="input-group">
+                <label for="editContact">Contact</label>
+                <input type="text" id="editContact" placeholder="Contact" />
+            </div>
+            <div class="input-group">
+                <label for="editAddress">Address</label>
+                <input type="text" id="editAddress" placeholder="Address" />
+            </div>
+        </div>
+        <div class="input-pair">
+            <div class="input-group">
+                <label for="editPinCode">Pin Code</label>
+                <input type="text" id="editPinCode" placeholder="Pin Code" />
+            </div>
+        </div>
+    </div>
+    <div class="button-container">
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var myWindow = $("#editStudentDialog"),
+            undo = $("#undo"),
+            saveButton = $("<button class='save' onclick='saveProfile()''>Save</button>").click(function () {
+                myWindow.data("kendoWindow").close();
+            }),
+            closeButton = $("<button class='cancel'>Cancel</button>").click(function () {
+                myWindow.data("kendoWindow").close();
+            }),
+            buttonContainer = $("<div class='button-container'></div>");
+
+        buttonContainer.append(saveButton);
+        buttonContainer.append(closeButton);
+
+        undo.click(function () {
+            myWindow.data("kendoWindow").open();
+            undo.fadeOut();
+        });
+
+        function onClose() {
+            undo.fadeIn();
+        }
+
+        myWindow.kendoWindow({
+            width: "600px",
+            title: "About Alvar Aalto",
+            visible: false,
+            actions: [
+                "Pin",
+                "Minimize",
+                "Maximize",
+                "Close"
+            ],
+            close: onClose
+        }).data("kendoWindow").center().close();
+myWindow.append(buttonContainer);
+    });
+</script> *@
+
+
+<div class="profile-container">
+    <div class="profile-header">
+        <div>
+            <h1><i class="k-icon k-i-user"></i> Student Profile</h1>
+            <p class="profile-welcome">Hello, <label id="studentFName-h"></label> <label id="studentLName-h"></label>!
+                Here’s your personal information. </p>
+        </div>
+        @* <button id="undo" class="k-button k-primary edit-button"><i class="k-icon k-i-edit"></i> Edit
+            Profile</button> *@
+             <!-- Image Container -->
+        <div class="profile-image-container">
+            <img id="studentImage" src="/profile_images/user.png" alt="Student Image" class="profile-image" />
+        </div> </div>
+
+    <div class="profile-stats">
+        <div class="profile-card">
+            <div class="profile-icon"><i class="k-icon k-i-id-card"></i></div>
+            <div class="profile-content">
+                <div class="profile-value"><label id="studentId" /></div>
+                <div class="profile-label">Student ID</div>
+            </div>
+        </div>
+        <div class="profile-card">
+            <div class="profile-icon"><i class="k-icon k-i-user"></i></div>
+            <div class="profile-content">
+                <div class="profile-value"><label id="studentFName-l"></label> <label id="studentLName-l"></label></div>
+                <div class="profile-label">Student Name</div>
+            </div>
+        </div>
+        <div class="profile-card">
+            <div class="profile-icon"><i class="k-icon k-i-calendar"></i></div>
+            <div class="profile-content">
+                <div class="profile-value"><label id="standardName" /></div>
+                <div class="profile-label">Standard</div>
+            </div>
+        </div>
+        <div class="profile-card">
+            <div class="profile-icon"><i class="k-icon k-i-hashtag"></i></div>
+            <div class="profile-content">
+                <div class="profile-value"><label id="rollNumber" /></div>
+                <div class="profile-label">Roll Number</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-details k-card">
+        <div class="k-card-header">
+            <h3><i class="k-icon k-i-info"></i> Personal Information</h3>
+        </div>
+        <div class="k-card-body">
+            <div class="info-grid">
+                <div class="info-item"><strong>Guardian Name:</strong> <label id="guardianName" /></div>
+                <div class="info-item"><strong>Guardian Contact:</strong> <label id="guardianContact" /></div>
+                <div class="info-item"><strong>Section:</strong> <label id="section" /></div>
+                <div class="info-item"><strong>Date of Birth:</strong> <label id="dateOfBirth" /></div>
+                <div class="info-item"><strong>Gender:</strong> <label id="gender" /></div>
+                <div class="info-item"><strong>Email:</strong> <label id="email" /></div>
+                <div class="info-item"><strong>Contact:</strong> <label id="contact" /></div>
+                <div class="info-item"><strong>Address:</strong> <label id="address" /></div>
+                <div class="info-item"><strong>Pin Code:</strong> <label id="pinCode" /></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .profile-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .profile-header {
+        margin-bottom: 30px;
+        background: linear-gradient(135deg, #4b6cb7, #182848);
+        color: white;
+        padding: 20px 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .profile-header h1 {
+        margin: 0;
+        font-size: 2.2rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .profile-header h1 .k-icon {
+        margin-right: 10px;
+    }
+
+    .profile-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin: 30px 0;
+    }
+
+    .profile-card {
+        background: white;
+        border-radius: 10px;
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+    }
+
+    .profile-icon {
+        background: linear-gradient(135deg, #4b6cb7, #182848);
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+    }
+
+    .profile-image-container {
+        width: 100px;
+        height: 100px;
+        border-radius: 50%;
+        overflow: hidden;
+        border: 3px solid white;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+
+      .profile-image {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .profile-content {
+        flex: 1;
+    }
+
+    .profile-value {
+        font-size: 1.5rem;
+        font-weight: bold;
+    }
+
+    .profile-label {
+        color: #666;
+    }
+
+    .profile-details {
+        margin-top: 30px;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 20px;
+    }
+
+    .info-item {
+        background: #f9f9f9;
+        padding: 10px;
+        border-radius: 8px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    }
+
+    .edit-button {
+        float: right;
+        background: #4CAF50;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 8px;
+        cursor: pointer;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .edit-button:hover {
+        background: #45a049;
+    }
+
+
+
+    #editStudentDialog {
+        display: none;
+        z-index: 10;
+        left: 50%;
+        transform: translateX(-50%);
+        background: #f9f9f9;
+        padding: 30px;
+        @* border-radius: 20px; *@
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        @* width: 60%; *@
+        height: 70vh;
+        font-family: Arial, sans-serif;
+        overflow-y: auto;
+    }
+
+    #editStudentDialog h2 {
+        text-align: center;
+        color: #333;
+    }
+
+    #editStudentDialog .input-container {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    #editStudentDialog .input-pair {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+    }
+
+    #editStudentDialog .input-group {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+    }
+
+    #editStudentDialog label {
+        font-size: 14px;
+        margin-bottom: 4px;
+        color: #555;
+    }
+
+    #editStudentDialog input {
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        font-size: 14px;
+    }
+
+    #editStudentDialog input[disabled] {
+        background: #e9ecef;
+        border: none;
+    }
+
+    #editStudentDialog .button-container {
+        display: flex;
+        justify-content: space-around;
+        margin-top: 20px;
+    }
+
+    #editStudentDialog button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 8px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    #editStudentDialog button.save {
+        background: #4CAF50;
+        color: white;
+    }
+
+    #editStudentDialog button.cancel {
+        background: #f44336;
+        color: white;
+    }
+
+    #popupwindow {
+        display: none;
+    }
+</style>

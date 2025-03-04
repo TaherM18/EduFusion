@@ -8,7 +8,8 @@ function Logout() {
 }
 
 function GetUserData() {
-    // let user = 
+    let user = JSON.parse(localStorage.getItem('user'))
+    return user;
 }
 
 const baseUrl = "http://localhost:5190/api"
