@@ -92,7 +92,7 @@ namespace Repositories.Implementations
             SELECT 
                 u.c_userid, u.c_first_name, u.c_last_name, u.c_birth_date, 
                 u.c_contact, u.c_email, u.c_gender, u.c_image, u.c_address, u.c_pincode, u.c_role, u.c_image, u.c_is_active,
-                s.c_studentID, s.c_standardID, s.c_roll_number, s.c_guardian_name, s.c_guardian_contact, s.c_section,
+                s.c_studentID, s.c_standardID, s.c_roll_number, s.c_guardian_name, s.c_guardian_contact, s.c_section, s.c_is_approved
                 std.c_standard_name
             FROM t_user u
             INNER JOIN 
@@ -136,6 +136,7 @@ namespace Repositories.Implementations
                         GuardianName = reader.IsDBNull("c_guardian_name") ? "" : reader.GetString("c_guardian_name"),
                         GuardianContact = reader.IsDBNull("c_guardian_contact") ? "" : reader.GetString("c_guardian_contact"),
                         Section = reader.GetString("c_section") ?? "",
+                        IsApproved = reader.GetBoolean("c_is_approved"),
                         Standard = new Standard()
                         {
                             StandardID = reader.GetInt32("c_standardID"),
@@ -167,7 +168,7 @@ namespace Repositories.Implementations
             SELECT 
                 u.c_userid, u.c_first_name, u.c_last_name, u.c_birth_date, 
                 u.c_contact, u.c_email, u.c_gender, u.c_image, u.c_address, u.c_pincode, u.c_role, u.c_image, u.c_is_active,
-                s.c_studentID, s.c_standardID, s.c_roll_number, s.c_guardian_name, s.c_guardian_contact, s.c_section,
+                s.c_studentID, s.c_standardID, s.c_roll_number, s.c_guardian_name, s.c_guardian_contact, s.c_section, s.c_is_approved
                 std.c_standard_name
             FROM t_user u
             INNER JOIN 
@@ -211,6 +212,7 @@ namespace Repositories.Implementations
                         GuardianName = reader.IsDBNull("c_guardian_name") ? "" : reader.GetString("c_guardian_name"),
                         GuardianContact = reader.IsDBNull("c_guardian_contact") ? "" : reader.GetString("c_guardian_contact"),
                         Section = reader.GetString("c_section") ?? "",
+                        IsApproved = reader.GetBoolean("c_is_approved"),
                         Standard = new Standard()
                         {
                             StandardID = reader.GetInt32("c_standardID"),
@@ -258,7 +260,8 @@ namespace Repositories.Implementations
                 c_roll_number = @RollNumber, 
                 c_guardian_name = @GuardianName, 
                 c_guardian_contact = @GuardianContact, 
-                c_section = @Section
+                c_section = @Section,
+                c_is_approved = @IsApproved,
             WHERE c_studentID = @UserId;";
 
             try
@@ -286,6 +289,7 @@ namespace Repositories.Implementations
                 cmd.Parameters.AddWithValue("@GuardianName", GetDbValue(data.GuardianName));
                 cmd.Parameters.AddWithValue("@GuardianContact", GetDbValue(data.GuardianContact));
                 cmd.Parameters.AddWithValue("@Section", GetDbValue(data.Section));
+                cmd.Parameters.AddWithValue("@IsApproved", GetDbValue(data.IsApproved));
 
                 int rowsAffected = await cmd.ExecuteNonQueryAsync();
                 return rowsAffected;
