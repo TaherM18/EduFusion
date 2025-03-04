@@ -10,12 +10,14 @@ namespace Repositories.Models
         public int? MaterialID { get; set; }
 
         [Required, MaxLength(255)]
-        public string FileName { get; set; } = "N/A";
+        public string? FileName { get; set; }
 
         [Required]
         public int UserID { get; set; }
 
         public int? SubjectID { get; set; }
+
+        public IFormFile? MaterialFile { get; set; }
 
         [ForeignKey("UserID")]
         public User? User { get; set; }
@@ -23,6 +25,6 @@ namespace Repositories.Models
         [ForeignKey("SubjectID")]
         public Subject? Subject { get; set; }
 
-        public IFormFile File{get; set;}
+        public byte[] FileData { get; set; } // This will store the file data
     }
 }

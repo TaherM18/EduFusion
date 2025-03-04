@@ -1,15 +1,9 @@
 ﻿using Repositories.Models;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Repositories.Interfaces
 {
-
-    public interface IMaterialInterface
+    public interface IMaterialInterface : IBaseInterface<Material>
     {
-        Task<List<Material>> GetAllMaterialsAsync();
-        Task<Material> GetMaterialByIdAsync(int id);
-        Task<int> AddMaterialAsync(Material material);
-        Task<bool> DeleteMaterialAsync(int id);
+        public Task<List<Material>> GetAllByStandard(int standardID);
     }
 }

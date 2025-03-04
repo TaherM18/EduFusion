@@ -23,6 +23,11 @@ namespace MVC.Controllers
             return View();
         }
 
+        public IActionResult Materials()
+        {
+            return View();
+        }
+
 
         public IActionResult Profile()
         {

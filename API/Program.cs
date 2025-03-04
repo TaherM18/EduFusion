@@ -37,7 +37,7 @@ builder.Services.AddAuthentication(option =>
         ValidAudience = builder.Configuration["Jwt:Audience"],
         ValidIssuer = builder.Configuration["Jwt:Issuer"],
         IssuerSigningKey = new
-    SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"]))
+            SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["Jwt:Key"] ?? string.Empty))
     };
 });
 
@@ -55,15 +55,16 @@ builder.Services.AddSwaggerGen(c =>
     }
     );
     c.AddSecurityRequirement(
-    new OpenApiSecurityRequirement {
-{ new OpenApiSecurityScheme {
-Reference = new OpenApiReference {
-Type = ReferenceType.SecurityScheme,
-Id = "token"
-},
-},Array.Empty<string>()
-}
-    }
+        new OpenApiSecurityRequirement {
+            { 
+                new OpenApiSecurityScheme {
+                    Reference = new OpenApiReference {
+                        Type = ReferenceType.SecurityScheme,
+                        Id = "token"
+                    },
+                },Array.Empty<string>()
+            }
+        }
     );
 });
 
@@ -82,6 +83,7 @@ builder.Services.AddSingleton<IExamInterface, ExamRepository>();
 builder.Services.AddSingleton<IUserInterface, AuthRepository>();
 builder.Services.AddSingleton<IStandardInterface, StandardRepository>();
 builder.Services.AddSingleton<ISubjectTrackingInterface, SubjectTrackingRepository>();
+builder.Services.AddSingleton<IMaterialInterface, MaterialRepository>();
 
 var app = builder.Build();
 
