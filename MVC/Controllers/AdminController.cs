@@ -23,7 +23,7 @@ namespace MVC.Controllers
         }
 
 
-        public IActionResult Home()
+        public IActionResult Materials()
         {
             return View();
         }

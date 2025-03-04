@@ -1,5 +1,674 @@
 @{
     ViewData["Title"] = "Dashboard";
-    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<style>
+    body {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background-color: #f5f7fa;
+        color: #333;
+    }
+
+    .dashboard-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    /* Header styling */
+    .dashboard-header {
+        margin-bottom: 30px;
+        background: linear-gradient(135deg, #4b6cb7, #182848);
+        color: white;
+        padding: 20px 30px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .dashboard-header h1 {
+        margin: 0;
+        font-size: 2.2rem;
+        display: flex;
+        align-items: center;
+    }
+
+    .dashboard-header h1 .k-icon {
+        margin-right: 10px;
+    }
+
+    .welcome-text {
+        margin: 10px 0 0 0;
+        font-size: 1.1rem;
+        opacity: 0.9;
+    }
+
+    /* Stats cards styling */
+    .stats-container {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        background: white;
+        border-radius: 10px;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.08);
+        padding: 20px;
+        display: flex;
+        align-items: center;
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-icon {
+        background: linear-gradient(135deg, #4b6cb7, #182848);
+        color: white;
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 15px;
+    }
+
+    .stat-icon .k-icon {
+        font-size: 1.5rem;
+    }
+
+    .stat-content {
+        flex: 1;
+    }
+
+    .stat-value {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: #333;
+        line-height: 1.2;
+    }
+
+    .stat-label {
+        color: #666;
+        font-size: 0.9rem;
+    }
+
+    /* Filters section styling */
+    .filters-section {
+        margin-bottom: 30px;
+    }
+
+    .filters-container {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 20px;
+        padding: 15px;
+    }
+
+    .filter-group {
+        display: flex;
+        flex-direction: column;
+    }
+
+    .filter-group label {
+        margin-bottom: 8px;
+        font-weight: 500;
+        display: flex;
+        align-items: center;
+    }
+
+    .filter-group label .k-icon {
+        margin-right: 5px;
+    }
+
+    /* Performance section styling */
+    .performance-section {
+        margin-bottom: 30px;
+    }
+
+    #performanceSplitter {
+        height: 350px;
+    }
+
+    /* Two column layout */
+    .two-column-layout {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    /* Exam cards styling */
+    .exam-list {
+        display: grid;
+        gap: 15px;
+        max-height: 500px;
+        overflow-y: auto;
+        padding: 5px;
+    }
+
+    .exam-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+        overflow: hidden;
+        transition: transform 0.2s, box-shadow 0.2s;
+        border-left: 4px solid #4b6cb7;
+    }
+
+    .exam-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .exam-subject {
+        padding: 12px 15px;
+        font-weight: bold;
+        font-size: 1.1rem;
+        background: rgba(75, 108, 183, 0.1);
+        color: #4b6cb7;
+    }
+
+    .exam-details {
+        padding: 15px;
+    }
+
+    .exam-info {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+    }
+
+    .exam-info .k-icon {
+        margin-right: 8px;
+        color: #4b6cb7;
+    }
+
+    .exam-countdown {
+        padding: 8px 15px;
+        background: #f5f7fa;
+        text-align: right;
+        font-size: 0.9rem;
+        color: #666;
+    }
+
+    /* Payments section styling */
+    .payment-status {
+        margin-bottom: 20px;
+    }
+
+    .payment-progress {
+        margin: 15px 0;
+    }
+
+    .payment-button {
+        width: 100%;
+        padding: 12px;
+        font-size: 1rem;
+    }
+
+    /* Card header styling for all sections */
+    .k-card-header {
+        background: linear-gradient(to right, #f5f7fa, #f0f3f8);
+        border-bottom: 1px solid #e0e5ee;
+    }
+
+    .k-card-header h3 {
+        margin: 0;
+        display: flex;
+        align-items: center;
+        font-size: 1.3rem;
+        color: #4b6cb7;
+    }
+
+    .k-card-header h3 .k-icon {
+        margin-right: 8px;
+    }
+
+    .subject-item {
+        padding: 10px;
+        border: 1px solid #ddd;
+        margin: 5px;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+    }
+
+    /* Responsive adjustments */
+</style>
+
+<div class="dashboard-container">
+    <!-- Header with welcome message -->
+    <div class="dashboard-header">
+        <h1><i class="k-icon k-i-user"></i> Student Dashboard</h1>
+        <p class="welcome-text">Welcome back, Student! Here's your academic overview.</p>
+    </div>
+
+    <!-- Top cards for quick stats -->
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-icon"><i class="k-icon k-i-calendar"></i></div>
+            <div class="stat-content">
+                <div class="stat-value" id="stdValue">8A</div>
+                <div class="stat-label">Standard</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="k-icon k-i-chart-bar-column"></i></div>
+            <div class="stat-content">
+                <div class="stat-value">B+</div>
+                <div class="stat-label">Avg. Grade</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="k-icon k-i-clock"></i></div>
+            <div class="stat-content">
+                <div class="stat-value">5</div>
+                <div class="stat-label">Upcoming Exams</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="k-icon k-i-dollar"></i></div>
+            <div class="stat-content">
+                <div class="stat-value">Current</div>
+                <div class="stat-label">Payment Status</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters section with improved styling -->
+    <div class="filters-section k-card">
+        <div class="k-card-header">
+            <h3><i class="k-icon k-i-filter"></i>Subjects</h3>
+        </div>
+        <div id="subjectsListView"></div>
+    </div>
+
+
+
+    <!-- Performance summary section -->
+    <div class="performance-section k-card">
+        <div class="k-card-header">
+            <h3><i class="k-icon k-i-chart"></i> Syllabus Progress</h3>
+        </div>
+        <div class="k-card-body">
+            <div id="performanceSplitter">
+                <div id="performanceChart"></div>
+                <div id="performancePieChart"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Two column layout for exams and payments -->
+    <div class="two-column-layout">
+        <!-- Upcoming Exams section -->
+        <div class="k-card exams-section">
+            <div class="k-card-header">
+                <h3><i class="k-icon k-i-calendar-date"></i> Upcoming Exams</h3>
+            </div>
+            <div class="k-card-body">
+                <div id="examListView" class="exam-list"></div>
+            </div>
+        </div>
+
+        <!-- Payments section -->
+        <div class="k-card payments-section">
+            <div class="k-card-header">
+                <h3><i class="k-icon k-i-dollar"></i> Payments & Fee Management</h3>
+            </div>
+            <div class="k-card-body">
+                <div class="payment-status">
+                    <div class="payment-progress">
+                        <span>Total Fees Paid: </span>
+                        <div id="paymentProgress"></div>
+                    </div>
+                    <p>Next payment due: <strong>March 15, 2025</strong></p>
+                </div>
+                <button id="openActionSheet" class="k-button k-primary payment-button">
+                    <i class="k-icon k-i-dollar"></i> Manage Payments
+                </button>
+                <div id="paymentActionSheet"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/x-kendo-tmpl" id="examTemplate">
+                                    <div class="exam-card">
+                                        <div class="exam-subject">#= subject #</div>
+                                        <div class="exam-details">
+                                            <div class="exam-info">
+                                                <i class="k-icon k-i-calendar"></i> 
+                                                <span>#= kendo.toString(kendo.parseDate(date), "MMM dd, yyyy") #</span>
+                                            </div>
+                                            <div class="exam-info">
+                                                <i class="k-icon k-i-clock"></i> 
+                                                <span>#= time #</span>
+                                            </div>
+                                            <div class="exam-info">
+                                                <i class="k-icon k-i-marker-pin"></i> 
+                                                <span>#= venue #</span>
+                                            </div>
+                                        </div>
+                                        <div class="exam-countdown" data-exam-date="#= date #"></div>
+                                    </div>
+                                </script>
+
+    <script>
+        const student = sessionStorage.getItem("user");
+        const standardId = student ? student.standardID : 4;
+        const standardName = student ? student.standard.standardName : "4th";
+
+        $(document).ready(function () {
+            // Initialize the Kendo ListView
+            var examListView = $("#examListView").kendoListView({
+                dataSource: new kendo.data.DataSource({ data: [] }),
+                template: kendo.template($("#examTemplate").html())
+            }).data("kendoListView");
+
+            fetchExams(examListView); // Pass the initialized ListView
+        });
+
+
+        @* FUNCTIONS *@
+
+
+            // Function to fetch exams dynamically with delay
+            function fetchExams(examListView) {
+                setTimeout(function () {
+                    $.ajax({
+                        url: "http://localhost:5190/api/exam/standard/1", // API to fetch exams
+                        type: "GET",
+                        dataType: "json",
+                        success: function (data) {
+                            console.log("Raw Exam Data:", data); // Debugging
+
+                            if (data && data.length > 0) {
+                                var today = new Date();
+                                today.setHours(0, 0, 0, 0); // Reset to start of the day
+
+                                var upcomingExams = data.filter(function (exam) {
+                                    var examDate = new Date(exam.examDate);
+                                    examDate.setHours(0, 0, 0, 0); // Reset exam date to start of the day
+                                    console.log(Exam: ${exam.examName}, Date: ${examDate.toISOString()}, Valid: ${examDate >= today});
+                                    return examDate >= today; // Keep only future or today's exams
+                                });
+
+                                console.log("Filtered Upcoming Exams:", upcomingExams);
+
+                                if (upcomingExams.length > 0) {
+                                    var exams = upcomingExams.map(function (exam) {
+                                        return {
+                                            subject: exam.examName,
+                                            date: exam.examDate, // Ensure it's in a valid format
+                                            time: exam.startTime,
+                                            venue: exam.classModel ? exam.classModel.className : "N/A"
+                                        };
+                                    });
+
+                                    if (examListView) {
+                                        examListView.setDataSource(new kendo.data.DataSource({
+                                            data: exams,
+                                            change: function () {
+                                                setTimeout(updateExamCountdowns, 500); // Allow time for rendering
+                                            }
+                                        }));
+                                    }
+                                } else {
+                                    if (examListView) {
+                                        examListView.setDataSource(new kendo.data.DataSource({ data: [] }));
+                                    }
+                                    $("#examListView").html("<p>No upcoming exams.</p>");
+                                }
+                            } else {
+                                if (examListView) {
+                                    examListView.setDataSource(new kendo.data.DataSource({ data: [] }));
+                                }
+                                $("#examListView").html("<p>No exams found.</p>");
+                            }
+                        },
+                        error: function () {
+                            console.error("Failed to fetch exam data.");
+                        }
+                    });
+                }, 1000); // 1000ms (1 second) delay before fetching exams
+            }
+
+
+        // Calculate and display countdown for each exam
+        function updateExamCountdowns() {
+            $(".exam-countdown").each(function () {
+                var examDateStr = $(this).data("exam-date");
+                console.log("Raw Exam Date:", examDateStr); // Debugging
+
+                var examDate = new Date(examDateStr);
+                console.log("Parsed Exam Date:", examDate); // Check if it's a valid date
+
+                if (isNaN(examDate.getTime())) {
+                    console.error("Invalid date format:", examDateStr);
+                    return;
+                }
+
+                var now = new Date();
+                var diffTime = examDate - now;
+                var diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+                if (diffDays > 0) {
+                    $(this).text(diffDays + " days remaining");
+                } else {
+                    $(this).text("Today!").css("color", "#e74c3c").css("font-weight", "bold");
+                }
+            });
+        }
+
+
+        // Kendo Splitter for syllabus Summary
+        // Try to access the syllabus data safely
+        function fetchPerformanceData(standardId) {
+            console.log("Fetching data using AJAX for standardID:", standardId);
+
+            return $.ajax({
+                url: http://localhost:5190/api/subject-tracking/standard/${standardId},
+                method: "GET",
+                dataType: "json",
+            }).then(function (data) {
+                console.log("Fetched Data:", data);
+
+                if (!Array.isArray(data)) {
+                    console.error("Invalid data format received from API");
+                    return [];
+                }
+
+                return data.map(item => ({
+                    category: item.subject?.subjectName || "Unknown Subject",
+                    value: item.percentage ?? 0
+                }));
+            }).catch(function (xhr, status, error) {
+                console.error("AJAX Error:", status, error);
+                return [];
+            });
+        }
+
+
+        function initializeCharts(standardId) {
+            fetchPerformanceData(standardId).done(function (performanceData) {
+                if (!performanceData || performanceData.length === 0) {
+                    console.warn("No performance data available.");
+                    $("#performanceChart").html("<p style='color: red;'>No data available.</p>");
+                    return;
+                }
+
+                // *Destroy existing chart before creating a new one*
+                const existingChart = $("#performanceChart").data("kendoChart");
+                if (existingChart) {
+                    console.log("Destroying existing chart...");
+                    existingChart.destroy();
+                }
+
+                console.log("Creating new Kendo Chart...");
+                $("#performanceChart").kendoChart({
+                    title: { text: "Subjects", font: "16px 'Segoe UI', sans-serif", color: "#333" },
+                    legend: { position: "bottom" },
+                    seriesDefaults: { type: "column", stack: false },
+                    series: [{
+                        name: "Current Grade",
+                        data: performanceData.map(p => p.value),
+                        color: "#4b6cb7",
+                        labels: { visible: true, template: "#= value #%" }
+                    }],
+                    valueAxis: { max: 100, title: { text: "Coverage (%)" } },
+                    categoryAxis: { categories: performanceData.map(p => p.category) },
+                    tooltip: { visible: true, template: "#= category #: #= value #%" },
+                    chartArea: { background: "white" },
+                    theme: "flat"
+                });
+
+                // *Auto-refresh every 30 seconds*
+                setTimeout(() => initializeCharts(standardId), 30 * 1000);
+            });
+        }
+
+        function animateElements() {
+            $('.stat-card').each(function (index) {
+                var $this = $(this);
+                setTimeout(function () {
+                    $this.animate({
+                        opacity: 1,
+                        transform: 'translateY(0)'
+                    }, 300);
+                }, index * 100);
+            });
+
+            $('.k-card').each(function (index) {
+                var $this = $(this);
+                setTimeout(function () {
+                    $this.animate({
+                        opacity: 1,
+                        transform: 'translateY(0)'
+                    }, 300);
+                }, 400 + index * 150);
+            });
+        }
+
+        @* DOCUMENT READY FUNCTION *@
+
+            $(document).ready(function () {
+
+                $("#stdValue").text(standardName);
+
+                // *Trigger Initialization on Page Load*
+                initializeCharts(standardId);
+
+                // Fetch subjects dynamically from API with a slight delay
+                setTimeout(function () {
+                    $.ajax({
+                        url: http://localhost:5190/api/standard/${standardId},
+                        type: "GET",
+                        success: function (data) {
+                            console.log("Subjects Data:", data); // Debugging
+                            if (data.subjects && data.subjects.length > 0) {
+                                $("#subjectsListView").kendoListView({
+                                    dataSource: new kendo.data.DataSource({
+                                        data: data.subjects
+                                    }),
+                                    template: "<div class='subject-item'>#: subjectName #</div>"
+                                });
+                            } else {
+                                $("#subjectsListView").html("<p>No subjects found for this standard.</p>");
+                            }
+                        },
+                        error: function () {
+                            console.error("Error fetching subjects.");
+                            $("#subjectsListView").html("<p>Error fetching subjects.</p>");
+                        }
+                    });
+                }, 500); // 500ms delay before fetching subjects
+
+                // Kendo ListView for Upcoming Exams
+                var examListView = $("#examListView").kendoListView({
+                    dataSource: new kendo.data.DataSource({
+                        data: [] // Initially empty, will be updated dynamically
+                    }),
+                    template: kendo.template($("#examTemplate").html())
+                }).data("kendoListView");
+
+                // Call the function to fetch exams
+                fetchExams();
+
+                // Kendo ComboBox for Class Selection
+                $("#subjectsDropdown").kendoMultiSelect({
+                    placeholder: "Select Subjects",
+                    autoClose: false,
+                    tagMode: "single",
+                    animation: {
+                        open: {
+                            effects: "fadeIn",
+                            duration: 300
+                        }
+                    },
+                    dataSource: [] // Initially empty, will be populated dynamically
+                });
+
+                // Standard Dropdown
+                $("#standardDropdown").kendoDropDownList({
+                    optionLabel: "Select Standard",
+                    dataTextField: "StandardName",
+                    dataValueField: "StandardID",
+                    dataSource: {
+                        transport: {
+                            read: {
+                                url: "http://localhost:5190/api/student/40", // Your API for fetching standards
+                                dataType: "json"
+                            }
+                        }
+                    },
+                    change: function (e) {
+                        var standardID = this.value();
+                        if (standardID) {
+                            fetchSubjects(standardID);
+                            fetchExams(standardID);
+                        }
+                    }
+                });
+
+                updateExamCountdowns();
+                setInterval(updateExamCountdowns, 3600000); // Update every hour
+
+                // Kendo ProgressBar for payment status
+                $("#paymentProgress").kendoProgressBar({
+                    min: 0,
+                    max: 100,
+                    value: 65,
+                    type: "value",
+                    animation: {
+                        duration: 600
+                    }
+                });
+
+                // Kendo ActionSheet for Payments with improved styling
+                $("#openActionSheet").click(function () {
+                    $("#paymentActionSheet").data("kendoActionSheet").open();
+                });
+
+                $("#paymentActionSheet").kendoActionSheet({
+                    items: [
+                        { text: "Pay Fees Online", icon: "dollar", cssClass: "action-pay", click: function () { alert("Redirecting to payment gateway..."); } },
+                        { text: "Download Fee Receipt", icon: "download", cssClass: "action-download", click: function () { alert("Generating receipt..."); } },
+                        { text: "View Payment History", icon: "history", cssClass: "action-history", click: function () { alert("Loading payment history..."); } },
+                        { text: "Fee Structure", icon: "file-txt", cssClass: "action-structure", click: function () { alert("Loading fee structure..."); } },
+                        { text: "Cancel", icon: "close", cssClass: "action-close", click: function () { } }
+                    ]
+                });
+
+                // Add animation effects for a more dynamic dashboard
+                $('.stat-card, .k-card').css('opacity', '0').css('transform', 'translateY(20px)');
+
+                setTimeout(animateElements, 100);
+            });
+    </script>
+}
