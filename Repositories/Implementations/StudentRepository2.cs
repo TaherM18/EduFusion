@@ -193,6 +193,7 @@
 //             List<Student> studentList = new List<Student>();
 //             try
 //             {
+//                 await _con.CloseAsync();
 //                 await _con.OpenAsync();
 
 //                 await using var cmd = new NpgsqlCommand(query, _con);

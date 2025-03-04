@@ -16,7 +16,7 @@ namespace Repositories.Implementations
 
         public async Task<Student> GetStudent(User user, int sid)
         {
-            Student student = new Student();
+            Student student = null;
 
             DataTable dt = await _helper.GetTableCustom(@$"
                 SELECT 
@@ -39,6 +39,7 @@ namespace Repositories.Implementations
                     GuardianContact = dt.Rows[0]["c_guardian_contact"].ToString(),
                     GuardianName = dt.Rows[0]["c_guardian_name"].ToString(),
                     Section = dt.Rows[0]["c_section"].ToString(),
+                    IsApproved = Convert.ToBoolean(dt.Rows[0]["c_is_approved"]),
                     Standard = new Standard
                     {
                         StandardID = dt.Rows[0]["c_standardid"].ToString().ToInt(),

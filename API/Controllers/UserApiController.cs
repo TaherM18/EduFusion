@@ -50,6 +50,7 @@ namespace API.Controllers
                 if (UserData.Role == "S")
                 {
                     Student s = await _user.GetStudent(UserData, UserData.UserID ?? 0);
+                    System.Console.WriteLine("Student is approved :: ", s.IsApproved);
                     if (s.IsApproved == true)
                     {
                         return Ok(new
