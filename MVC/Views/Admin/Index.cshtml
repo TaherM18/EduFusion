@@ -1,5 +1,5 @@
 @{
-    ViewData["Title"] = "Dashboard";
+    ViewData["Title"] = "Admin Dashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -244,56 +244,19 @@
 <div class="dashboard-container">
     <!-- Header with welcome message -->
     <div class="dashboard-header">
-        <h1><i class="k-icon k-i-user"></i> Student Dashboard</h1>
-        <p class="welcome-text">Welcome back, Student! Here's your academic overview.</p>
+        <h1><i class="k-icon k-i-user"></i> Admin Dashboard</h1>
+        <p class="welcome-text">Welcome back, Admin! Here's your report overview.</p>
     </div>
 
     <!-- Top cards for quick stats -->
-    <div class="stats-container">
-        <div class="stat-card">
-            <div class="stat-icon"><i class="k-icon k-i-calendar"></i></div>
-            <div class="stat-content">
-                <div class="stat-value" id="stdValue">8A</div>
-                <div class="stat-label">Standard</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon"><i class="k-icon k-i-chart-bar-column"></i></div>
-            <div class="stat-content">
-                <div class="stat-value">B+</div>
-                <div class="stat-label">Avg. Grade</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon"><i class="k-icon k-i-clock"></i></div>
-            <div class="stat-content">
-                <div class="stat-value">5</div>
-                <div class="stat-label">Upcoming Exams</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon"><i class="k-icon k-i-dollar"></i></div>
-            <div class="stat-content">
-                <div class="stat-value">Current</div>
-                <div class="stat-label">Payment Status</div>
-            </div>
-        </div>
-    </div>
 
     <!-- Filters section with improved styling -->
-    <div class="filters-section k-card">
-        <div class="k-card-header">
-            <h3><i class="k-icon k-i-filter"></i>Subjects</h3>
-        </div>
-        <div id="subjectsListView"></div>
-    </div>
-
 
 
     <!-- Performance summary section -->
     <div class="performance-section k-card">
         <div class="k-card-header">
-            <h3><i class="k-icon k-i-chart"></i> Syllabus Progress</h3>
+            <h3><i class="k-icon k-i-chart"></i>Standard Syllabus Progress</h3>
         </div>
         <div class="k-card-body">
             <div id="performanceSplitter">
@@ -339,97 +302,55 @@
 
 @section Scripts {
     <script type="text/x-kendo-tmpl" id="examTemplate">
-                                    <div class="exam-card">
-                                        <div class="exam-subject">#= subject #</div>
-                                        <div class="exam-details">
-                                            <div class="exam-info">
-                                                <i class="k-icon k-i-calendar"></i> 
-                                                <span>#= kendo.toString(kendo.parseDate(date), "MMM dd, yyyy") #</span>
-                                            </div>
-                                            <div class="exam-info">
-                                                <i class="k-icon k-i-clock"></i> 
-                                                <span>#= time #</span>
-                                            </div>
-                                            <div class="exam-info">
-                                                <i class="k-icon k-i-marker-pin"></i> 
-                                                <span>#= venue #</span>
-                                            </div>
-                                        </div>
-                                        <div class="exam-countdown" data-exam-date="#= date #"></div>
-                                    </div>
-                                </script>
+            <div class="exam-card">
+                <div class="exam-subject">#= subject #</div>
+                <div class="exam-details">
+                    <div class="exam-info">
+                        <i class="k-icon k-i-calendar"></i> 
+                        <span>#= kendo.toString(kendo.parseDate(date), "MMM dd, yyyy") #</span>
+                    </div>
+                    <div class="exam-info">
+                        <i class="k-icon k-i-clock"></i> 
+                        <span>#= time #</span>
+                    </div>
+                    <div class="exam-info">
+                        <i class="k-icon k-i-marker-pin"></i> 
+                        <span>#= venue #</span>
+                    </div>
+                </div>
+                <div class="exam-countdown" data-exam-date="#= date #"></div>
+            </div>
+        </script>
 
     <script>
         const student = sessionStorage.getItem("user");
         const standardId = student ? student.standardID : 4;
         const standardName = student ? student.standard.standardName : "4th";
 
-        $(document).ready(function () {
-            // Initialize the Kendo ListView
-            var examListView = $("#examListView").kendoListView({
-                dataSource: new kendo.data.DataSource({ data: [] }),
-                template: kendo.template($("#examTemplate").html())
-            }).data("kendoListView");
-
-            fetchExams(examListView); // Pass the initialized ListView
-        });
-
-
         @* FUNCTIONS *@
 
-
             // Function to fetch exams dynamically with delay
-            function fetchExams(examListView) {
+            function fetchExams() {
                 setTimeout(function () {
                     $.ajax({
                         url: "http://localhost:5190/api/exam/standard/1", // API to fetch exams
                         type: "GET",
                         dataType: "json",
                         success: function (data) {
-                            console.log("Raw Exam Data:", data); // Debugging
-
+                            console.log("Exams Data:", data); // Debugging
                             if (data && data.length > 0) {
-                                var today = new Date();
-                                today.setHours(0, 0, 0, 0); // Reset to start of the day
-
-                                var upcomingExams = data.filter(function (exam) {
-                                    var examDate = new Date(exam.examDate);
-                                    examDate.setHours(0, 0, 0, 0); // Reset exam date to start of the day
-                                    console.log(Exam: ${exam.examName}, Date: ${examDate.toISOString()}, Valid: ${examDate >= today});
-                                    return examDate >= today; // Keep only future or today's exams
+                                var exams = data.map(function (exam) {
+                                    return {
+                                        subject: exam.examName, // Adjust based on API response
+                                        date: exam.examDate,
+                                        time: exam.startTime,
+                                        venue: exam.classModel ? exam.classModel.className : "N/A"
+                                    };
                                 });
 
-                                console.log("Filtered Upcoming Exams:", upcomingExams);
-
-                                if (upcomingExams.length > 0) {
-                                    var exams = upcomingExams.map(function (exam) {
-                                        return {
-                                            subject: exam.examName,
-                                            date: exam.examDate, // Ensure it's in a valid format
-                                            time: exam.startTime,
-                                            venue: exam.classModel ? exam.classModel.className : "N/A"
-                                        };
-                                    });
-
-                                    if (examListView) {
-                                        examListView.setDataSource(new kendo.data.DataSource({
-                                            data: exams,
-                                            change: function () {
-                                                setTimeout(updateExamCountdowns, 500); // Allow time for rendering
-                                            }
-                                        }));
-                                    }
-                                } else {
-                                    if (examListView) {
-                                        examListView.setDataSource(new kendo.data.DataSource({ data: [] }));
-                                    }
-                                    $("#examListView").html("<p>No upcoming exams.</p>");
-                                }
+                                examListView.setDataSource(new kendo.data.DataSource({ data: exams }));
                             } else {
-                                if (examListView) {
-                                    examListView.setDataSource(new kendo.data.DataSource({ data: [] }));
-                                }
-                                $("#examListView").html("<p>No exams found.</p>");
+                                examListView.setDataSource(new kendo.data.DataSource({ data: [] }));
                             }
                         },
                         error: function () {
@@ -439,21 +360,10 @@
                 }, 1000); // 1000ms (1 second) delay before fetching exams
             }
 
-
         // Calculate and display countdown for each exam
         function updateExamCountdowns() {
             $(".exam-countdown").each(function () {
-                var examDateStr = $(this).data("exam-date");
-                console.log("Raw Exam Date:", examDateStr); // Debugging
-
-                var examDate = new Date(examDateStr);
-                console.log("Parsed Exam Date:", examDate); // Check if it's a valid date
-
-                if (isNaN(examDate.getTime())) {
-                    console.error("Invalid date format:", examDateStr);
-                    return;
-                }
-
+                var examDate = new Date($(this).data("exam-date"));
                 var now = new Date();
                 var diffTime = examDate - now;
                 var diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
@@ -466,14 +376,13 @@
             });
         }
 
-
         // Kendo Splitter for syllabus Summary
         // Try to access the syllabus data safely
         function fetchPerformanceData(standardId) {
             console.log("Fetching data using AJAX for standardID:", standardId);
 
             return $.ajax({
-                url: http://localhost:5190/api/subject-tracking/standard/${standardId},
+                url: `http://localhost:5190/api/subject-tracking/standard/${standardId}`,
                 method: "GET",
                 dataType: "json",
             }).then(function (data) {
@@ -494,7 +403,6 @@
             });
         }
 
-
         function initializeCharts(standardId) {
             fetchPerformanceData(standardId).done(function (performanceData) {
                 if (!performanceData || performanceData.length === 0) {
@@ -503,7 +411,7 @@
                     return;
                 }
 
-                // *Destroy existing chart before creating a new one*
+                // **Destroy existing chart before creating a new one**
                 const existingChart = $("#performanceChart").data("kendoChart");
                 if (existingChart) {
                     console.log("Destroying existing chart...");
@@ -528,8 +436,25 @@
                     theme: "flat"
                 });
 
-                // *Auto-refresh every 30 seconds*
+                // **Auto-refresh every 30 seconds**
                 setTimeout(() => initializeCharts(standardId), 30 * 1000);
+            });
+        }
+
+
+        // Calculate and display countdown for each exam
+        function updateExamCountdowns() {
+            $(".exam-countdown").each(function () {
+                var examDate = new Date($(this).data("exam-date"));
+                var now = new Date();
+                var diffTime = examDate - now;
+                var diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+                if (diffDays > 0) {
+                    $(this).text(diffDays + " days remaining");
+                } else {
+                    $(this).text("Today!").css("color", "#e74c3c").css("font-weight", "bold");
+                }
             });
         }
 
@@ -561,13 +486,13 @@
 
                 $("#stdValue").text(standardName);
 
-                // *Trigger Initialization on Page Load*
+                // **Trigger Initialization on Page Load**
                 initializeCharts(standardId);
 
                 // Fetch subjects dynamically from API with a slight delay
                 setTimeout(function () {
                     $.ajax({
-                        url: http://localhost:5190/api/standard/${standardId},
+                        url: `http://localhost:5190/api/standard/${standardId}`,
                         type: "GET",
                         success: function (data) {
                             console.log("Subjects Data:", data); // Debugging
