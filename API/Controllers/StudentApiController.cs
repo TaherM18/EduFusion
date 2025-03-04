@@ -143,7 +143,7 @@ namespace API.Controller
 
             if (student.User?.ImageFile != null)
             {
-                student.User.Image = await _fileHelper.UploadProfileImage(_profileImagePath, student.User.ImageFile, student.User?.Image);
+                student.User.Image = await _fileHelper.UploadFile(_profileImagePath, student.User.ImageFile, student.User?.Image);
             }
 
             var studentId = await _studRepo.Add(student);
@@ -170,7 +170,7 @@ namespace API.Controller
 
             if (student.User?.ImageFile != null)
             {
-                student.User.Image = await _fileHelper.UploadProfileImage(_profileImagePath, student.User.ImageFile, student.User?.Image);
+                student.User.Image = await _fileHelper.UploadFile(_profileImagePath, student.User.ImageFile, student.User?.Image);
             }
 
 

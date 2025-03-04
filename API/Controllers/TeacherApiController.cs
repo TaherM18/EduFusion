@@ -28,7 +28,7 @@ namespace API.Controller
             {
                 if (teacher.User?.ImageFile != null)
                 {
-                    teacher.User.Image = await _fileHelper.UploadProfileImage(_profileImagePath, teacher.User.ImageFile, teacher.User?.Image);
+                    teacher.User.Image = await _fileHelper.UploadFile(_profileImagePath, teacher.User.ImageFile, teacher.User?.Image);
                 }
                 int userId = await _teacherRepo.Register(teacher);
                 if (userId != 0)
@@ -70,6 +70,7 @@ namespace API.Controller
         }
         #endregion
 
+
         #region Get All
         [HttpGet]
         public async Task<IActionResult> GetAll()
@@ -79,6 +80,7 @@ namespace API.Controller
         }
         #endregion
 
+
         #region Add
         [HttpPost]
         public async Task<IActionResult> Add([FromForm] Teacher teacher)
@@ -87,7 +89,7 @@ namespace API.Controller
             {
                 if (teacher.User?.ImageFile != null)
                 {
-                    teacher.User.Image = await _fileHelper.UploadProfileImage(_profileImagePath, teacher.User.ImageFile, teacher.User.Image);
+                    teacher.User.Image = await _fileHelper.UploadFile(_profileImagePath, teacher.User.ImageFile, teacher.User.Image);
                 }
 
                 int result = await _teacherRepo.Add(teacher);
@@ -114,7 +116,7 @@ namespace API.Controller
 
                 if (teacher.User?.ImageFile != null)
                 {
-                    teacher.User.Image = await _fileHelper.UploadProfileImage(_profileImagePath, teacher.User.ImageFile, teacher.User?.Image);
+                    teacher.User.Image = await _fileHelper.UploadFile(_profileImagePath, teacher.User.ImageFile, teacher.User?.Image);
                 }
 
                 int result = await _teacherRepo.Update(teacher);
@@ -188,39 +190,6 @@ namespace API.Controller
         }
         #endregion
 
-        #region Student Standards
-        [HttpGet]
-        [Route("GetStudentStandards")]
-        public async Task<IActionResult> GetStudentStandards()
-        {
-            try
-            {
-                List<Standard> result = await _teacherRepo.GetStandards();
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-        #endregion
-
-        #region Student Subjects
-        [HttpGet]
-        [Route("GetStudentSubjects/{id}")]
-        public async Task<IActionResult> GetStudentSubjects(int id)
-        {
-            try
-            {
-                List<Subject> result = await _teacherRepo.GetSubjects(id);
-                return Ok(result);
-            }
-            catch (Exception ex)
-            {
-                return BadRequest(ex.Message);
-            }
-        }
-        #endregion
 
         #region Get Teacher By Subject
         [HttpGet]

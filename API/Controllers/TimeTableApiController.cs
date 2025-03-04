@@ -20,16 +20,33 @@ namespace API.Controllers
             _timeTableRepo = timeTableRepo;
         }
 
-        #region GetAllGrouped
+        #region GetAllByStandard
         // Get all timetables grouped by day for a standard
         [HttpGet("standard/{id:int}")]
-        public async Task<ActionResult<Dictionary<string, List<TimeTable>>>> GetAllGrouped(int id)
+        public async Task<ActionResult<Dictionary<string, List<TimeTable>>>> GetAllByStandard(int id)
         {
-            var result = await _timeTableRepo.GetAllByStandardGroupByDayOfWeek(id);
+            var result = await _timeTableRepo.GetAllByStandard(id);
             if (result == null)
             {
                 return StatusCode(500, new {
-                    message = "There was some error while retrieving timetable."
+                    message = "There was some error while retrieving timetable for standard."
+                });
+            }
+            return Ok(result);
+        }
+        #endregion
+
+
+        #region GetAllByTeacher
+        // Get all timetables grouped by day for a standard
+        [HttpGet("teacher/{id:int}")]
+        public async Task<ActionResult<Dictionary<string, List<TimeTable>>>> GetAllByTeacher(int id)
+        {
+            var result = await _timeTableRepo.GetAllByTeacher(id);
+            if (result == null)
+            {
+                return StatusCode(500, new {
+                    message = "There was some error while retrieving timetable for teacher."
                 });
             }
             return Ok(result);

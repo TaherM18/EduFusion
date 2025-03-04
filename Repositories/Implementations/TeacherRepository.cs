@@ -369,48 +369,6 @@ namespace Repositories.Implementations
         }
         #endregion
 
-        #region GetStansard
-        public async Task<List<Standard>> GetStandards()
-        {
-            string query = @"
-                SELECT 
-                    *
-                FROM t_standard 
-                ORDER BY c_standardID;
-            ";
-
-            List<Standard> standards = new List<Standard>();
-
-            try
-            {
-                _con.Open();
-                using (NpgsqlCommand cmd = new NpgsqlCommand(query, _con))
-                using (NpgsqlDataReader reader = await cmd.ExecuteReaderAsync())
-                {
-                    while (await reader.ReadAsync())
-                    {
-                        Standard standard = new Standard
-                        {
-                            StandardID = Convert.ToInt32(reader["c_standardID"]),
-                            StandardName = reader["c_standard_name"].ToString()
-                        };
-                        standards.Add(standard);
-                    }
-                    reader.Close();
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine($"Error: {ex.Message}");
-            }
-            finally
-            {
-                _con.Close();
-            }
-
-            return standards;
-        }
-        #endregion
 
         #region GetStudentProgress
         public async Task<List<StudentProgress>> GetStudentProgress()
@@ -475,6 +433,7 @@ namespace Repositories.Implementations
         }
         #endregion
 
+
         #region GetStudentRatings
         public async Task<List<StudentRating>> GetStudentRatings()
         {
@@ -537,6 +496,7 @@ namespace Repositories.Implementations
         }
         #endregion
 
+
         #region GetSubjects
         public async Task<List<Subject>> GetSubjects(int standardID)
         {
@@ -582,6 +542,7 @@ namespace Repositories.Implementations
             return subjects;
         }
         #endregion
+
 
         #region GetTeacherBySubject
         public async Task<Teacher> GetTeacherBySubject(int c_subjectID)
@@ -630,11 +591,12 @@ namespace Repositories.Implementations
         }
         #endregion
 
+
         #region GetTimeTable
         public async Task<List<TimeTable>> GetTimeTable()
         {
             string query = @"
-                SELECT 
+            SELECT 
                 t.c_timetableID AS Id, 
                 sub.c_subject_name AS Title, 
                 t.c_start_time AS Start, 
@@ -647,10 +609,14 @@ namespace Repositories.Implementations
                 tr.c_qualification AS TeacherQualification,
                 tr.c_expertise AS TeacherExpertise,
                 std.c_standard_name AS StandardName
-            FROM t_timetable t
-            JOIN t_subject sub ON t.c_subjectID = sub.c_subjectID
-            JOIN t_teacher tr ON sub.c_teacherID = tr.c_teacherID
-            JOIN t_standard std ON sub.c_standardID = std.c_standardID
+            FROM
+                t_timetable t
+            JOIN
+                t_subject sub ON t.c_subjectID = sub.c_subjectID
+            JOIN
+                t_teacher tr ON sub.c_teacherID = tr.c_teacherID
+            JOIN
+                t_standard std ON sub.c_standardID = std.c_standardID
             ";
 
             List<TimeTable> timeTable = new List<TimeTable>();
@@ -702,6 +668,7 @@ namespace Repositories.Implementations
             return timeTable;
         }
         #endregion
+
 
         #region AddTimeTable
         public async Task<int> AddTimeTable(TimeTable timeTable)

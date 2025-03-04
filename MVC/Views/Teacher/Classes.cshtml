@@ -5,9 +5,13 @@
 
 @section Scripts {
     <script>
-        var standardApi = "http://localhost:5078/api/Teacher/GetStudentStandards";
-        var subjectApi = "http://localhost:5078/api/Teacher/GetStudentSubjects";
-        var teacherApi = "http://localhost:5078/api/Teacher/GetTeacherBySubject";
+        const teacher = GetUserData();
+        const teacherID = teacher ? teacher.teacherID : 57;
+        let apiBaseUrl = "http://localhost:5190/api";
+
+        var standardApi = `${apiBaseUrl}/api/standard`;
+        var subjectApi = `${apiBaseUrl}/api/standard`;
+        var teacherApi = `${apiBaseUrl}/api/Teacher/GetTeacherBySubject`;
 
         @* // Initialize Kendo Window
         var formWindow = $("#container").kendoWindow({
@@ -23,73 +27,74 @@
             formWindow.center().open();
         }); *@
 
-        $("#form-container").kendoForm({
-            orientation: "vertical",
-            formData: {
-                classID: null,
-                subjectID: null,
-                teacher: "",
-                timeSlot: null
-            },
-            items: [
-                {
-                    field: "standardID",
-                    label: "Standard",
-                    editor: "DropDownList",
-                    editorOptions: {
-                        optionLabel: "Select Standard",
-                        dataTextField: "standardName",
-                        dataValueField: "standardID",
-                        dataSource: {
-                            transport: { read: standardApi }
-                        },
-                        change: function (e) {
-                            var selectedStandard = this.value();
-                            fetchSubject(selectedStandard);
+            $("#form-container").kendoForm({
+                orientation: "vertical",
+                formData: {
+                    classID: null,
+                    subjectID: null,
+                    teacher: "",
+                    timeSlot: null
+                },
+                items: [
+                    {
+                        field: "standardID",
+                        label: "Standard",
+                        editor: "DropDownList",
+                        editorOptions: {
+                            optionLabel: "Select Standard",
+                            dataTextField: "standardName",
+                            dataValueField: "standardID",
+                            dataSource: {
+                                transport: { read: standardApi }
+                            },
+                            change: function (e) {
+                                var selectedStandard = this.value();
+                                fetchSubject(selectedStandard);
+                            }
                         }
-                    }
-                },
-                {
-                    field: "subjectID",
-                    label: "Subject",
-                    editor: "DropDownList",
-                    editorOptions: {
-                        optionLabel: "Select Subject",
-                        dataTextField: "subjectName",
-                        dataValueField: "subjectID",
-                        dataSource: [],
-                        change: function (e) {
-                            var selectedSubject = this.value();
-                            fetchTeacher(selectedSubject);
+                    },
+                    {
+                        field: "subjectID",
+                        label: "Subject",
+                        editor: "DropDownList",
+                        editorOptions: {
+                            optionLabel: "Select Subject",
+                            dataTextField: "subjectName",
+                            dataValueField: "subjectID",
+                            dataSource: [],
+                            change: function (e) {
+                                var selectedSubject = this.value();
+                                fetchTeacher(selectedSubject);
+                            }
                         }
+                    },
+                    {
+                        field: "teacher",
+                        label: "Teacher",
+                        editor: "TextBox",
+                        editorOptions: { readonly: true }
+                    },
+                    {
+                        field: "startTime",
+                        label: "Start Time",
+                        editor: "TimePicker"
+                    },
+                    {
+                        field: "endTime",
+                        label: "End Time",
+                        editor: "TimePicker"
                     }
-                },
-                {
-                    field: "teacher",
-                    label: "Teacher",
-                    editor: "TextBox",
-                    editorOptions: { readonly: true }
-                },
-                {
-                    field: "startTime",
-                    label: "Start Time",
-                    editor: "TimePicker"
-                },
-                {
-                    field: "endTime",
-                    label: "End Time",
-                    editor: "TimePicker"
-                }
-            ]
-        });
+                ]
+            });
 
         function fetchSubject(selectedStandard) {
             $.ajax({
                 url: subjectApi + "/" + selectedStandard,
                 type: "GET",
                 success: function (data) {
+                    console.log(`fetchSubject(${selectedStandard})\n`, data.subjects);
                     var subjectDropdown = $("#form-container").find("[name=subjectID]").data("kendoDropDownList");
-                    subjectDropdown.setDataSource(new kendo.data.DataSource({ data: data }));
+                    subjectDropdown.setDataSource(new kendo.data.DataSource({ data: data.subjects }));
                     subjectDropdown.value(""); // Reset value
                 }
             });
@@ -119,24 +124,42 @@
             dataSource: {
                 transport: {
                     read: {
-                        url: baseUrl + "/Teacher/GetTimeTable",
+                        url: `${baseUrl}/timetable/teacher/${teacherID}`,
                         dataType: "json"
                     }
                 },
                 schema: {
+                    parse: function (response) {
+                        return response.map(item => ({
+                            timetableID: item.timetableID,
+                            subjectID: item.subjectID,
+                            classID: item.classID,
+                            dayOfWeek: item.dayOfWeek,
+                            dayName: item.dayName,
+                            start: new Date(`2024-03-04T${item.startTime}`), // Convert time to Date
+                            end: new Date(`2024-03-04T${item.endTime}`),
+                            subjectName: item.subject.subjectName,
+                            className: item.classModel.className
+                        }));
+                    },
                     model: {
-                        id: "id",
+                        id: "timetableID",
                         fields: {
-                            id: { type: "number" },
-                            start: { type: "date", from: "start" },  // Convert to Date
-                            end: { type: "date", from: "end" },
-                            dayOfWeek: { type: "number" }
+                            timetableID: { type: "number" },
+                            subjectID: { type: "number" },
+                            classID: { type: "number" },
+                            dayOfWeek: { type: "number" },
+                            dayName: { type: "string" },
+                            start: { type: "date" },
+                            end: { type: "date" },
+                            subjectName: { type: "string" },
+                            className: { type: "string" }
                         }
                     }
                 }
             },
             editable: true,
-            eventTemplate: "#= standard.standardName # - #= subject.subjectName # - #= kendo.toString(start, 'HH:mm') # to #= kendo.toString(end, 'HH:mm') #",
+            eventTemplate: "#= className # - #= subjectName # - #= kendo.toString(start, 'HH:mm') # to #= kendo.toString(end, 'HH:mm') #"
         });
     </script>
 }

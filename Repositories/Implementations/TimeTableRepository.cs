@@ -88,14 +88,14 @@ namespace Repositories.Implementations
         #endregion
 
 
-        #region GetAllGroupByDayOfWeek
-        public async Task<List<TimeTable>> GetAllByStandardGroupByDayOfWeek(int standardID)
+        #region GetAllByStandard
+        public async Task<List<TimeTable>> GetAllByStandard(int standardID)
         {
             const string query = @"
             SELECT 
                 t.c_timetableID, t.c_subjectID, t.c_classID, t.c_day_of_week, t.c_start_time, t.c_end_time,
                 s.c_standardID, s.c_teacherID, s.c_subject_name, s.c_marks,
-                c.c_class_name, 
+                c.c_class_name, c.c_wing, c.c_floor,
                 std.c_standard_name, 
                 u.c_first_name, u.c_last_name
             FROM 
@@ -136,12 +136,16 @@ namespace Repositories.Implementations
                         ClassModel = new ClassModel()
                         {
                             ClassID = reader.GetInt32(reader.GetOrdinal("c_classID")),
-                            ClassName = reader.IsDBNull(reader.GetOrdinal("c_class_name")) ? "" :reader.GetString(reader.GetOrdinal("c_class_name"))
+                            ClassName = reader.IsDBNull(reader.GetOrdinal("c_class_name")) ? "" : reader.GetString(reader.GetOrdinal("c_class_name")),
+                            Wing = reader.IsDBNull("c_wing") ? string.Empty : reader.GetString("c_wing"),
+                            Floor = reader.IsDBNull("c_floor") ? 0 : reader.GetInt32("c_floor")
                         },
                         Subject = new Subject()
                         {
                             SubjectID = reader.GetInt32(reader.GetOrdinal("c_subjectID")),
                             SubjectName = reader.IsDBNull(reader.GetOrdinal("c_subject_name")) ? string.Empty : reader.GetString(reader.GetOrdinal("c_subject_name")),
+                            StandardID = reader.GetInt32("c_subjectID"),
+                            TeacherID = reader.GetInt32("c_teacherID"),
                             Standard = new Standard()
                             {
                                 StandardID = reader.GetInt32(reader.GetOrdinal("c_standardID")),
@@ -152,6 +156,7 @@ namespace Repositories.Implementations
                                 TeacherID = reader.GetInt32(reader.GetOrdinal("c_teacherID")),
                                 User = new User()
                                 {
+                                    UserID = reader.GetInt32("c_teacherID"),
                                     FirstName = reader.IsDBNull(reader.GetOrdinal("c_first_name")) ? string.Empty : reader.GetString(reader.GetOrdinal("c_first_name")),
                                     LastName = reader.IsDBNull(reader.GetOrdinal("c_last_name")) ? string.Empty : reader.GetString(reader.GetOrdinal("c_last_name"))
                                 }
@@ -162,7 +167,106 @@ namespace Repositories.Implementations
 
                     string dayName = GetDayOfWeekName(timeTable.DayOfWeek);
                     timeTable.DayName = dayName;
-                    
+
+                    result.Add(timeTable);
+                }
+
+                return result;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] TimeTableRepository - GetAllByStandardGroupByDayOfWeek() :\n{ex.Message}");
+                // return new Dictionary<string, List<TimeTable>>(); // Returning empty dictionary instead of null
+                return null;
+            }
+            finally
+            {
+                await _connection.CloseAsync();
+            }
+        }
+        #endregion
+
+
+        #region GetAllByTeacher
+        public async Task<List<TimeTable>> GetAllByTeacher(int teacherID)
+        {
+            const string query = @"
+            SELECT 
+                t.c_timetableID, t.c_subjectID, t.c_classID, t.c_day_of_week, t.c_start_time, t.c_end_time,
+                s.c_standardID, s.c_teacherID, s.c_subject_name, s.c_marks,
+                c.c_class_name, c.c_wing, c.c_floor,
+                std.c_standard_name, 
+                u.c_first_name, u.c_last_name
+            FROM 
+                t_timetable t
+            LEFT JOIN 
+                t_subject s ON t.c_subjectID = s.c_subjectID
+            LEFT JOIN 
+                t_class c ON t.c_classID = c.c_classID
+            LEFT JOIN 
+                t_standard std ON s.c_standardID = std.c_standardID
+            LEFT JOIN
+                t_user u ON s.c_teacherID = u.c_userID
+            WHERE
+                s.c_teacherID = @TeacherID
+            ORDER BY 
+                c_day_of_week, c_start_time;";
+
+            var result = new List<TimeTable>();
+
+            try
+            {
+                await _connection.OpenAsync();
+
+                await using var cmd = new NpgsqlCommand(query, _connection);
+                cmd.Parameters.AddWithValue("@TeacherID", teacherID);
+                await using var reader = await cmd.ExecuteReaderAsync();
+
+                while (await reader.ReadAsync())
+                {
+                    var timeTable = new TimeTable
+                    {
+                        TimetableID = reader.GetInt32(reader.GetOrdinal("c_timetableID")),
+                        SubjectID = reader.GetInt32(reader.GetOrdinal("c_subjectID")),
+                        ClassID = reader.GetInt32(reader.GetOrdinal("c_classID")),
+                        DayOfWeek = reader.IsDBNull(reader.GetOrdinal("c_day_of_week")) ? 0 : reader.GetInt32(reader.GetOrdinal("c_day_of_week")),
+                        StartTime = reader.GetTimeSpan(reader.GetOrdinal("c_start_time")),
+                        EndTime = reader.GetTimeSpan(reader.GetOrdinal("c_end_time")),
+                        ClassModel = new ClassModel()
+                        {
+                            ClassID = reader.GetInt32(reader.GetOrdinal("c_classID")),
+                            ClassName = reader.IsDBNull(reader.GetOrdinal("c_class_name")) ? "" : reader.GetString(reader.GetOrdinal("c_class_name")),
+                            Wing = reader.IsDBNull("c_wing") ? string.Empty : reader.GetString("c_wing"),
+                            Floor = reader.IsDBNull("c_floor") ? 0 : reader.GetInt32("c_floor")
+                        },
+                        Subject = new Subject()
+                        {
+                            SubjectID = reader.GetInt32(reader.GetOrdinal("c_subjectID")),
+                            SubjectName = reader.IsDBNull(reader.GetOrdinal("c_subject_name")) ? string.Empty : reader.GetString(reader.GetOrdinal("c_subject_name")),
+                            StandardID = reader.GetInt32("c_standardID"),
+                            TeacherID = reader.GetInt32("c_teacherID"),
+                            Standard = new Standard()
+                            {
+                                StandardID = reader.GetInt32(reader.GetOrdinal("c_standardID")),
+                                StandardName = reader.IsDBNull(reader.GetOrdinal("c_standard_name")) ? string.Empty : reader.GetString(reader.GetOrdinal("c_standard_name")),
+                            },
+                            Teacher = new Teacher()
+                            {
+                                TeacherID = reader.GetInt32(reader.GetOrdinal("c_teacherID")),
+                                User = new User()
+                                {
+                                    UserID = reader.GetInt32("c_teacherID"),
+                                    FirstName = reader.IsDBNull(reader.GetOrdinal("c_first_name")) ? string.Empty : reader.GetString(reader.GetOrdinal("c_first_name")),
+                                    LastName = reader.IsDBNull(reader.GetOrdinal("c_last_name")) ? string.Empty : reader.GetString(reader.GetOrdinal("c_last_name"))
+                                }
+                            }
+                        }
+                    };
+                    // Console.WriteLine("TimeTableRepository - GetAllByStandardGroupByDayOfWeek() - TimeTableId="+timeTable.TimetableID);
+
+                    string dayName = GetDayOfWeekName(timeTable.DayOfWeek);
+                    timeTable.DayName = dayName;
+
                     result.Add(timeTable);
                 }
 
