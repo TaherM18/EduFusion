@@ -1,17 +1,15 @@
 @{
     ViewData["Title"] = "Classes";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @section Scripts {
-    <link rel="stylesheet" href="~/lib/kendo/kendo.default-v2.min.css" />
-    <script src="~/lib/kendo/kendo.all.min.js"></script>
-
     <script>
         var standardApi = "http://localhost:5078/api/Teacher/GetStudentStandards";
         var subjectApi = "http://localhost:5078/api/Teacher/GetStudentSubjects";
         var teacherApi = "http://localhost:5078/api/Teacher/GetTeacherBySubject";
 
-        // Initialize Kendo Window
+        @* // Initialize Kendo Window
         var formWindow = $("#container").kendoWindow({
             title: "Add Class",
             width: "400px",
@@ -23,7 +21,7 @@
 
         $("#add-class").click(function () {
             formWindow.center().open();
-        });
+        }); *@
 
         $("#form-container").kendoForm({
             orientation: "vertical",
@@ -107,14 +105,48 @@
                 }
             })
         }
+
+        $("#scheduler").kendoScheduler({
+            date: new Date(),
+            startTime: new Date("2024-03-03T08:00:00"),
+            endTime: new Date("2024-03-03T17:00:00"),
+            views: [
+                "day",
+                "week",
+                "month",
+                "agenda"
+            ],
+            dataSource: {
+                transport: {
+                    read: {
+                        url: baseUrl + "/Teacher/GetTimeTable",
+                        dataType: "json"
+                    }
+                },
+                schema: {
+                    model: {
+                        id: "id",
+                        fields: {
+                            id: { type: "number" },
+                            start: { type: "date", from: "start" },  // Convert to Date
+                            end: { type: "date", from: "end" },
+                            dayOfWeek: { type: "number" }
+                        }
+                    }
+                }
+            },
+            editable: true,
+            eventTemplate: "#= standard.standardName # - #= subject.subjectName # - #= kendo.toString(start, 'HH:mm') # to #= kendo.toString(end, 'HH:mm') #",
+        });
     </script>
 }
 
 <h1>Classes</h1>
 
-<button id="add-class" class="k-button k-button-solid-primary">Add Class</button>
+@* <button id="add-class" class="k-button k-button-solid-primary">Add Class</button> *@
 
-<div id="container">
+@* <div id="container">
     <div id="form-container"></div>
-</div>
+</div> *@
 
+<div id="scheduler"></div>

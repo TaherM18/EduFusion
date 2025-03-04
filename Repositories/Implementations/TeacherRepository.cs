@@ -368,5 +368,376 @@ namespace Repositories.Implementations
             }
         }
         #endregion
+
+        #region GetStansard
+        public async Task<List<Standard>> GetStandards()
+        {
+            string query = @"
+                SELECT 
+                    *
+                FROM t_standard 
+                ORDER BY c_standardID;
+            ";
+
+            List<Standard> standards = new List<Standard>();
+
+            try
+            {
+                _con.Open();
+                using (NpgsqlCommand cmd = new NpgsqlCommand(query, _con))
+                using (NpgsqlDataReader reader = await cmd.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        Standard standard = new Standard
+                        {
+                            StandardID = Convert.ToInt32(reader["c_standardID"]),
+                            StandardName = reader["c_standard_name"].ToString()
+                        };
+                        standards.Add(standard);
+                    }
+                    reader.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            finally
+            {
+                _con.Close();
+            }
+
+            return standards;
+        }
+        #endregion
+
+        #region GetStudentProgress
+        public async Task<List<StudentProgress>> GetStudentProgress()
+        {
+            string query = @"
+        SELECT 
+            s.c_studentID, 
+            u.c_first_name || ' ' || u.c_last_name AS student_name,
+            std.c_standard_name,
+            sub.c_subject_name,
+            st.c_trackingID,
+            st.c_subjectID,
+            st.c_percentage AS progress,
+            st.c_created_at,
+            st.c_updated_at
+        FROM t_student s
+        JOIN t_user u ON s.c_studentID = u.c_userID
+        JOIN t_standard std ON s.c_standardID = std.c_standardID
+        JOIN t_subject sub ON std.c_standardID = sub.c_standardID
+        JOIN t_subject_tracking st ON sub.c_subjectID = st.c_subjectID
+        ORDER BY s.c_studentID, sub.c_subjectID;
+    ";
+
+            List<StudentProgress> studentProgress = new List<StudentProgress>();
+
+            try
+            {
+                _con.Open();
+                using (NpgsqlCommand cmd = new NpgsqlCommand(query, _con))
+                using (NpgsqlDataReader reader = await cmd.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        StudentProgress progress = new StudentProgress
+                        {
+                            TrackingID = Convert.ToInt32(reader["c_trackingID"]),
+                            SubjectID = Convert.ToInt32(reader["c_subjectID"]),
+                            Percentage = Convert.ToDecimal(reader["progress"]),
+                            CreatedAt = Convert.ToDateTime(reader["c_created_at"]),
+                            UpdatedAt = Convert.ToDateTime(reader["c_updated_at"]),
+                            Subject = new Subject
+                            {
+                                SubjectID = Convert.ToInt32(reader["c_subjectID"]),
+                                SubjectName = reader["c_subject_name"].ToString()
+                            }
+                        };
+                        studentProgress.Add(progress);
+                    }
+                    reader.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            finally
+            {
+                _con.Close();
+            }
+
+            return studentProgress;
+        }
+        #endregion
+
+        #region GetStudentRatings
+        public async Task<List<StudentRating>> GetStudentRatings()
+        {
+            string query = @"
+        SELECT 
+            r.c_ratingID,
+            r.c_studentID,
+            r.c_teacherID,
+            r.c_rating,
+            r.c_created_at,
+            u.c_first_name || ' ' || u.c_last_name AS student_name,
+            t.c_first_name || ' ' || t.c_last_name AS teacher_name
+        FROM t_student_rating r
+        JOIN t_user u ON r.c_studentID = u.c_userID
+        JOIN t_user t ON r.c_teacherID = t.c_userID
+        ORDER BY r.c_studentID, r.c_teacherID;
+    ";
+
+            List<StudentRating> studentRatings = new List<StudentRating>();
+
+            try
+            {
+                _con.Open();
+                using (NpgsqlCommand cmd = new NpgsqlCommand(query, _con))
+                using (NpgsqlDataReader reader = await cmd.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        StudentRating rating = new StudentRating
+                        {
+                            RatingID = Convert.ToInt32(reader["c_ratingID"]),
+                            StudentID = Convert.ToInt32(reader["c_studentID"]),
+                            TeacherID = Convert.ToInt32(reader["c_teacherID"]),
+                            Rating = Convert.ToInt32(reader["c_rating"]),
+                            CreatedAt = Convert.ToDateTime(reader["c_created_at"]),
+                            Student = new Student
+                            {
+                                StudentID = Convert.ToInt32(reader["c_studentID"]),
+                                User = new User
+                                {
+                                    FirstName = reader["student_name"].ToString()
+                                }
+                            }
+                        };
+                        studentRatings.Add(rating);
+                    }
+                    reader.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            finally
+            {
+                _con.Close();
+            }
+
+            return studentRatings;
+        }
+        #endregion
+
+        #region GetSubjects
+        public async Task<List<Subject>> GetSubjects(int standardID)
+        {
+            string query = @"
+                SELECT 
+                    *
+                FROM t_subject
+                WHERE c_standardID = @standardID
+                ORDER BY c_subjectID;
+            ";
+
+            List<Subject> subjects = new List<Subject>();
+
+            try
+            {
+                _con.Open();
+                using (NpgsqlCommand cmd = new NpgsqlCommand(query, _con))
+                {
+                    cmd.Parameters.AddWithValue("@standardID", standardID);
+                    using (NpgsqlDataReader reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            Subject subject = new Subject
+                            {
+                                SubjectID = Convert.ToInt32(reader["c_subjectID"]),
+                                SubjectName = reader["c_subject_name"].ToString()
+                            };
+                            subjects.Add(subject);
+                        }
+                        reader.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            finally
+            {
+                _con.Close();
+            }
+            return subjects;
+        }
+        #endregion
+
+        #region GetTeacherBySubject
+        public async Task<Teacher> GetTeacherBySubject(int c_subjectID)
+        {
+            string query = @"
+                SELECT u.c_first_name || ' ' || u.c_last_name AS student_name 
+                FROM t_user u
+                JOIN t_subject s ON  u.c_userID = s.c_teacherID
+                WHERE s.c_subjectID = @c_subjectID;
+            ";
+
+            Teacher teacher = null;
+
+            try
+            {
+                _con.Open();
+                using (NpgsqlCommand cmd = new NpgsqlCommand(query, _con))
+                {
+                    cmd.Parameters.AddWithValue("@c_subjectID", c_subjectID);
+                    using (NpgsqlDataReader reader = await cmd.ExecuteReaderAsync())
+                    {
+                        while (await reader.ReadAsync())
+                        {
+                            teacher = new Teacher
+                            {
+                                User = new User
+                                {
+                                    FirstName = reader["student_name"].ToString()
+                                }
+                            };
+                        }
+                        reader.Close();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error: {ex.Message}");
+            }
+            finally
+            {
+                _con.Close();
+            }
+
+            return teacher;
+        }
+        #endregion
+
+        #region GetTimeTable
+        public async Task<List<TimeTable>> GetTimeTable()
+        {
+            string query = @"
+                SELECT 
+                t.c_timetableID AS Id, 
+                sub.c_subject_name AS Title, 
+                t.c_start_time AS Start, 
+                t.c_end_time AS End, 
+                t.c_day_of_week AS DayOfWeek, 
+                t.c_subjectID AS SubjectId, 
+                t.c_classID AS StandardId, 
+                sub.c_standardID AS StandardId, 
+                sub.c_teacherID AS TeacherId,
+                tr.c_qualification AS TeacherQualification,
+                tr.c_expertise AS TeacherExpertise,
+                std.c_standard_name AS StandardName
+            FROM t_timetable t
+            JOIN t_subject sub ON t.c_subjectID = sub.c_subjectID
+            JOIN t_teacher tr ON sub.c_teacherID = tr.c_teacherID
+            JOIN t_standard std ON sub.c_standardID = std.c_standardID
+            ";
+
+            List<TimeTable> timeTable = new List<TimeTable>();
+
+            try
+            {
+                _con.Open();
+                using (NpgsqlCommand cmd = new NpgsqlCommand(query, _con))
+                using (NpgsqlDataReader reader = await cmd.ExecuteReaderAsync())
+                {
+                    while (await reader.ReadAsync())
+                    {
+                        TimeTable timetable = new TimeTable
+                        {
+                            Id = Convert.ToInt32(reader["Id"]),
+                            Start = reader.GetTimeSpan(reader.GetOrdinal("Start")),
+                            End = reader.GetTimeSpan(reader.GetOrdinal("End")),
+                            DayOfWeek = Convert.ToInt32(reader["DayOfWeek"]),
+                            Subject = new Subject
+                            {
+                                SubjectID = Convert.ToInt32(reader["SubjectId"]),
+                                SubjectName = reader["Title"].ToString()
+                            },
+                            Standard = new Standard
+                            {
+                                StandardID = Convert.ToInt32(reader["StandardId"]),
+                                StandardName = reader["StandardName"].ToString()
+                            },
+                            Teacher = new Teacher
+                            {
+                                TeacherID = Convert.ToInt32(reader["TeacherId"]),
+                                Qualification = reader["TeacherQualification"].ToString(),
+                                Expertise = reader["TeacherExpertise"].ToString()
+                            }
+                        };
+                        timeTable.Add(timetable);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                _con.Close();
+            }
+
+            return timeTable;
+        }
+        #endregion
+
+        #region AddTimeTable
+        public async Task<int> AddTimeTable(TimeTable timeTable)
+        {
+            string query = @"
+                INSERT INTO t_timetable 
+                (c_start_time, c_end_time, c_day_of_week, c_subjectID, c_classID) 
+                VALUES 
+                (@StartTime, @EndTime, @DayOfWeek, @SubjectID, @c_classID);
+            ";
+
+            try
+            {
+                _con.Open();
+                using (NpgsqlCommand cmd = new NpgsqlCommand(query, _con))
+                {
+                    cmd.Parameters.AddWithValue("@StartTime", timeTable.Start);
+                    cmd.Parameters.AddWithValue("@EndTime", timeTable.End);
+                    cmd.Parameters.AddWithValue("@DayOfWeek", timeTable.DayOfWeek);
+                    cmd.Parameters.AddWithValue("@SubjectID", timeTable.SubjectId);
+                    cmd.Parameters.AddWithValue("@c_classID", timeTable.ClassId);
+
+                    cmd.ExecuteNonQuery();
+                    return 1;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Console.WriteLine(ex.Message);
+                return 0;
+            }
+            finally
+            {
+                _con.Close();
+            }
+        }
+        #endregion
     }
 }

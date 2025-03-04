@@ -1,11 +1,9 @@
 @{
     ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 @section Scripts {
-    <link rel="stylesheet" href="~/lib/kendo/kendo.default-v2.min.css" />
-    <script src="~/lib/kendo/kendo.all.min.js"></script>
-
     <script>
         $(document).ready(function () {
             // Kendo Grid for Class Schedule
@@ -42,7 +40,7 @@
         });
 
         $.ajax({
-            url: "http://localhost:5078/api/Teacher/GetStudentRatings",
+            url: baseUrl +  "/Teacher/GetStudentRatings",
             type: "GET",
             success: function (data) {
                 // Categorize Ratings
@@ -113,7 +111,7 @@
                     dataSource: {
                         transport: {
                             read: {
-                                url: "http://localhost:5078/api/Teacher/GetStudentProgress", // Ensure this endpoint returns JSON data
+                                url: baseUrl + "/Teacher/GetStudentProgress", // Ensure this endpoint returns JSON data
                                 dataType: "json"
                             }
                         }

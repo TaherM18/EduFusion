@@ -153,5 +153,131 @@ namespace API.Controller
             }
         }
         #endregion
+
+        #region Student Progress
+        [HttpGet]
+        [Route("GetStudentProgress")]
+        public async Task<IActionResult> GetStudentProgress()
+        {
+            try
+            {
+                List<StudentProgress> result = await _teacherRepo.GetStudentProgress();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        #endregion
+
+        #region Student Ratings
+        [HttpGet]
+        [Route("GetStudentRatings")]
+        public async Task<IActionResult> GetStudentRatings()
+        {
+            try
+            {
+                List<StudentRating> result = await _teacherRepo.GetStudentRatings();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        #endregion
+
+        #region Student Standards
+        [HttpGet]
+        [Route("GetStudentStandards")]
+        public async Task<IActionResult> GetStudentStandards()
+        {
+            try
+            {
+                List<Standard> result = await _teacherRepo.GetStandards();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        #endregion
+
+        #region Student Subjects
+        [HttpGet]
+        [Route("GetStudentSubjects/{id}")]
+        public async Task<IActionResult> GetStudentSubjects(int id)
+        {
+            try
+            {
+                List<Subject> result = await _teacherRepo.GetSubjects(id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        #endregion
+
+        #region Get Teacher By Subject
+        [HttpGet]
+        [Route("GetTeacherBySubject/{id}")]
+        public async Task<IActionResult> GetTeacherBySubject(int id)
+        {
+            try
+            {
+                Teacher result = await _teacherRepo.GetTeacherBySubject(id);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        #endregion
+
+        #region Get TimeTable
+        [HttpGet]
+        [Route("GetTimeTable")]
+        public async Task<IActionResult> GetTimeTable()
+        {
+            try
+            {
+                List<TimeTable> result = await _teacherRepo.GetTimeTable();
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        #endregion
+
+        #region Add Schedule
+        [HttpPost]
+        [Route("AddSchedule")]
+        public async Task<IActionResult> AddSchedule([FromForm]TimeTable timeTable)
+        {
+            try
+            {
+                int result = await _teacherRepo.AddTimeTable(timeTable);
+                if (result > 0)
+                {
+                    return Ok("Schedule Added Successfully");
+                }
+                else
+                {
+                    return BadRequest("Failed to Add Schedule");
+                }
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(ex.Message);
+            }
+        }
+        #endregion
     }
 }

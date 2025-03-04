@@ -11,4 +11,4 @@ function GetUserData() {
     // let user = 
 }
 
-const url = "http://localhost:5190/api"
+const baseUrl = "http://localhost:5190/api"
