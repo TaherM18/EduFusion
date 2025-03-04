@@ -1,5 +1,6 @@
 using Helpers.Files;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.VisualBasic;
 using Repositories.Interfaces;
 using Repositories.Models;
 
@@ -18,13 +19,32 @@ namespace API.Controllers
             _materialRepository = materialRepository;
             _fileHelper = new FileHelper();
         }
-        
-        
+
+
         #region GetAllAsync
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Material>>> GetAllAsync()
         {
             var materials = await _materialRepository.GetAll();
+
+            if (materials == null)
+                return StatusCode(500, new { message = "There was some error while fetching materials" });
+
+            return Ok(materials);
+        }
+        #endregion
+
+
+        #region GetAllByStandardAsync
+        [HttpGet]
+        [Route("standard/{id}")]
+        public async Task<ActionResult<IEnumerable<Material>>> GetAllByStandardAsync(int id)
+        {
+            var materials = await _materialRepository.GetAllByStandard(id);
+
+            if (materials == null)
+                return StatusCode(500, new { message = "There was some error while fetching materials" });
+
             return Ok(materials);
         }
         #endregion
@@ -36,6 +56,7 @@ namespace API.Controllers
         public async Task<ActionResult> GetOneAsync(int id)
         {
             var material = await _materialRepository.GetOne(id);
+            
             if (material == null)
                 return NotFound();
 
