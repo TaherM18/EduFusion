@@ -74,6 +74,7 @@ namespace Repositories.Implementations
             var standards = new Dictionary<int, Standard>();
             try
             {
+                await _connection.CloseAsync();
                 await _connection.OpenAsync();
                 await using var cmd = new NpgsqlCommand(query, _connection);
                 await using var reader = await cmd.ExecuteReaderAsync();
@@ -134,6 +135,7 @@ namespace Repositories.Implementations
 
             try
             {
+                await _connection.CloseAsync();
                 await _connection.OpenAsync();
                 await using var cmd = new NpgsqlCommand(query, _connection);
                 cmd.Parameters.AddWithValue("@StandardID", id);

@@ -1,137 +1,7 @@
 @{
-    ViewData["Title"] = "Student Dashboard";
+    ViewData["Title"] = "Dashboard";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
-<div class="dashboard-container">
-    <!-- Header with welcome message -->
-    <div class="dashboard-header">
-        <h1><i class="k-icon k-i-user"></i> Student Dashboard</h1>
-        <p class="welcome-text">Welcome back, Student! Here's your academic overview.</p>
-    </div>
-
-    <!-- Top cards for quick stats -->
-    <div class="stats-container">
-        <div class="stat-card">
-            <div class="stat-icon"><i class="k-icon k-i-calendar"></i></div>
-            <div class="stat-content">
-                <div class="stat-value">92%</div>
-                <div class="stat-label">Attendance</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon"><i class="k-icon k-i-chart-bar-column"></i></div>
-            <div class="stat-content">
-                <div class="stat-value">B+</div>
-                <div class="stat-label">Avg. Grade</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon"><i class="k-icon k-i-clock"></i></div>
-            <div class="stat-content">
-                <div class="stat-value">5</div>
-                <div class="stat-label">Upcoming Exams</div>
-            </div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-icon"><i class="k-icon k-i-dollar"></i></div>
-            <div class="stat-content">
-                <div class="stat-value">Current</div>
-                <div class="stat-label">Payment Status</div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Filters section with improved styling -->
-    <div class="filters-section k-card">
-        <div class="k-card-header">
-            <h3><i class="k-icon k-i-filter"></i> View Options</h3>
-        </div>
-        <div class="k-card-body filters-container">
-            <div class="filter-group">
-                <label for="classDropdown"><i class="k-icon k-i-folder-open"></i> Class:</label>
-                <input id="classDropdown" style="width: 100%;" />
-            </div>
-
-            <div class="filter-group">
-                <label for="subjectsDropdown"><i class="k-icon k-i-book"></i> Subjects:</label>
-                <input id="subjectsDropdown" style="width: 100%;" />
-            </div>
-            
-            <div class="filter-group">
-                <label for="timeframeDropdown"><i class="k-icon k-i-calendar"></i> Timeframe:</label>
-                <input id="timeframeDropdown" style="width: 100%;" />
-            </div>
-        </div>
-    </div>
-
-    <!-- Performance summary section -->
-    <div class="performance-section k-card">
-        <div class="k-card-header">
-            <h3><i class="k-icon k-i-chart"></i> Performance Summary</h3>
-        </div>
-        <div class="k-card-body">
-            <div id="performanceSplitter">
-                <div id="performanceChart"></div>
-                <div id="performancePieChart"></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Two column layout for exams and payments -->
-    <div class="two-column-layout">
-        <!-- Upcoming Exams section -->
-        <div class="k-card exams-section">
-            <div class="k-card-header">
-                <h3><i class="k-icon k-i-calendar-date"></i> Upcoming Exams</h3>
-            </div>
-            <div class="k-card-body">
-                <div id="examListView" class="exam-list"></div>
-            </div>
-        </div>
-
-        <!-- Payments section -->
-        <div class="k-card payments-section">
-            <div class="k-card-header">
-                <h3><i class="k-icon k-i-dollar"></i> Payments & Fee Management</h3>
-            </div>
-            <div class="k-card-body">
-                <div class="payment-status">
-                    <div class="payment-progress">
-                        <span>Total Fees Paid: </span>
-                        <div id="paymentProgress"></div>
-                    </div>
-                    <p>Next payment due: <strong>March 15, 2025</strong></p>
-                </div>
-                <button id="openActionSheet" class="k-button k-primary payment-button">
-                    <i class="k-icon k-i-dollar"></i> Manage Payments
-                </button>
-                <div id="paymentActionSheet"></div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<script type="text/x-kendo-tmpl" id="examTemplate">
-    <div class="exam-card">
-        <div class="exam-subject">#= subject #</div>
-        <div class="exam-details">
-            <div class="exam-info">
-                <i class="k-icon k-i-calendar"></i> 
-                <span>#= kendo.toString(kendo.parseDate(date), "MMM dd, yyyy") #</span>
-            </div>
-            <div class="exam-info">
-                <i class="k-icon k-i-clock"></i> 
-                <span>#= time #</span>
-            </div>
-            <div class="exam-info">
-                <i class="k-icon k-i-marker-pin"></i> 
-                <span>#= venue #</span>
-            </div>
-        </div>
-        <div class="exam-countdown" data-exam-date="#= date #"></div>
-    </div>
-</script>
 
 <style>
     body {
@@ -360,189 +230,234 @@
         margin-right: 8px;
     }
 
+    .subject-item {
+        padding: 10px;
+        border: 1px solid #ddd;
+        margin: 5px;
+        background-color: #f9f9f9;
+        border-radius: 5px;
+    }
+
     /* Responsive adjustments */
-   
 </style>
 
-<script>
-    $(document).ready(function () {
-        // Kendo ComboBox for Class Selection
-        $("#classDropdown").kendoComboBox({
-            dataSource: ["Class 1", "Class 2", "Class 3", "Class 4", "Class 5"],
-            placeholder: "Select Class",
-            filter: "contains",
-            animation: {
-                open: {
-                    effects: "fadeIn",
-                    duration: 300
-                }
+<div class="dashboard-container">
+    <!-- Header with welcome message -->
+    <div class="dashboard-header">
+        <h1><i class="k-icon k-i-user"></i> Student Dashboard</h1>
+        <p class="welcome-text">Welcome back, Student! Here's your academic overview.</p>
+    </div>
+
+    <!-- Top cards for quick stats -->
+    <div class="stats-container">
+        <div class="stat-card">
+            <div class="stat-icon"><i class="k-icon k-i-calendar"></i></div>
+            <div class="stat-content">
+                <div class="stat-value" id="stdValue">8A</div>
+                <div class="stat-label">Standard</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="k-icon k-i-chart-bar-column"></i></div>
+            <div class="stat-content">
+                <div class="stat-value">B+</div>
+                <div class="stat-label">Avg. Grade</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="k-icon k-i-clock"></i></div>
+            <div class="stat-content">
+                <div class="stat-value">5</div>
+                <div class="stat-label">Upcoming Exams</div>
+            </div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon"><i class="k-icon k-i-dollar"></i></div>
+            <div class="stat-content">
+                <div class="stat-value">Current</div>
+                <div class="stat-label">Payment Status</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Filters section with improved styling -->
+    <div class="filters-section k-card">
+        <div class="k-card-header">
+            <h3><i class="k-icon k-i-filter"></i>Subjects</h3>
+        </div>
+        <div id="subjectsListView"></div>
+    </div>
+
+
+
+    <!-- Performance summary section -->
+    <div class="performance-section k-card">
+        <div class="k-card-header">
+            <h3><i class="k-icon k-i-chart"></i> Syllabus Progress</h3>
+        </div>
+        <div class="k-card-body">
+            <div id="performanceSplitter">
+                <div id="performanceChart"></div>
+                <div id="performancePieChart"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Two column layout for exams and payments -->
+    <div class="two-column-layout">
+        <!-- Upcoming Exams section -->
+        <div class="k-card exams-section">
+            <div class="k-card-header">
+                <h3><i class="k-icon k-i-calendar-date"></i> Upcoming Exams</h3>
+            </div>
+            <div class="k-card-body">
+                <div id="examListView" class="exam-list"></div>
+            </div>
+        </div>
+
+        <!-- Payments section -->
+        <div class="k-card payments-section">
+            <div class="k-card-header">
+                <h3><i class="k-icon k-i-dollar"></i> Payments & Fee Management</h3>
+            </div>
+            <div class="k-card-body">
+                <div class="payment-status">
+                    <div class="payment-progress">
+                        <span>Total Fees Paid: </span>
+                        <div id="paymentProgress"></div>
+                    </div>
+                    <p>Next payment due: <strong>March 15, 2025</strong></p>
+                </div>
+                <button id="openActionSheet" class="k-button k-primary payment-button">
+                    <i class="k-icon k-i-dollar"></i> Manage Payments
+                </button>
+                <div id="paymentActionSheet"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/x-kendo-tmpl" id="examTemplate">
+                                    <div class="exam-card">
+                                        <div class="exam-subject">#= subject #</div>
+                                        <div class="exam-details">
+                                            <div class="exam-info">
+                                                <i class="k-icon k-i-calendar"></i> 
+                                                <span>#= kendo.toString(kendo.parseDate(date), "MMM dd, yyyy") #</span>
+                                            </div>
+                                            <div class="exam-info">
+                                                <i class="k-icon k-i-clock"></i> 
+                                                <span>#= time #</span>
+                                            </div>
+                                            <div class="exam-info">
+                                                <i class="k-icon k-i-marker-pin"></i> 
+                                                <span>#= venue #</span>
+                                            </div>
+                                        </div>
+                                        <div class="exam-countdown" data-exam-date="#= date #"></div>
+                                    </div>
+                                </script>
+
+    <script>
+        const student = sessionStorage.getItem("user");
+        const standardId = student ? student.standardID : 4;
+        const standardName = student ? student.standard.standardName : "4th";
+
+        $(document).ready(function () {
+            // Initialize the Kendo ListView
+            var examListView = $("#examListView").kendoListView({
+                dataSource: new kendo.data.DataSource({ data: [] }),
+                template: kendo.template($("#examTemplate").html())
+            }).data("kendoListView");
+
+            fetchExams(examListView); // Pass the initialized ListView
+        });
+
+
+        @* FUNCTIONS *@
+
+
+            // Function to fetch exams dynamically with delay
+            function fetchExams(examListView) {
+                setTimeout(function () {
+                    $.ajax({
+                        url: "http://localhost:5190/api/exam/standard/1", // API to fetch exams
+                        type: "GET",
+                        dataType: "json",
+                        success: function (data) {
+                            console.log("Raw Exam Data:", data); // Debugging
+
+                            if (data && data.length > 0) {
+                                var today = new Date();
+                                today.setHours(0, 0, 0, 0); // Reset to start of the day
+
+                                var upcomingExams = data.filter(function (exam) {
+                                    var examDate = new Date(exam.examDate);
+                                    examDate.setHours(0, 0, 0, 0); // Reset exam date to start of the day
+                                    console.log(`Exam: ${exam.examName}, Date: ${examDate.toISOString()}, Valid: ${examDate >= today}`);
+                                    return examDate >= today; // Keep only future or today's exams
+                                });
+
+                                console.log("Filtered Upcoming Exams:", upcomingExams);
+
+                                if (upcomingExams.length > 0) {
+                                    var exams = upcomingExams.map(function (exam) {
+                                        return {
+                                            subject: exam.examName,
+                                            date: exam.examDate, // Ensure it's in a valid format
+                                            time: exam.startTime,
+                                            venue: exam.classModel ? exam.classModel.className : "N/A"
+                                        };
+                                    });
+
+                                    if (examListView) {
+                                        examListView.setDataSource(new kendo.data.DataSource({
+                                            data: exams,
+                                            change: function () {
+                                                setTimeout(updateExamCountdowns, 500); // Allow time for rendering
+                                            }
+                                        }));
+                                    }
+                                } else {
+                                    if (examListView) {
+                                        examListView.setDataSource(new kendo.data.DataSource({ data: [] }));
+                                    }
+                                    $("#examListView").html("<p>No upcoming exams.</p>");
+                                }
+                            } else {
+                                if (examListView) {
+                                    examListView.setDataSource(new kendo.data.DataSource({ data: [] }));
+                                }
+                                $("#examListView").html("<p>No exams found.</p>");
+                            }
+                        },
+                        error: function () {
+                            console.error("Failed to fetch exam data.");
+                        }
+                    });
+                }, 1000); // 1000ms (1 second) delay before fetching exams
             }
-        });
 
-        // Kendo MultiSelect for Subject Selection
-        $("#subjectsDropdown").kendoMultiSelect({
-            dataSource: ["Math", "Science", "English", "History", "Physics", "Computer Science", "Art"],
-            placeholder: "Select Subjects",
-            autoClose: false,
-            tagMode: "single",
-            animation: {
-                open: {
-                    effects: "fadeIn",
-                    duration: 300
-                }
-            }
-        });
-        
-        // Kendo DropDownList for Timeframe
-        $("#timeframeDropdown").kendoDropDownList({
-            dataSource: ["Current Term", "Last Term", "Entire Year", "Custom Range"],
-            value: "Current Term",
-            animation: {
-                open: {
-                    effects: "fadeIn",
-                    duration: 300
-                }
-            }
-        });
 
-        // Kendo Splitter for Performance Summary
-        $("#performanceSplitter").kendoSplitter({
-            orientation: "horizontal",
-            panes: [
-                { size: "50%", collapsible: true },
-                { size: "50%", collapsible: true }
-            ]
-        });
-
-        // Try to access the performance data safely
-        var performanceData;
-        try {
-            // First try to get it from the model
-            performanceData = @Html.Raw(Json.Serialize(Model.PerformanceSummaryJson ?? "[]"));
-            // If it's a string, parse it
-            if (typeof performanceData === 'string') {
-                performanceData = JSON.parse(performanceData || "[]");
-            }
-        } catch (e) {
-            console.error("Error parsing performance data:", e);
-            // Fallback data
-            performanceData = [
-                { category: "Math", value: 85 },
-                { category: "Science", value: 78 },
-                { category: "English", value: 92 },
-                { category: "History", value: 88 },
-                { category: "Physics", value: 76 }
-            ];
-        }
-
-        // Use safely accessed data
-        $("#performanceChart").kendoChart({
-            title: { 
-                text: "Subject Performance",
-                font: "16px 'Segoe UI', sans-serif",
-                color: "#333"
-            },
-            legend: {
-                position: "bottom"
-            },
-            seriesDefaults: {
-                type: "column",
-                stack: false
-            },
-            series: [{
-                name: "Current Grade",
-                data: performanceData.map(p => p.value),
-                color: "#4b6cb7",
-                labels: {
-                    visible: true,
-                    template: "#= value #%",
-                    background: "transparent"
-                }
-            }],
-            valueAxis: {
-                max: 100,
-                title: {
-                    text: "Performance (%)"
-                },
-                line: {
-                    visible: false
-                }
-            },
-            categoryAxis: {
-                categories: performanceData.map(p => p.category),
-                majorGridLines: {
-                    visible: false
-                }
-            },
-            tooltip: {
-                visible: true,
-                template: "#= category #: #= value #%"
-            },
-            chartArea: {
-                background: "white"
-            },
-            theme: "flat"
-        });
-
-        // Kendo Pie Chart for Performance Breakdown with better styling
-        $("#performancePieChart").kendoChart({
-            title: {
-                text: "Assignment Completion",
-                font: "16px 'Segoe UI', sans-serif",
-                color: "#333"
-            },
-            legend: {
-                position: "bottom"
-            },
-            seriesDefaults: {
-                type: "pie",
-                labels: {
-                    visible: true,
-                    background: "transparent",
-                    template: "#= category #: \n #= value #%"
-                }
-            },
-            series: [{
-                data: [
-                    { category: "Completed", value: 85, color: "#4b6cb7" },
-                    { category: "Pending", value: 10, color: "#f5b041" },
-                    { category: "Late", value: 5, color: "#e74c3c" }
-                ]
-            }],
-            tooltip: {
-                visible: true,
-                template: "#= category #: #= value #%"
-            },
-            chartArea: {
-                background: "white"
-            },
-            theme: "flat"
-        });
-
-        // Kendo ListView for Upcoming Exams with improved data
-        var examData = [
-            { subject: "Mathematics", date: "2025-03-10", time: "10:00 AM", venue: "Room 101" },
-            { subject: "Science", date: "2025-03-12", time: "12:00 PM", venue: "Lab 3" },
-            { subject: "English", date: "2025-03-15", time: "9:00 AM", venue: "Room 202" },
-            { subject: "History", date: "2025-03-18", time: "11:30 AM", venue: "Room 305" },
-            { subject: "Physics", date: "2025-03-20", time: "2:00 PM", venue: "Room 108" }
-        ];
-
-        $("#examListView").kendoListView({
-            dataSource: new kendo.data.DataSource({
-                data: examData
-            }),
-            template: kendo.template($("#examTemplate").html())
-        });
-        
         // Calculate and display countdown for each exam
         function updateExamCountdowns() {
-            $(".exam-countdown").each(function() {
-                var examDate = new Date($(this).data("exam-date"));
+            $(".exam-countdown").each(function () {
+                var examDateStr = $(this).data("exam-date");
+                console.log("Raw Exam Date:", examDateStr); // Debugging
+
+                var examDate = new Date(examDateStr);
+                console.log("Parsed Exam Date:", examDate); // Check if it's a valid date
+
+                if (isNaN(examDate.getTime())) {
+                    console.error("Invalid date format:", examDateStr);
+                    return;
+                }
+
                 var now = new Date();
                 var diffTime = examDate - now;
                 var diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-                
+
                 if (diffDays > 0) {
                     $(this).text(diffDays + " days remaining");
                 } else {
@@ -550,53 +465,88 @@
                 }
             });
         }
-        
-        updateExamCountdowns();
-        setInterval(updateExamCountdowns, 3600000); // Update every hour
-        
-        // Kendo ProgressBar for payment status
-        $("#paymentProgress").kendoProgressBar({
-            min: 0,
-            max: 100,
-            value: 65,
-            type: "value",
-            animation: {
-                duration: 600
-            }
-        });
 
-        // Kendo ActionSheet for Payments with improved styling
-        $("#openActionSheet").click(function () {
-            $("#paymentActionSheet").data("kendoActionSheet").open();
-        });
 
-        $("#paymentActionSheet").kendoActionSheet({
-            items: [
-                { text: "Pay Fees Online", icon: "dollar", cssClass: "action-pay", click: function () { alert("Redirecting to payment gateway..."); } },
-                { text: "Download Fee Receipt", icon: "download", cssClass: "action-download", click: function () { alert("Generating receipt..."); } },
-                { text: "View Payment History", icon: "history", cssClass: "action-history", click: function () { alert("Loading payment history..."); } },
-                { text: "Fee Structure", icon: "file-txt", cssClass: "action-structure", click: function () { alert("Loading fee structure..."); } },
-                { text: "Cancel", icon: "close", cssClass: "action-close", click: function () { } }
-            ]
-        });
-        
-        // Add animation effects for a more dynamic dashboard
-        $('.stat-card, .k-card').css('opacity', '0').css('transform', 'translateY(20px)');
-        
+        // Kendo Splitter for syllabus Summary
+        // Try to access the syllabus data safely
+        function fetchPerformanceData(standardId) {
+            console.log("Fetching data using AJAX for standardID:", standardId);
+
+            return $.ajax({
+                url: `http://localhost:5190/api/subject-tracking/standard/${standardId}`,
+                method: "GET",
+                dataType: "json",
+            }).then(function (data) {
+                console.log("Fetched Data:", data);
+
+                if (!Array.isArray(data)) {
+                    console.error("Invalid data format received from API");
+                    return [];
+                }
+
+                return data.map(item => ({
+                    category: item.subject?.subjectName || "Unknown Subject",
+                    value: item.percentage ?? 0
+                }));
+            }).catch(function (xhr, status, error) {
+                console.error("AJAX Error:", status, error);
+                return [];
+            });
+        }
+
+
+        function initializeCharts(standardId) {
+            fetchPerformanceData(standardId).done(function (performanceData) {
+                if (!performanceData || performanceData.length === 0) {
+                    console.warn("No performance data available.");
+                    $("#performanceChart").html("<p style='color: red;'>No data available.</p>");
+                    return;
+                }
+
+                // **Destroy existing chart before creating a new one**
+                const existingChart = $("#performanceChart").data("kendoChart");
+                if (existingChart) {
+                    console.log("Destroying existing chart...");
+                    existingChart.destroy();
+                }
+
+                console.log("Creating new Kendo Chart...");
+                $("#performanceChart").kendoChart({
+                    title: { text: "Subjects", font: "16px 'Segoe UI', sans-serif", color: "#333" },
+                    legend: { position: "bottom" },
+                    seriesDefaults: { type: "column", stack: false },
+                    series: [{
+                        name: "Current Grade",
+                        data: performanceData.map(p => p.value),
+                        color: "#4b6cb7",
+                        labels: { visible: true, template: "#= value #%" }
+                    }],
+                    valueAxis: { max: 100, title: { text: "Coverage (%)" } },
+                    categoryAxis: { categories: performanceData.map(p => p.category) },
+                    tooltip: { visible: true, template: "#= category #: #= value #%" },
+                    chartArea: { background: "white" },
+                    theme: "flat"
+                });
+
+                // **Auto-refresh every 30 seconds**
+                setTimeout(() => initializeCharts(standardId), 30 * 1000);
+            });
+        }
+
         function animateElements() {
-            $('.stat-card').each(function(index) {
+            $('.stat-card').each(function (index) {
                 var $this = $(this);
-                setTimeout(function() {
+                setTimeout(function () {
                     $this.animate({
                         opacity: 1,
                         transform: 'translateY(0)'
                     }, 300);
                 }, index * 100);
             });
-            
-            $('.k-card').each(function(index) {
+
+            $('.k-card').each(function (index) {
                 var $this = $(this);
-                setTimeout(function() {
+                setTimeout(function () {
                     $this.animate({
                         opacity: 1,
                         transform: 'translateY(0)'
@@ -604,28 +554,121 @@
                 }, 400 + index * 150);
             });
         }
-        
-        setTimeout(animateElements, 100);
-    });
 
-    // Ajax call with loading indicator
-    $.ajax({
-        url: "/StudentDashboard/GetData",
-        type: "GET",
-        beforeSend: function() {
-            $("<div class='loading-indicator'><div class='spinner'></div><div>Loading data...</div></div>").appendTo("body");
-        },
-        success: function (data) {
-            console.log("Data received:", data);
-            // Update dashboard with received data
-        },
-        error: function (xhr, status, error) {
-            console.error("AJAX error:", status, error);
-            // Show error notification
-            $("<div class='error-notification'>Failed to load data. Please try again.</div>").appendTo("body").fadeIn().delay(3000).fadeOut();
-        },
-        complete: function() {
-            $(".loading-indicator").remove();
-        }
-    });
-</script>
+        @* DOCUMENT READY FUNCTION *@
+
+            $(document).ready(function () {
+
+                $("#stdValue").text(standardName);
+
+                // **Trigger Initialization on Page Load**
+                initializeCharts(standardId);
+
+                // Fetch subjects dynamically from API with a slight delay
+                setTimeout(function () {
+                    $.ajax({
+                        url: `http://localhost:5190/api/standard/${standardId}`,
+                        type: "GET",
+                        success: function (data) {
+                            console.log("Subjects Data:", data); // Debugging
+                            if (data.subjects && data.subjects.length > 0) {
+                                $("#subjectsListView").kendoListView({
+                                    dataSource: new kendo.data.DataSource({
+                                        data: data.subjects
+                                    }),
+                                    template: "<div class='subject-item'>#: subjectName #</div>"
+                                });
+                            } else {
+                                $("#subjectsListView").html("<p>No subjects found for this standard.</p>");
+                            }
+                        },
+                        error: function () {
+                            console.error("Error fetching subjects.");
+                            $("#subjectsListView").html("<p>Error fetching subjects.</p>");
+                        }
+                    });
+                }, 500); // 500ms delay before fetching subjects
+
+                // Kendo ListView for Upcoming Exams
+                var examListView = $("#examListView").kendoListView({
+                    dataSource: new kendo.data.DataSource({
+                        data: [] // Initially empty, will be updated dynamically
+                    }),
+                    template: kendo.template($("#examTemplate").html())
+                }).data("kendoListView");
+
+                // Call the function to fetch exams
+                fetchExams();
+
+                // Kendo ComboBox for Class Selection
+                $("#subjectsDropdown").kendoMultiSelect({
+                    placeholder: "Select Subjects",
+                    autoClose: false,
+                    tagMode: "single",
+                    animation: {
+                        open: {
+                            effects: "fadeIn",
+                            duration: 300
+                        }
+                    },
+                    dataSource: [] // Initially empty, will be populated dynamically
+                });
+
+                // Standard Dropdown
+                $("#standardDropdown").kendoDropDownList({
+                    optionLabel: "Select Standard",
+                    dataTextField: "StandardName",
+                    dataValueField: "StandardID",
+                    dataSource: {
+                        transport: {
+                            read: {
+                                url: "http://localhost:5190/api/student/40", // Your API for fetching standards
+                                dataType: "json"
+                            }
+                        }
+                    },
+                    change: function (e) {
+                        var standardID = this.value();
+                        if (standardID) {
+                            fetchSubjects(standardID);
+                            fetchExams(standardID);
+                        }
+                    }
+                });
+
+                updateExamCountdowns();
+                setInterval(updateExamCountdowns, 3600000); // Update every hour
+
+                // Kendo ProgressBar for payment status
+                $("#paymentProgress").kendoProgressBar({
+                    min: 0,
+                    max: 100,
+                    value: 65,
+                    type: "value",
+                    animation: {
+                        duration: 600
+                    }
+                });
+
+                // Kendo ActionSheet for Payments with improved styling
+                $("#openActionSheet").click(function () {
+                    $("#paymentActionSheet").data("kendoActionSheet").open();
+                });
+
+                $("#paymentActionSheet").kendoActionSheet({
+                    items: [
+                        { text: "Pay Fees Online", icon: "dollar", cssClass: "action-pay", click: function () { alert("Redirecting to payment gateway..."); } },
+                        { text: "Download Fee Receipt", icon: "download", cssClass: "action-download", click: function () { alert("Generating receipt..."); } },
+                        { text: "View Payment History", icon: "history", cssClass: "action-history", click: function () { alert("Loading payment history..."); } },
+                        { text: "Fee Structure", icon: "file-txt", cssClass: "action-structure", click: function () { alert("Loading fee structure..."); } },
+                        { text: "Cancel", icon: "close", cssClass: "action-close", click: function () { } }
+                    ]
+                });
+
+                // Add animation effects for a more dynamic dashboard
+                $('.stat-card, .k-card').css('opacity', '0').css('transform', 'translateY(20px)');
+
+                setTimeout(animateElements, 100);
+            });
+    </script>
+}
