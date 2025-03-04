@@ -23,6 +23,12 @@ namespace MVC.Controllers
         }
 
 
+        public IActionResult Home()
+        {
+            return View();
+        }
+
+
         public IActionResult Students()
         {
             return View();

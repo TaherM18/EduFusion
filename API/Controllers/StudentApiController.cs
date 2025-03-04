@@ -66,7 +66,7 @@ namespace API.Controller
         #endregion
 
 
-        #region Get
+        #region GetOne
         // GET: api/student/{id}
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Student>> GetStudent(int id)

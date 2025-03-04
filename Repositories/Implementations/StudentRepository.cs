@@ -84,17 +84,23 @@ namespace Repositories.Implementations
         }
         #endregion
 
+
         #region GetOne
         public async Task<Student?> GetOne(int id)
         {
             const string query = @"
             SELECT 
                 u.c_userid, u.c_first_name, u.c_last_name, u.c_birth_date, 
-                u.c_contact, u.c_email, u.c_gender, u.c_image, u.c_address, u.c_pincode, u.c_role,
-                s.c_studentID, s.c_standardID, s.c_roll_number, s.c_guardian_name, s.c_guardian_contact, s.c_section
+                u.c_contact, u.c_email, u.c_gender, u.c_image, u.c_address, u.c_pincode, u.c_role, u.c_image, u.c_is_active,
+                s.c_studentID, s.c_standardID, s.c_roll_number, s.c_guardian_name, s.c_guardian_contact, s.c_section,
+                std.c_standard_name
             FROM t_user u
-            INNER JOIN t_student s ON u.c_userid = s.c_studentID
-            WHERE u.c_userid = @id AND u.c_is_active = TRUE;";
+            INNER JOIN 
+                t_student s ON u.c_userID = s.c_studentID
+            INNER JOIN 
+                t_standard std ON s.c_standardID = std.c_standardID
+            WHERE 
+                u.c_userid = @id AND u.c_is_active = TRUE;";
 
             try
             {
@@ -121,14 +127,20 @@ namespace Repositories.Implementations
                             Image = reader.IsDBNull("c_image") ? null : reader.GetString("c_image"),
                             Address = reader.IsDBNull("c_address") ? "" : reader.GetString("c_address"),
                             Pincode = reader.IsDBNull("c_pincode") ? "" : reader.GetString("c_pincode"),
-                            Role = reader.GetString("c_role")
+                            Role = reader.GetString("c_role"),
+                            IsActive = reader.IsDBNull("c_is_active") ? false : reader.GetBoolean("c_is_active"),
                         },
                         StudentID = reader.GetInt32("c_studentID"),
                         StandardID = reader.GetInt32("c_standardID"),
                         RollNumber = reader.IsDBNull("c_roll_number") ? "" : reader.GetString("c_roll_number"),
                         GuardianName = reader.IsDBNull("c_guardian_name") ? "" : reader.GetString("c_guardian_name"),
                         GuardianContact = reader.IsDBNull("c_guardian_contact") ? "" : reader.GetString("c_guardian_contact"),
-                        Section = reader.GetString("c_section") ?? ""
+                        Section = reader.GetString("c_section") ?? "",
+                        Standard = new Standard()
+                        {
+                            StandardID = reader.GetInt32("c_standardID"),
+                            StandardName = reader.IsDBNull("c_standard_name") ? "" : reader.GetString("c_standard_name"),
+                        }
                     };
                 }
 
@@ -147,16 +159,23 @@ namespace Repositories.Implementations
         }
         #endregion
 
+
         #region GetAll
         public async Task<List<Student>?> GetAll()
         {
             const string query = @"
             SELECT 
                 u.c_userid, u.c_first_name, u.c_last_name, u.c_birth_date, 
-                u.c_contact, u.c_email, u.c_gender, u.c_image, u.c_address, u.c_pincode, u.c_role,
-                s.c_studentID, s.c_standardID, s.c_roll_number, s.c_guardian_name, s.c_guardian_contact, s.c_section
+                u.c_contact, u.c_email, u.c_gender, u.c_image, u.c_address, u.c_pincode, u.c_role, u.c_image, u.c_is_active,
+                s.c_studentID, s.c_standardID, s.c_roll_number, s.c_guardian_name, s.c_guardian_contact, s.c_section,
+                std.c_standard_name
             FROM t_user u
-            INNER JOIN t_student s ON u.c_userid = s.c_studentID";
+            INNER JOIN 
+                t_student s ON u.c_userID = s.c_studentID
+            INNER JOIN 
+                t_standard std ON s.c_standardID = std.c_standardID
+            WHERE 
+                u.c_is_active = TRUE;";
 
             List<Student> studentList = new List<Student>();
             try
@@ -183,14 +202,20 @@ namespace Repositories.Implementations
                             Image = reader.IsDBNull("c_image") ? null : reader.GetString("c_image"),
                             Address = reader.IsDBNull("c_address") ? "" : reader.GetString("c_address"),
                             Pincode = reader.IsDBNull("c_pincode") ? "" : reader.GetString("c_pincode"),
-                            Role = reader.GetString("c_role")
+                            Role = reader.GetString("c_role"),
+                            IsActive = reader.IsDBNull("c_is_active") ? false : reader.GetBoolean("c_is_active"),
                         },
                         StudentID = reader.GetInt32("c_studentID"),
                         StandardID = reader.GetInt32("c_standardID"),
                         RollNumber = reader.IsDBNull("c_roll_number") ? "" : reader.GetString("c_roll_number"),
                         GuardianName = reader.IsDBNull("c_guardian_name") ? "" : reader.GetString("c_guardian_name"),
                         GuardianContact = reader.IsDBNull("c_guardian_contact") ? "" : reader.GetString("c_guardian_contact"),
-                        Section = reader.GetString("c_section") ?? ""
+                        Section = reader.GetString("c_section") ?? "",
+                        Standard = new Standard()
+                        {
+                            StandardID = reader.GetInt32("c_standardID"),
+                            StandardName = reader.IsDBNull("c_standard_name") ? "" : reader.GetString("c_standard_name"),
+                        }
                     };
 
                     studentList.Add(student);
@@ -210,6 +235,7 @@ namespace Repositories.Implementations
             }
         }
         #endregion
+
 
         #region Update
         public async Task<int> Update(Student data)
@@ -275,6 +301,7 @@ namespace Repositories.Implementations
             }
         }
         #endregion
+
 
         #region Add
         public async Task<int> Add(Student data)

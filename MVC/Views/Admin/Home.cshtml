@@ -1,0 +1,74 @@
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div id="studentGrid"></div>
+
+@section Scripts {
+    <script>
+        const baseUrl = "http://localhost:5190/api";
+        $(document).ready(function () {
+            $("#studentGrid").kendoGrid({
+                dataSource: {
+                    transport: {
+                        read: { url: `${baseUrl}/student`, dataType: "json" },
+                        create: { url: `${baseUrl}/student`, type: "POST", dataType: "json" },
+                        update: { url: `${baseUrl}/student`, type: "PUT", dataType: "json" },
+                        destroy: { url: `${baseUrl}/student`, type: "DELETE", dataType: "json" },
+                        parameterMap: function (data, type) {
+                            if (type === "create" || type === "update") {
+                                return data;
+                            }
+                            return data;
+                        }
+                    },
+                    schema: {
+                        model: {
+                            id: "studentID",
+                            fields: {
+                                studentID: { type: "number", editable: false },
+                                rollNumber: { type: "string", validation: { required: true } },
+                                guardianName: { type: "string" },
+                                guardianContact: { type: "string" },
+                                section: { type: "string" },
+                                standardID: { type: "number", validation: { required: true } },
+                                standardName: { type: "string" }
+                            }
+                        }
+                    },
+                    pageSize: 10
+                },
+                toolbar: ["create"],
+                pageable: true,
+                editable: "popup",
+                columns: [
+                    { field: "rollNumber", title: "Roll No", width: "120px" },
+                    { field: "guardianName", title: "Guardian", width: "150px" },
+                    { field: "guardianContact", title: "Contact", width: "120px" },
+                    { field: "section", title: "Section", width: "80px" },
+                    { field: "standardID", title: "Standard", template: "#= standard ? standard.standardName : 'N/A' #", width: "150px", editor: standardDropDown, template: "#=standardName#" },
+                    { command: ["edit", "destroy"], title: "Actions", width: "200px" }
+                ]
+            });
+
+            function standardDropDown(container, options) {
+                $('<input required name="standardID">')
+                    .appendTo(container)
+                    .kendoDropDownList({
+                        optionLabel: "Select Standard",
+                        dataTextField: "standardName",
+                        dataValueField: "standardID",
+                        dataSource: {
+                            transport: {
+                                read: {
+                                    url: `${baseUrl}/standard`,
+                                    dataType: "json"
+                                }
+                            }
+                        }
+                    });
+            }
+        });
+    </script>
+}

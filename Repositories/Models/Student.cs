@@ -22,6 +22,8 @@ namespace Repositories.Models
         [MaxLength(10)]
         public string Section { get; set; } = "N/A";
 
+        public bool IsApproved { get; set; } = false;
+
         [ForeignKey("StudentID")]
         public User? User { get; set; }
         public Standard? Standard { get; set; }
