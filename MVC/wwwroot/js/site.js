@@ -7,7 +7,7 @@ function CheckLogin() {
     console.log( url[0]);
     if (!IsAuth() || GetUserData().user.role.toLowerCase() != url[0].toLowerCase()) {
         console.log("Logged out")
-        window.location.href = "/auth/login"
+        // window.location.href = "/auth/login"
     }
     console.log("Logged in")
 }

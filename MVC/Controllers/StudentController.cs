@@ -24,7 +24,7 @@ namespace MVC.Controllers
         }
 
 
-        public IActionResult profile()
+        public IActionResult Profile()
         {
             return View();
         }

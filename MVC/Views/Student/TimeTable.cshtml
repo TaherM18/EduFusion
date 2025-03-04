@@ -1,0 +1,163 @@
+@{
+    ViewData["Title"] = "Timetable";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet"
+    href="https://cdnjs.cloudflare.com/ajax/libs/kendo-ui/2023.3.1114/styles/kendo.bootstrap-v4.min.css" />
+
+<style>
+    body {
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background-color: #f5f5f5;
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background-color: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        padding: 25px;
+    }
+
+    h2 {
+        color: #1a75cf;
+        margin-bottom: 20px;
+        border-bottom: 2px solid #e6e6e6;
+        padding-bottom: 10px;
+        font-weight: 600;
+    }
+
+    #grid {
+        margin-top: 20px;
+    }
+
+    .k-grouping-header {
+        font-size: 16px;
+        font-weight: bold;
+        color: #333;
+    }
+
+    .day-tag {
+        display: inline-block;
+        padding: 6px 12px;
+        border-radius: 4px;
+        font-size: 14px;
+        color: white;
+        cursor: pointer;
+        margin: 5px;
+        text-align: center;
+    }
+
+    .day-Sunday {
+        background-color: #dc3545;
+    }
+
+    .day-Monday {
+        background-color: #fd7e14;
+    }
+
+    .day-Tuesday {
+        background-color: #28a745;
+    }
+
+    .day-Wednesday {
+        background-color: #17a2b8;
+    }
+
+    .day-Thursday {
+        background-color: #6610f2;
+    }
+
+    .day-Friday {
+        background-color: #007bff;
+    }
+
+    .day-Saturday {
+        background-color: #6c757d;
+    }
+</style>
+
+<div class="container">
+    <h2><i class="k-icon k-i-calendar"></i> Class Timetable</h2>
+    <div id="grid"></div>
+</div>
+
+@section Scripts {
+    <script>
+        let timeTableUrl = "http://localhost:5190/api/timetable/standard/6";
+
+        function getDayName(num) {
+            const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            return days[num - 1] || "Unknown";
+        }
+
+        $(document).ready(function () {
+            $.ajax({
+                url: timeTableUrl,
+                type: "GET",
+                dataType: "json",
+                success: function (data) {
+                    data.forEach(item => {
+                        item.dayName = getDayName(item.dayOfWeek); // Convert day number to weekday name
+                    });
+
+                    const weekdayOrder = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"];
+
+                    $("#grid").kendoGrid({
+                        dataSource: {
+                            data: data,
+                            schema: {
+                                model: {
+                                    id: "timetableID",
+                                    fields: {
+                                        timetableID: { type: "number" },
+                                        subjectID: { type: "number" },
+                                        classID: { type: "number" },
+                                        dayOfWeek: { type: "number" },
+                                        startTime: { type: "string" },
+                                        endTime: { type: "string" },
+                                        dayName: { type: "string" }
+                                    }
+                                }
+                            },
+                            group: {
+                                field: "dayName",
+                                dir: "asc",
+                                compare: function (a, b) {
+                                    return weekdayOrder.indexOf(a.value) - weekdayOrder.indexOf(b.value);
+                                }
+                            },
+                            pageSize: 10,
+                            sort: [{ field: "dayOfWeek", dir: "asc" }] // Ensure Monday starts first
+                        },
+                        height: 550,
+                        pageable: true,
+                        sortable: true,
+                        filterable: true,
+                        groupable: true,
+                        columns: [
+                            { field: "timetableID", title: "ID", width: "70px", headerAttributes: { style: "text-align: center" }, attributes: { style: "text-align: center" } },
+                            { field: "subjectID", title: "Subject", template: "#= subject ? subject.subjectName : 'N/A' #", width: "150px" },
+                            { field: "classID", title: "Class", template: "#= classModel ? classModel.className : 'N/A' #", width: "150px" },
+                            { field: "dayName", title: "Day", template: "<span class='day-tag day-#= dayName #' onclick='filterByDay(\"#= dayName #\")'>#= dayName #</span>", width: "120px", headerAttributes: { style: "text-align: center" }, attributes: { style: "text-align: center" } },
+                            { field: "startTime", title: "Start Time", template: "<span class='time-cell'>#= startTime #</span>", width: "120px", headerAttributes: { style: "text-align: center" }, attributes: { style: "text-align: center" } },
+                            { field: "endTime", title: "End Time", template: "<span class='time-cell'>#= endTime #</span>", width: "120px", headerAttributes: { style: "text-align: center" }, attributes: { style: "text-align: center" } },
+                            @* { command: ["edit", "destroy"], title: "Actions", width: "180px" } *@
+                        ]
+                    });
+                },
+                error: function (error) {
+                    console.error("Error fetching timetable data:", error);
+                }
+            });
+
+            window.filterByDay = function (dayName) {
+                const grid = $("#grid").data("kendoGrid");
+                grid.dataSource.filter({ field: "dayName", operator: "eq", value: dayName });
+            };
+        });
+    </script>
+}

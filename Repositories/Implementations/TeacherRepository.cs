@@ -665,9 +665,9 @@ namespace Repositories.Implementations
                     {
                         TimeTable timetable = new TimeTable
                         {
-                            Id = Convert.ToInt32(reader["Id"]),
-                            Start = reader.GetTimeSpan(reader.GetOrdinal("Start")),
-                            End = reader.GetTimeSpan(reader.GetOrdinal("End")),
+                            TimetableID = Convert.ToInt32(reader["Id"]),
+                            StartTime = reader.GetTimeSpan(reader.GetOrdinal("Start")),
+                            EndTime = reader.GetTimeSpan(reader.GetOrdinal("End")),
                             DayOfWeek = Convert.ToInt32(reader["DayOfWeek"]),
                             Subject = new Subject
                             {
@@ -718,11 +718,11 @@ namespace Repositories.Implementations
                 _con.Open();
                 using (NpgsqlCommand cmd = new NpgsqlCommand(query, _con))
                 {
-                    cmd.Parameters.AddWithValue("@StartTime", timeTable.Start);
-                    cmd.Parameters.AddWithValue("@EndTime", timeTable.End);
+                    cmd.Parameters.AddWithValue("@StartTime", timeTable.StartTime);
+                    cmd.Parameters.AddWithValue("@EndTime", timeTable.EndTime);
                     cmd.Parameters.AddWithValue("@DayOfWeek", timeTable.DayOfWeek);
-                    cmd.Parameters.AddWithValue("@SubjectID", timeTable.SubjectId);
-                    cmd.Parameters.AddWithValue("@c_classID", timeTable.ClassId);
+                    cmd.Parameters.AddWithValue("@SubjectID", timeTable.SubjectID);
+                    cmd.Parameters.AddWithValue("@c_classID", timeTable.ClassID);
 
                     cmd.ExecuteNonQuery();
                     return 1;
