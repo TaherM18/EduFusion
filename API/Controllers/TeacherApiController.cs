@@ -26,6 +26,10 @@ namespace API.Controller
         {
             try
             {
+                if (teacher.User?.ImageFile != null)
+                {
+                    teacher.User.Image = await _fileHelper.UploadProfileImage(_profileImagePath, teacher.User.ImageFile, teacher.User?.Image);
+                }
                 int userId = await _teacherRepo.Register(teacher);
                 if (userId != 0)
                 {

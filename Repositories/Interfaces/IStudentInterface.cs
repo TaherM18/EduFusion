@@ -7,5 +7,6 @@ namespace Repositories.Interfaces
         public Task<int> Register(Student student);
 
         public Task<int> Approve(int sid);
+        public Task<int> UnApprove(int sid);
     }
 }

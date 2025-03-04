@@ -21,6 +21,7 @@
 //         {
 //             try
 //             {
+                
 //                 List<StudentProgress> result = await _teacher.GetStudentProgress();
 //                 return Ok(result);
 //             }
