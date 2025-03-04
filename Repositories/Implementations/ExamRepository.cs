@@ -118,6 +118,7 @@ namespace Repositories.Implementations
                         ClassID = reader.GetInt32("c_classID"),
                         TotalMarks = reader.GetInt32("c_total_marks"),
                         ExamDate = reader.GetDateTime("c_exam_date"),
+                        StartTime = reader.GetTimeSpan(reader.GetOrdinal("c_start_time")),
                         Subject = new Subject()
                         {
                             SubjectID = reader.IsDBNull("c_subjectID") ? 0 : reader.GetInt32("c_subjectID"),
@@ -193,6 +194,7 @@ namespace Repositories.Implementations
                         SubjectID = reader.IsDBNull("c_subjectID") ? 0 : reader.GetInt32("c_subjectID"),
                         TotalMarks = reader.IsDBNull("c_total_marks") ? 0 : reader.GetInt32("c_total_marks"),
                         ExamDate = reader.IsDBNull("c_exam_date") ? DateTime.Today : reader.GetDateTime("c_exam_date"),
+                        StartTime = reader.GetTimeSpan(reader.GetOrdinal("c_start_time")),
                         Subject = new Subject()
                         {
                             SubjectID = reader.IsDBNull("c_subjectID") ? 0 : reader.GetInt32("c_subjectID"),
