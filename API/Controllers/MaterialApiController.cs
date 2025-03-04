@@ -56,7 +56,7 @@ namespace API.Controllers
         public async Task<ActionResult> GetOneAsync(int id)
         {
             var material = await _materialRepository.GetOne(id);
-            
+
             if (material == null)
                 return NotFound();
 
@@ -112,19 +112,35 @@ namespace API.Controllers
         [HttpGet("download/{id}")]
         public async Task<IActionResult> Download(int id)
         {
-            var material = await _materialRepository.GetOne(id);
+            try
+            {
+                var material = await _materialRepository.GetOne(id);
 
-            if (material == null || string.IsNullOrEmpty(material.FileName))
-                return NotFound();
+                if (material == null || string.IsNullOrEmpty(material.FileName))
+                {
+                    Console.WriteLine($"[ERROR] File not found in DB for ID: {id}");
+                    return NotFound("Material not found.");
+                }
 
-            string filePath = Path.Combine(_materialDirectoryPath, material.FileName);
+                // Sanitize file name to prevent path traversal attacks
+                string safeFileName = Path.GetFileName(material.FileName);
+                string filePath = Path.Combine(_materialDirectoryPath ?? "", safeFileName);
 
-            if (!System.IO.File.Exists(filePath))
-                return NotFound();
+                if (!System.IO.File.Exists(filePath))
+                {
+                    Console.WriteLine($"[ERROR] File does not exist: {filePath}");
+                    return NotFound("File not found on server.");
+                }
 
-            var bytes = await System.IO.File.ReadAllBytesAsync(filePath);
+                var bytes = await System.IO.File.ReadAllBytesAsync(filePath);
 
-            return File(bytes, "application/octet-stream", material.FileName);
+                return File(bytes, "application/octet-stream", safeFileName);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"[ERROR] Download failed for ID {id}: {ex.Message}");
+                return StatusCode(500, "An error occurred while processing the request.");
+            }
         }
         #endregion
     }
