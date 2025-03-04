@@ -1,0 +1,105 @@
+@{
+    ViewData["Title"] = "Admin Materials";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div id="grid"></div>
+
+<script>
+    function downloadFile(materialID, fileName, button) {
+        console.log(button);
+
+        if (!materialID || !fileName) {
+            alert("Invalid Material ID or File Name!");
+            return;
+        }
+
+        // Sanitize file name to prevent security risks
+        let safeFileName = fileName.replace(/[<>:"\/\\|?*]/g, '_');
+        let downloadUrl = `http://localhost:5190/api/materials/download/${materialID}`;
+
+        // Disable button & show loading indicator
+        button.prop("disabled", true).text("Downloading...");
+
+        fetch(downloadUrl)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("File not found or API error");
+                }
+                return response.blob();
+            })
+            .then(blob => {
+                const link = document.createElement("a");
+                link.href = URL.createObjectURL(blob);
+                link.download = safeFileName || "downloaded-file";
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            })
+            .catch(error => {
+                console.error("Download error:", error);
+                alert("File download failed. Please check if the file exists.");
+            })
+            .finally(() => {
+                // Re-enable button after download attempt
+                button.prop("disabled", false).text("Download");
+            });
+    }
+
+
+    $(document).ready(function () {
+        $("#grid").kendoGrid({
+            dataSource: {
+                transport: {
+                    read: {
+                        url: "http://localhost:5190/api/materials",
+                        dataType: "json"
+                    }
+                },
+                schema: {
+                    model: {
+                        fields: {
+                            materialID: { type: "number" },
+                            fileName: { type: "string" },
+                            subjectID: { type: "string" },
+                            subject: {
+                                defaultValue: {
+                                    standard: {},
+                                    teacher: {
+                                        user: {}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                pageSize: 10
+            },
+            height: 550,
+            pageable: true,
+            columns: [
+                { field: "materialID", title: "ID", width: "50px" },
+                { field: "fileName", title: "File Name", width: "200px" },
+                { field: "subjectID", title: "Subject Name", template: "#= subject ? subject.subjectName : 'N/A' #", width: "200px" },
+                {
+                    title: "Actions",
+                    width: "150px",
+                    template: `<button class='btn btn-primary btn-sm download-btn' data-id='#:materialID#' data-filename='#:fileName#'>Download</button>`
+                }
+            ]
+        });
+
+        // Attach click event handler for dynamically generated buttons
+        $(document).on("click", ".download-btn", function () {
+            let button = $(this);
+            let materialID = button.data("id");
+            let fileName = button.data("filename");
+
+            console.log("materialID:", materialID);
+            console.log("fileName:", fileName);
+
+            downloadFile(materialID, fileName, button);
+        });
+
+    });
+</script>
