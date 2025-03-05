@@ -98,7 +98,19 @@ $(document).ready(function () {
                         // Redirect with animation
                         setTimeout(function () {
                             $(".login-container").animate({ opacity: 0 }, 300, function () {
-                                window.location.href = "/home/index";
+                                let role = GetUserData().user ? GetUserData().user.role : GetUserData().role
+                                if (role == "A") {
+                                    window.location.href = "/admin/index";
+                                }
+                                else if (role == "S") {
+                                    window.location.href = "/student/index";
+                                }
+                                else if (role == "T") {
+                                    window.location.href = "/teacher/dashboard";
+                                }
+                                else {
+                                    window.location.href = "/home/index";
+                                } 
                             });
                         }, 1000);
                     } else {

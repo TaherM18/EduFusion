@@ -2,7 +2,7 @@
 $(document).ready(function () {
     
 
-    let id = GetUserData().studentID
+    let id = GetUserData().studentID || 50;
     $.ajax({
         url: `http://localhost:5190/api/student/${id}`,
         type: 'GET',

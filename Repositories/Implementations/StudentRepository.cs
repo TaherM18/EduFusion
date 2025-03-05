@@ -94,7 +94,7 @@ namespace Repositories.Implementations
             SELECT 
                 u.c_userid, u.c_first_name, u.c_last_name, u.c_birth_date, 
                 u.c_contact, u.c_email, u.c_gender, u.c_image, u.c_address, u.c_pincode, u.c_role, u.c_image, u.c_is_active,
-                s.c_studentID, s.c_standardID, s.c_roll_number, s.c_guardian_name, s.c_guardian_contact, s.c_section, s.c_is_approved
+                s.c_studentID, s.c_standardID, s.c_roll_number, s.c_guardian_name, s.c_guardian_contact, s.c_section, s.c_is_approved,
                 std.c_standard_name
             FROM t_user u
             INNER JOIN 

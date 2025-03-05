@@ -87,7 +87,9 @@
 
 @section Scripts {
     <script>
-        let timeTableUrl = "http://localhost:5190/api/timetable/standard/6";
+        const student = GetUserData();
+        const standardID = student.standardID || 6;
+        let timeTableUrl = `http://localhost:5190/api/timetable/standard/${standardID}`;
 
         function getDayName(num) {
             const days = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];

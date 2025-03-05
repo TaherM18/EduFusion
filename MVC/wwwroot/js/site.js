@@ -13,9 +13,11 @@ function CheckLogin() {
         return;
     }
 
-    if (!IsAuth() || GetUserData().user.role.toLowerCase() !== firstSegment) {
+    let role = GetUserData().user ? GetUserData().user.role : GetUserData().role
+
+    if (!IsAuth() || role.toLowerCase() !== firstSegment) {
         console.log("Logged out");
-        window.location.href = "/auth/login";
+        // window.location.href = "/auth/login";
     } else {
         console.log("Logged in");
     }

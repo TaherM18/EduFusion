@@ -1,6 +1,7 @@
 let vrequired = true;
 
 $(document).ready(function () {
+  $("#notification").kendoNotification();
   $("<style>", {
     type: "text/css",
     html: `
@@ -337,8 +338,9 @@ $(document).ready(function () {
     let enteredCaptcha = $("#CaptchaInput").val();
     let generatedCaptcha = $("#CaptchaInput").data("generatedCaptcha");
 
-    if (enteredCaptcha != generatedCaptcha) {
-      alert("CAPTCHA validation failed! Please try again.");
+    if (enteredCaptcha !== generatedCaptcha) {
+      var notification = $("#notification").data("kendoNotification");
+      notification.show("CAPTCHA validation failed! Please try again.", "error");
       generateCaptcha();
       return;
     }

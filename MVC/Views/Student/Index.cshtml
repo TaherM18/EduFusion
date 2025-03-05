@@ -360,7 +360,7 @@
                                 </script>
 
     <script>
-        const student = sessionStorage.getItem("user");
+        const student = GetUserData();
         const standardId = student ? student.standardID : 4;
         const standardName = student ? student.standard.standardName : "4th";
 
