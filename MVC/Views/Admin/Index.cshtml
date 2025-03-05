@@ -1,6 +1,6 @@
 @{
-    ViewData["Title"] = "Students";
-    Layout = "~/Views/Shared/_MergeLayout.cshtml";
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
 
 <div class="container">
@@ -10,7 +10,7 @@
 @section Scripts {
     <script>
         $(document).ready(function () {
-            const apiUrl = "http://localhost:5190/api/subject-tracking"; // Replace with your API
+            const apiUrl = "http://localhost:5190/api/subject-tracking"; // API
 
             // Fetch API Data
             $.ajax({

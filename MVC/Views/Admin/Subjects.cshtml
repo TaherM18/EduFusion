@@ -1,0 +1,102 @@
+<style>
+    body {
+        background-color: #f4f7f9;
+        font-family: 'Arial', sans-serif;
+    }
+
+    .container {
+        max-width: 800px;
+        margin: 50px auto;
+        background: white;
+        padding: 30px;
+        border-radius: 10px;
+        box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 20px;
+    }
+
+    #treeview {
+        border: 1px solid #ddd;
+        padding: 15px;
+        border-radius: 8px;
+        background: #fff;
+    }
+</style>
+
+<div class="container">
+    <h2>Hierarchical Subjects View</h2>
+    <div id="treeview"></div>
+</div>
+
+@section Scripts {
+    <script>
+
+        $(document).ready(function () {
+
+            // Initialize Kendo UI TreeView
+            @* $("#treeview").kendoTreeView({
+                dataSource: {
+                    transport: {
+                        read: {
+                            url : 'http://localhost:5190/api/standard'
+                        }
+                    }
+                }
+            });
+        }); *@
+
+                $.ajax({
+                    url: 'http://localhost:5190/api/standard', // API
+                    method: "GET",
+                    dataType: "json",
+                    success: function (response) {
+                        console.log("API Response:", response);
+                        console.log("Heetet");
+                        // Transform API data to hierarchical format
+                        var treeData = transformData(response);
+
+                        // Bind data to Kendo TreeView
+                        $("#treeview").kendoTreeView({
+                            dataSource: treeData,
+                            dataTextField: "text"
+                        });
+                    },
+                    error: function (error) {
+                        console.log("Error fetching data:", error);
+                    }
+                });
+
+            // Function to transform flat data to hierarchical structure
+            function transformData(apiData) {
+                let treeData = [];
+
+                apiData.forEach(standard => {
+                    let standardNode = {
+                        id: standard.standardID,
+                        text: standard.standardName,
+                        expanded: true,
+                        items: []
+                    };
+
+                    standard.subjects.forEach(subject => {
+                        let subjectNode = {
+                            id: subject.subjectID,
+                            text: `${subject.subjectName} (${subject.marks} Marks)`
+                        };
+
+                        standardNode.items.push(subjectNode);
+                    });
+
+                    treeData.push(standardNode);
+                });
+
+                return treeData;
+            }
+
+        });
+    </script>
+}

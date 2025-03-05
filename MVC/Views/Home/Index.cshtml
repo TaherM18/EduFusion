@@ -26,7 +26,101 @@
             </div>
         </div>
     </section>
+<!-- Our Users Section with TabStrip -->
+    <section class="py-5 text-center bg-white">
 
+        <h2 class="fw-bold">Our Users</h2>
+        <div class="user-card mx-auto mt-4 p-4 shadow-lg rounded" style="max-width: 800px; background-color: #f8f9fa;">
+            <div id="schoolTabstrip">
+                <ul>
+                    <li class="k-active">Greenwood High</li>
+                    <li>Sunrise Public School</li>
+                    <li>Oakridge International</li>
+                    <li>Bluebell Academy</li>
+                </ul>
+                <div>
+                    <h2>Greenwood High</h2>
+                    <p>Located in New York, Greenwood High offers excellent academic and extracurricular programs.
+                    </p>
+                </div>
+                <div>
+                    <h2>Sunrise Public School</h2>
+                    <p>Based in California, it is known for its strong emphasis on STEM education.</p>
+                </div>
+                <div>
+                    <h2>Oakridge International</h2>
+                    <p>A global school in Texas with IB and Cambridge curricula.</p>
+                </div>
+                <div>
+                    <h2>Bluebell Academy</h2>
+                    <p>Located in Florida, it focuses on holistic development and innovation.</p>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <style>
+        .user-card {
+            text-align: center;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        #schoolTabstrip {
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        #schoolTabstrip .k-tabstrip-items {
+            background-color: #2c3e50;
+            color: white;
+            border-radius: 5px;
+            padding: 10px;
+        }
+
+        #schoolTabstrip .k-tabstrip-items li {
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-size: 1.1em;
+            font-weight: bold;
+            color: #f8c02d;
+        }
+
+        #schoolTabstrip .k-content {
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        #schoolTabstrip h2 {
+            font-weight: bold;
+            font-size: 2em;
+            margin-top: 20px;
+        }
+
+        #schoolTabstrip p {
+            font-size: 1.2em;
+            color: #555;
+        }
+    </style>
+
+    <script>
+        $(document).ready(function () {
+            var tabStrip = $("#schoolTabstrip").kendoTabStrip({
+                animation: {
+                    open: {
+                        effects: "fadeIn"
+                    }
+                },
+                select: false // Prevents automatic selection of the first tab
+            }).data("kendoTabStrip");
+
+            tabStrip.deactivateTab(tabStrip.select()); // Ensure no tab is selected on load
+        });
+    </script>
     <!-- Key Features Section -->
     <section id="features" class="py-5 bg-light">
         <div class="container">

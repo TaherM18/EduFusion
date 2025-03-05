@@ -1,3 +1,5 @@
+let baseUrl = "http://localhost:5190/api";
+
 $(document).ready(function () {
     initializeKendoComponents();
 });
@@ -31,7 +33,7 @@ function loadStudentGrid() {
         dataSource: {
             transport: {
                 read: {
-                    url: baseUrl + "/student",
+                    url: "http://localhost:5190/api" + "/student",
                     type: "GET",
                     dataType: "json"
                 }
@@ -92,7 +94,7 @@ function loadStudentGrid() {
 
 async function Approve(id) {
     $.ajax({
-        url: baseUrl + `/student/approve/${id}`,
+        url: "http://localhost:5190/api" + `/student/approve/${id}`,
         method: "PUT",
         success: function (response) {
             showNotification("Approved Successfully", "success");
@@ -155,7 +157,7 @@ $("#btnExport").click(function () {
 
 async function UnApprove(id) {
     $.ajax({
-        url: baseUrl + `/student/unapprove/${id}`,
+        url: "http://localhost:5190/api" + `/student/unapprove/${id}`,
         method: "PUT",
         success: function (response) {
             showNotification("Approved Successfully", "success");
@@ -267,7 +269,7 @@ function openAddForm() {
 // Open Modal for Editing Existing Student
 function openEditForm(id) {
     $.ajax({
-        url: `${baseUrl}/student/${id}`,
+        url: `http://localhost:5190/api/student/${id}`,
         type: "GET",
         success: function (response) {
             loadStudentForm(response);
@@ -291,6 +293,8 @@ function closeModal() {
 
 // Save Student (Create/Update)
 function saveStudent(model) {
+    console.log("saveStudent(model)",model);
+    
     var formData = new FormData();
 
     // Append scalar fields
@@ -322,7 +326,7 @@ function saveStudent(model) {
 
     // Send AJAX request
     $.ajax({
-        url: baseUrl,
+        url: "http://localhost:5190/api/student",
         type: model.studentID ? "PUT" : "POST",
         data: formData,
         contentType: false, // Important: Don't set Content-Type for FormData
@@ -344,7 +348,7 @@ function saveStudent(model) {
 function deleteStudent(id) {
     if (confirm("Are you sure you want to delete this student?")) {
         $.ajax({
-            url: `${baseUrl}/${id}`,
+            url: `http://localhost:5190/api/student/${id}`,
             type: "DELETE",
             success: function (response) {
                 if (response.success) {
