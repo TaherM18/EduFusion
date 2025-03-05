@@ -116,40 +116,126 @@
         .footer a:hover {
             text-decoration: underline;
         }
+
+        /* Style Kendo Menu like Bootstrap Navbar */
+        #kendoMenu {
+            background: linear-gradient(90deg, #2c3e50, #34495e) !important;
+            border-radius: 5px;
+        }
+
+        /* Match menu items to navbar styles */
+        .k-menu .k-link {
+            color: white !important;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 12px 15px;
+            text-decoration: none;
+            transition: color 0.3s ease-in-out;
+        }
+
+        .k-menu .k-link:hover {
+            color: #f8c02d !important;
+            transform: scale(1.1);
+        }
+
+        /* Toolbar styling */
+        #kendoToolbar {
+            background: linear-gradient(90deg, #2c3e50, #34495e) !important;
+            border-radius: 5px;
+            padding: 5px;
+        }
+
+        /* Toolbar buttons */
+        .k-toolbar .k-button {
+            background: none !important;
+            color: white !important;
+            font-size: 16px;
+            font-weight: 500;
+            border: none !important;
+            transition: color 0.3s ease-in-out;
+        }
+
+        /* Hover effect for toolbar buttons */
+        .k-toolbar .k-button:hover {
+            color: #f8c02d !important;
+            transform: scale(1.1);
+        }
+
+        /* Adjust icons */
+        .k-toolbar .k-icon {
+            color: white !important;
+            font-size: 18px !important;
+            margin-right: 5px;
+        }
+        .k-menu .k-item .k-item> .k-link {
+        color: #f8c02d !important; /* Orange */
+    }
+
+    /* Change text color to white on hover */
+    .k-menu .k-item > .k-link:hover {
+        color: #FFFFFF !important; /* White */
+    }
     </style>
 </head>
 
 <body>
-    <!-- Navbar -->
     <nav class="navbar navbar-expand-lg navbar-dark">
         <a class="navbar-brand d-flex align-items-center" href="/">
-            <img src="~/Logo3.png" alt="EduTrack Logo" style="height: auto; object-fit: cover; width: 200px;" >
+            <img src="~/Logo3.png" alt="EduTrack Logo" style="height: auto; object-fit: cover; width: 200px;">
         </a>
         <div class="container">
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
-                <ul class="navbar-nav">
-                    <li class="nav-item">
-                        <a class="nav-link" href="/">
-                            <i class="fas fa-home"></i> Home
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="Teacher" asp-action="Register">
-                            <i class="fas fa-user-plus"></i> Teacher Register
-                        </a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" asp-area="" asp-controller="User" asp-action="Login">
-                            <i class="fas fa-sign-in-alt"></i> Login
-                        </a>
-                    </li>
-                </ul>
+            <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
+                <!-- Kendo Menu Inside Navbar -->
+                <div id="kendoMenu"></div>
+
+                <!-- Kendo Toolbar Inside Navbar -->
+                <div id="kendoToolbar"></div>
             </div>
         </div>
     </nav>
+
+
+    <script>
+        $(document).ready(function () {
+            // Initialize Kendo Menu with submenu opening beside
+            $("#kendoMenu").kendoMenu({
+                openOnClick: false, // Keep default hover behavior
+                direction: "right", // Ensure submenus open beside the parent menu
+                dataSource: [
+                    { text: "Home", url: "/" },
+                    { text: "Teacher Register", url: "/Teacher/Register" },
+                    { text: "Login", url: "/Auth/Login" },
+                    {
+                        text: "More",
+                        items: [
+                            { text: "Courses"},
+                            { text: "Reports"},
+                            {
+                                text: "Other Options", items: [
+                                    
+                                    { text: "Settings"},
+                                    { text: "Help" },
+                                    { text: "Contact Us"}
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            });
+
+            // Initialize Kendo Toolbar (Only Search and Notifications)
+            $("#kendoToolbar").kendoToolBar({
+                items: [
+                    { type: "button", text: "Search", icon: "search", click: function () { alert("Search clicked!"); } },
+                    { type: "button", text: "Notifications", icon: "bell", click: function () { alert("No new notifications"); } }
+                ]
+            });
+        });
+    </script>
+
 
     <!-- Main Content -->
     <div class="container mt-5 content">
@@ -165,4 +251,5 @@
         </div>
     </footer>
 </body>
+
 </html>

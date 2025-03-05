@@ -17,7 +17,7 @@ function CheckLogin() {
 
     if (!IsAuth() || role.toLowerCase() !== firstSegment) {
         console.log("Logged out");
-        // window.location.href = "/auth/login";
+        window.location.href = "/auth/login";
     } else {
         console.log("Logged in");
     }

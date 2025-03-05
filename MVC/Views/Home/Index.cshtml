@@ -1,7 +1,50 @@
 ﻿@{
     ViewData["Title"] = "Home";
-    Layout = "~/Views/Shared/_MergeLayout.cshtml";
+    Layout = "~/Views/Shared/_UserLayout.cshtml";
 }
+<!-- Loader -->
+<div id="pageLoader" class="k-overlay k-overlay-dark">
+    <div class="k-d-flex k-align-items-center k-justify-content-center loader-container">
+        <div id="infiniteLoader"></div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        // Initialize Kendo UI Infinite Loader
+        $("#infiniteLoader").kendoLoader({
+            type: "converging-spinner",
+            size: "large"
+        });
+
+        // Set a timer to hide the loader after 5 seconds
+        setTimeout(function () {
+            $("#pageLoader").fadeOut("slow");
+        }, 2000); // 5000ms = 5 seconds
+    });
+</script>
+
+<style>
+    #pageLoader {
+        position: fixed;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.9);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+    }
+
+    .loader-container {
+        text-align: center;
+        
+    }
+      .k-loader::before,
+    .k-loader::after {
+        background-color:#f8c02d !important; /* Change to any color */
+</style>
+
 
 <!-- Main Content -->
 <div class="container mt-5">
@@ -15,7 +58,7 @@
                         <a href="#features" class="btn btn-warning btn-lg text-dark">
                             <i class="fas fa-info-circle"></i> Explore Features
                         </a>
-                        <a class="btn btn-outline-light btn-lg" asp-controller="Auth" asp-action="Login">
+                        <a class="btn btn-outline-light btn-lg" asp-controller="User" asp-action="Login">
                             <i class="fas fa-sign-in-alt"></i> Login
                         </a>
                     </div>
@@ -25,8 +68,9 @@
                 </div>
             </div>
         </div>
+
     </section>
-<!-- Our Users Section with TabStrip -->
+    <!-- Our Users Section with TabStrip -->
     <section class="py-5 text-center bg-white">
 
         <h2 class="fw-bold">Our Users</h2>
@@ -190,78 +234,89 @@
         </div>
     </section>
 
-<!-- Meet Our Team Section with Carousel -->
+
+    <!-- Meet Our Team Section with Carousel -->
     <section class="team-section mt-5 text-center">
         <h2 class="fw-bold text-primary"><span style="color:#2c3e50;">Meet Our Team</span></h2>
-        <div id="teamCarousel" class="carousel slide " style="margin-bottom: 100px; "data-bs-ride="carousel">
+        <div id="teamCarousel" class="carousel slide " style="margin-bottom: 100px; " data-bs-ride="carousel">
             <div class="carousel-inner">
                 <div class="carousel-item active">
                     <div class="d-flex justify-content-center gap-4 flex-wrap">
                         <div class="card shadow-lg p-3" style="width: 15rem;">
-                           <img src="/images/team/Taher.jpg" class="card-img-top rounded-circle mx-auto d-block" style="width: 120px; height: 120px; object-fit: cover;">
+                            <img src="/images/team/Taher.jpg" class="card-img-top rounded-circle mx-auto d-block"
+                                style="width: 120px; height: 120px; object-fit: cover;">
                             <div class="card-body">
                                 <h5 class="card-title">Taher</h5>
                                 <p class="card-text text-muted">Team Leader / Admin Module</p>
                             </div>
                         </div>
                         <div class="card shadow-lg p-3" style="width: 15rem;">
-                            <img src="/images/team/Soham.jpg"class="card-img-top rounded-circle mx-auto d-block" style="width: 120px; height: 120px; object-fit: cover;">
+                            <img src="/images/team/Soham.jpg" class="card-img-top rounded-circle mx-auto d-block"
+                                style="width: 120px; height: 120px; object-fit: cover;">
                             <div class="card-body">
                                 <h5 class="card-title">Soham</h5>
                                 <p class="card-text text-muted">Admin Module</p>
                             </div>
                         </div>
                         <div class="card shadow-lg p-3" style="width: 15rem;">
-                            <img src="/images/team/Hirva.jpg" class="card-img-top rounded-circle mx-auto d-block" style="width: 120px; height: 120px; object-fit: cover;">
+                            <img src="/images/team/Hirva.jpg" class="card-img-top rounded-circle mx-auto d-block"
+                                style="width: 120px; height: 120px; object-fit: cover;">
                             <div class="card-body">
                                 <h5 class="card-title">Hirva</h5>
                                 <p class="card-text text-muted">Admin Module</p>
                             </div>
                         </div>
-                         <div class="card shadow-lg p-3" style="width: 15rem;">
-                            <img src="/images/team/Ronak.jpg" class="card-img-top rounded-circle mx-auto d-block" style="width: 120px; height: 120px; object-fit: cover;">
+                        <div class="card shadow-lg p-3" style="width: 15rem;">
+                            <img src="/images/team/Ronak.jpg" class="card-img-top rounded-circle mx-auto d-block"
+                                style="width: 120px; height: 120px; object-fit: cover;">
                             <div class="card-body">
                                 <h5 class="card-title">Ronak</h5>
                                 <p class="card-text text-muted">Team Leader / Teacher Module</p>
                             </div>
                         </div>
                         <div class="card shadow-lg p-3" style="width: 15rem;">
-                            <img src="/images/team/Hetvi.jpg" class="card-img-top rounded-circle mx-auto d-block" style="width: 120px; height: 120px; object-fit: cover;">
+                            <img src="/images/team/Hetvi.jpg" class="card-img-top rounded-circle mx-auto d-block"
+                                style="width: 120px; height: 120px; object-fit: cover;">
                             <div class="card-body">
                                 <h5 class="card-title">Hetvi</h5>
                                 <p class="card-text text-muted">Team Leader / Teacher Module</p>
                             </div>
                         </div>
                         <div class="card shadow-lg p-3" style="width: 15rem;">
-                            <img src="/images/team/prassan.jpg" class="card-img-top rounded-circle mx-auto d-block" style="width: 120px; height: 120px; object-fit: cover;">
+                            <img src="/images/team/Prasan.jpg" class="card-img-top rounded-circle mx-auto d-block"
+                                style="width: 120px; height: 120px; object-fit: cover;">
                             <div class="card-body">
                                 <h5 class="card-title">Prasan</h5>
                                 <p class="card-text text-muted"> Teacher Module</p>
                             </div>
                         </div>
-                         <div class="card shadow-lg p-3" style="width: 15rem;">
-                            <img src="/images/team/Gyanshu.jpg" class="card-img-top rounded-circle mx-auto d-block" style="width: 120px; height: 120px; object-fit: cover;">
+                        <div class="card shadow-lg p-3" style="width: 15rem;">
+                            <img src="/images/team/Gyanshu.jpg" class="card-img-top rounded-circle mx-auto d-block"
+                                style="width: 120px; height: 120px; object-fit: cover;">
                             <div class="card-body">
                                 <h5 class="card-title">Gyanshu</h5>
                                 <p class="card-text text-muted"> Student Module</p>
                             </div>
                         </div>
-                         <div class="card shadow-lg p-3" style="width: 15rem;">
-                            <img src="/images/team/Maulik.jpg" class="card-img-top rounded-circle mx-auto d-block" style="width: 120px; height: 120px; object-fit: cover;">
+                        <div class="card shadow-lg p-3" style="width: 15rem;">
+                            <img src="/images/team/Maulik.jpg" class="card-img-top rounded-circle mx-auto d-block"
+                                style="width: 120px; height: 120px; object-fit: cover;">
                             <div class="card-body">
                                 <h5 class="card-title">Maulik</h5>
                                 <p class="card-text text-muted"> Student Module</p>
                             </div>
                         </div>
-                         <div class="card shadow-lg p-3" style="width: 15rem;">
-                            <img src="/images/team/Yash.jpg" class="card-img-top rounded-circle mx-auto d-block" style="width: 120px; height: 120px; object-fit: cover;">
+                        <div class="card shadow-lg p-3" style="width: 15rem;">
+                            <img src="/images/team/Yash.jpg" class="card-img-top rounded-circle mx-auto d-block"
+                                style="width: 120px; height: 120px; object-fit: cover;">
                             <div class="card-body">
                                 <h5 class="card-title">Yash</h5>
                                 <p class="card-text text-muted"> Student Module</p>
                             </div>
                         </div>
-                         <div class="card shadow-lg p-3" style="width: 15rem;">
-                            <img src="/images/team/Jigansha.jpg" class="card-img-top rounded-circle mx-auto d-block" style="width: 120px; height: 120px; object-fit: cover;">
+                        <div class="card shadow-lg p-3" style="width: 15rem;">
+                            <img src="/images/team/Jigansha.jpg" class="card-img-top rounded-circle mx-auto d-block"
+                                style="width: 120px; height: 120px; object-fit: cover;">
                             <div class="card-body">
                                 <h5 class="card-title">Jigansha</h5>
                                 <p class="card-text text-muted"> Student Module</p>
@@ -282,4 +337,3 @@
         });
     </script>
 }
-

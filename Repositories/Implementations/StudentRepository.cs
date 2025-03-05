@@ -22,7 +22,7 @@ namespace Repositories.Implementations
         private static object GetDbValue(object? value) => value ?? DBNull.Value;
 
         #region Register
-        public async Task<int> Register(Student student)
+        public async Task<int> Register(StudentViewModel student)
         {
             int userId = await _helper.InsertGetId(
                 "t_user",
@@ -39,15 +39,15 @@ namespace Repositories.Implementations
                     "c_role"
                 },
                 new List<object> {
-                    student.User.FirstName,
-                    student.User.LastName,
-                    student.User.BirthDate,
-                    student.User.Contact,
-                    student.User.Email,
-                    student.User.Password,
-                    student.User.Gender,
-                    student.User.Image ?? (object)DBNull.Value,
-                    student.User.Address,
+                    student.FirstName,
+                    student.LastName,
+                    student.BirthDate,
+                    student.Contact,
+                    student.Email,
+                    student.Password,
+                    student.Gender,
+                    student.Image ?? (object)DBNull.Value,
+                    student.Address,
                     "S"
                 },
                 "c_userID"
@@ -234,6 +234,74 @@ namespace Repositories.Implementations
                 Console.WriteLine($"StudentRepository - GetAll() : {ex.Message}");
                 // LogHelper.AppendLog("Error");
                 return null;
+            }
+            finally
+            {
+                await _con.CloseAsync();
+            }
+        }
+        #endregion
+
+
+        #region UpdateViewModel
+        public async Task<int> Update(StudentViewModel data)
+        {
+            const string query = @"
+            UPDATE t_user
+            SET 
+                c_first_name = @FirstName, 
+                c_last_name = @LastName, 
+                c_birth_date = @BirthDate, 
+                c_contact = @Contact, 
+                c_email = @Email, 
+                c_gender = @Gender, 
+                c_image = @Image, 
+                c_address = @Address
+            WHERE c_userid = @UserId;
+
+            UPDATE t_student
+            SET 
+                c_roll_number = @RollNumber, 
+                c_guardian_name = @GuardianName, 
+                c_guardian_contact = @GuardianContact, 
+                c_section = @Section,
+                c_is_approved = @IsApproved
+            WHERE c_studentID = @UserId;";
+
+            try
+            {
+                await _con.OpenAsync();
+
+                await using var cmd = new NpgsqlCommand(query, _con);
+
+                if (data.StudentID is null)
+                    throw new ArgumentException("User data is required for updating a student.");
+
+                // Parameters for t_users table
+                cmd.Parameters.AddWithValue("@UserId", data.StudentID);
+                cmd.Parameters.AddWithValue("@FirstName", GetDbValue(data.FirstName));
+                cmd.Parameters.AddWithValue("@LastName", GetDbValue(data.LastName));
+                cmd.Parameters.AddWithValue("@BirthDate", GetDbValue(data.BirthDate));
+                cmd.Parameters.AddWithValue("@Contact", GetDbValue(data.Contact));
+                cmd.Parameters.AddWithValue("@Email", GetDbValue(data.Email));
+                cmd.Parameters.AddWithValue("@Gender", GetDbValue(data.Gender));
+                cmd.Parameters.AddWithValue("@Image", GetDbValue(data.Image));
+                cmd.Parameters.AddWithValue("@Address", GetDbValue(data.Address));
+
+                // Parameters for t_student table
+                cmd.Parameters.AddWithValue("@RollNumber", GetDbValue(data.RollNumber));
+                cmd.Parameters.AddWithValue("@GuardianName", GetDbValue(data.GuardianName));
+                cmd.Parameters.AddWithValue("@GuardianContact", GetDbValue(data.GuardianContact));
+                cmd.Parameters.AddWithValue("@Section", GetDbValue(data.Section));
+                cmd.Parameters.AddWithValue("@IsApproved", GetDbValue(data.IsApproved));
+
+                int rowsAffected = await cmd.ExecuteNonQueryAsync();
+                return rowsAffected;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"StudentRepository - Update() : {ex.Message}");
+                return 0;
             }
             finally
             {

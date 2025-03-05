@@ -111,55 +111,63 @@
             })
         }
 
-        $("#scheduler").kendoScheduler({
-            date: new Date(),
-            startTime: new Date("2024-03-03T08:00:00"),
-            endTime: new Date("2024-03-03T17:00:00"),
-            views: [
-                "day",
-                "week",
-                "month",
-                "agenda"
-            ],
-            dataSource: {
-                transport: {
-                    read: {
-                        url: `${baseUrl}/timetable/teacher/${teacherID}`,
-                        dataType: "json"
-                    }
-                },
-                schema: {
-                    parse: function (response) {
-                        return response.map(item => ({
-                            timetableID: item.timetableID,
-                            subjectID: item.subjectID,
-                            classID: item.classID,
-                            dayOfWeek: item.dayOfWeek,
-                            dayName: item.dayName,
-                            start: new Date(`2024-03-04T${item.startTime}`), // Convert time to Date
-                            end: new Date(`2024-03-04T${item.endTime}`),
-                            subjectName: item.subject.subjectName,
-                            className: item.classModel.className
-                        }));
-                    },
-                    model: {
-                        id: "timetableID",
-                        fields: {
-                            timetableID: { type: "number" },
-                            subjectID: { type: "number" },
-                            classID: { type: "number" },
-                            dayOfWeek: { type: "number" },
-                            dayName: { type: "string" },
-                            start: { type: "date" },
-                            end: { type: "date" },
-                            subjectName: { type: "string" },
-                            className: { type: "string" }
+        // Fetch API Data (Replace with actual API call)
+        let apiData = [];
+
+        $.ajax({
+            url: `${apiBaseUrl}/timetable/teacher/${teacherID}`,
+            type: "GET",
+            success: function (data) {
+                apiData = data;
+                console.log("API Data\n", apiData);
+                // Map API Data to Kendo Scheduler Format
+                // Get the current year
+                const currentYear = new Date().getFullYear();
+
+                // Generate timetable events for all months
+                let schedulerData = [];
+                for (let month = 0; month < 12; month++) { // Loop through all months (0 = Jan, 11 = Dec)
+                    data.forEach(item => {
+                        for (let week = 1; week <= 4; week++) { // Repeat for 4 weeks in a month
+                            let startDate = new Date(currentYear, month, (week - 1) * 7 + item.dayOfWeek, ...item.startTime.split(":").map(Number));
+                            let endDate = new Date(currentYear, month, (week - 1) * 7 + item.dayOfWeek, ...item.endTime.split(":").map(Number));
+
+                            schedulerData.push({
+                                id: `${item.timetableID}-${month}-${week}`,
+                                title: `${item.subject.subjectName} - ${item.subject.teacher.user.firstName} ${item.subject.teacher.user.lastName}`,
+                                start: startDate,
+                                end: endDate,
+                                location: item.classModel.className
+                            });
+                        }
+                    });
+                }
+
+                // Initialize Kendo Scheduler
+                $("#scheduler").kendoScheduler({
+                    date: new Date(currentYear, 2, 3), // Set start date (March as an example)
+                    startTime: new Date(currentYear, 2, 3, 8, 0, 0), // Start time
+                    endTime: new Date(currentYear, 2, 3, 18, 0, 0), // End time
+                    views: ["month", "agenda"],
+                    editable: false, // Disable editing
+                    timezone: "Etc/UTC",
+                    dataSource: {
+                        data: schedulerData,
+                        schema: {
+                            model: {
+                                id: "id",
+                                fields: {
+                                    id: { type: "number" },
+                                    title: { type: "string" },
+                                    start: { type: "date" },
+                                    end: { type: "date" },
+                                    location: { type: "string" }
+                                }
+                            }
                         }
                     }
-                }
-            },
-            editable: true,
-            eventTemplate: "#= className # - #= subjectName # - #= kendo.toString(start, 'HH:mm') # to #= kendo.toString(end, 'HH:mm') #"
+                });
+            }
         });
     </script>
 }

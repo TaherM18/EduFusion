@@ -197,6 +197,13 @@ function loadStudentForm(studentData) {
                 hidden: true,
                 label: false,
             },
+            { 
+                field: "user", 
+                defaultValue: {},
+                editor: function (container) {
+                    $(container).append('<input type="hidden" name="userObj" readonly/>');
+                }
+            },
             { field: "user.firstName", label: "First Name", validation: { required: true } },
             { field: "user.lastName", label: "Last Name", validation: { required: true } },
             { field: "user.birthDate", label: "Birth Date", editor: "DatePicker" },
@@ -238,7 +245,7 @@ function loadStudentForm(studentData) {
             { field: "rollNumber", label: "Roll Number", validation: { required: true } },
             { field: "guardianName", label: "Guardian Name" },
             { field: "guardianContact", label: "Guardian Contact" },
-            { field: "section", label: "Section" }
+            { field: "section", label: "Section" },
         ],
         buttonsTemplate: `
         <button type="submit" class="k-button k-button-lg k-button-solid-info">Save</button>
@@ -306,17 +313,17 @@ function saveStudent(model) {
     formData.append("section", model.section);
 
     // Append user object fields
-    if (model.user) {
-        formData.append("user.firstName", model.user.firstName);
-        formData.append("user.lastName", model.user.lastName);
-        formData.append("user.birthDate", model.user.birthDate);
-        formData.append("user.gender", model.user.gender);
-        formData.append("user.email", model.user.email);
-        formData.append("user.contact", model.user.contact);
-        formData.append("user.address", model.user.address);
-        formData.append("user.pincode", model.user.pincode);
-        formData.append("user.password", null);
-    }
+    // if (model.user) {
+        formData.append("firstName", model.user.firstName);
+        formData.append("lastName", model.user.lastName);
+        formData.append("birthDate", model.user.birthDate);
+        formData.append("gender", model.user.gender);
+        formData.append("email", model.user.email);
+        formData.append("contact", model.user.contact);
+        formData.append("address", model.user.address);
+        formData.append("pincode", model.user.pincode);
+        formData.append("password", null);
+    // }
 
     // Append image file if selected
     var imageFile = document.querySelector("input[name='ImageFile']").files[0];
@@ -326,7 +333,7 @@ function saveStudent(model) {
 
     // Send AJAX request
     $.ajax({
-        url: "http://localhost:5190/api/student",
+        url: model.studentID ? "http://localhost:5190/api/student/update" : "http://localhost:5190/api/student/register",
         type: model.studentID ? "PUT" : "POST",
         data: formData,
         contentType: false, // Important: Don't set Content-Type for FormData

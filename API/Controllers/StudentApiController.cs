@@ -23,7 +23,7 @@ namespace API.Controller
 
         #region Register
         [HttpPost("Register")]
-        public async Task<IActionResult> Register([FromForm] Student student)
+        public async Task<IActionResult> Register([FromForm] StudentViewModel student)
         {
             try
             {
@@ -179,6 +179,35 @@ namespace API.Controller
             {
                 student.User.Password = null; // Prevents validation errors on Password
             }
+
+            var updated = await _studRepo.Update(student);
+            if (updated <= 0)
+            {
+                return NotFound(new { message = "Student not found or update failed" });
+            }
+
+            return NoContent(); // 204 No Content
+        }
+        #endregion
+
+
+        #region UpdatewithVM
+        // PUT: api/student/update
+        [HttpPut]
+        [Route("update")]
+        public async Task<IActionResult> UpdateStudentVM([FromForm] StudentViewModel student)
+        {
+            if (student == null)
+            {
+                return BadRequest(new { message = "Invalid request data" });
+            }
+
+            if (student?.ImageFile != null)
+            {
+                student.Image = await _fileHelper.UploadFile(_profileImagePath, student.ImageFile, student?.Image);
+            }
+
+            student.Password = null; // Prevents validation errors on Password
 
             var updated = await _studRepo.Update(student);
             if (updated <= 0)
