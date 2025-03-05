@@ -76,7 +76,7 @@ $(document).ready(function () {
 
   // Wrap wizard in a container div
   $("#registrationWizard").wrap('<div class="registration-container"></div>');
-  
+
   // Initialize Kendo Wizard
   var wizard = $("#registrationWizard")
     .kendoWizard({
@@ -112,7 +112,7 @@ $(document).ready(function () {
                 field: "Password",
                 label: "Password",
                 id: "password",
-                validation: { 
+                validation: {
                   required: vrequired,
                 },
                 editor: function (container, options) {
@@ -244,7 +244,7 @@ $(document).ready(function () {
               {
                 field: "Subjects",
                 label: "Subjects Expertise",
-                validation:{required:vrequired},
+                validation: { required: vrequired },
                 editor: "MultiSelect",
                 editorOptions: {
                   dataSource: [
@@ -266,17 +266,24 @@ $(document).ready(function () {
           enabled: true,
           form: {
             items: [
-              
+
               {
                 field: "CaptchaInput",
                 label: "Enter CAPTCHA",
                 editor: function (container, options) {
                   $(`<div id="captchaContainer">
-                      <span id="CaptchaText" class="k-textbox k-display-block"></span>
-                      <button type="button" id="refreshCaptcha" class="k-button k-primary">Refresh CAPTCHA</button>
-                    </div>
-                    <input type='text' id='CaptchaInput' class='k-textbox' required placeholder="Enter the code shown above">
-                    <span class="k-form-hint">Please enter the characters you see in the image above</span>`).appendTo(container);
+                    <span id="CaptchaText" class="k-textbox k-display-block" 
+                      oncontextmenu="return false;" 
+                      onselectstart="return false;" 
+                      ondragstart="return false;" 
+                      oncopy="return false;" 
+                      oncut="return false;" 
+                      style="user-select: none; -webkit-user-select: none; -ms-user-select: none;">
+                    </span>
+                    <button type="button" id="refreshCaptcha" class="k-button k-primary">Refresh CAPTCHA</button>
+                  </div>
+                  <input type='text' id='CaptchaInput' class='k-textbox' required placeholder="Enter the code shown above">
+                  <span class="k-form-hint">Please enter the characters you see in the image above</span>`).appendTo(container);
                 },
               },
             ],
@@ -294,11 +301,11 @@ $(document).ready(function () {
       contentPosition: "bottom"
     })
     .data("kendoWizard");
-    
+
   // Add password match validation
   $("#registrationWizard").kendoValidator({
     rules: {
-      passwordMatch: function(input) {
+      passwordMatch: function (input) {
         if (input.is("[name=ConfirmPassword]")) {
           return input.val() === $("input[name=Password]").val();
         }
@@ -309,7 +316,7 @@ $(document).ready(function () {
       passwordMatch: "Passwords do not match!"
     }
   });
-  
+
   generateCaptcha();
 
   $("#refreshCaptcha").click(function () {
@@ -353,11 +360,11 @@ $(document).ready(function () {
     formData.append("user.BirthDate", $("input[name='BirthDate']").val());
 
     var fileInput = $("input[name='ProfilePicture']")[0].files[0];
-   
-      formData.append("user.ImageFile", fileInput);
-      formData.append("user.Image", fileInput.name);
-    
-    
+
+    formData.append("user.ImageFile", fileInput);
+    formData.append("user.Image", fileInput.name);
+
+
     formData.append("Qualification", qualification.Qualification);
     formData.append("ExperienceYears", qualification.ExperienceSlider);
     formData.append("Expertise", subjects.join(","));
@@ -374,7 +381,7 @@ $(document).ready(function () {
       data: formData,
       success: function (response) {
         $(".k-loading-mask").remove();
-        
+
         // Show success message with Kendo Dialog
         $("<div>").kendoDialog({
           width: "400px",
@@ -383,26 +390,28 @@ $(document).ready(function () {
           modal: true,
           content: "<p>Your registration has been completed successfully!</p><p>You can now login using your email and password.</p>",
           actions: [
-            { text: "Continue to Login", primary: true, cssClass: "green-button",action: function() { 
-              // Redirect to login page
-              window.location.href = "/auth/login"; 
-            }}
+            {
+              text: "Continue to Login", primary: true, cssClass: "green-button", action: function () {
+                // Redirect to login page
+                window.location.href = "/auth/login";
+              }
+            }
           ],
-          open: function() {
+          open: function () {
             $(".k-dialog-titlebar").css("background-color", "#28a745").css("color", "white");
-            $(".green-button").css({ 
-            "background-color": "#28a745", // Green button
-            "border-color": "#28a745",
-            "color": "white"
-        });
-        }
+            $(".green-button").css({
+              "background-color": "#28a745", // Green button
+              "border-color": "#28a745",
+              "color": "white"
+            });
+          }
         }).data("kendoDialog").open();
-        
-        
+
+
       },
       error: function (xhr) {
         $(".k-loading-mask").remove();
-        
+
         // Show error message with Kendo Dialog
         $("<div>").kendoDialog({
           width: "400px",

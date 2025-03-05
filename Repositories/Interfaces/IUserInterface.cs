@@ -6,5 +6,6 @@ namespace Repositories.Interfaces
     {
         public Task<Student> GetStudent(User user, int sid);
         public Task<Teacher> GetTeacher(User user, int tid);
+        public Task<User> GetOne(int id);
     }
 }

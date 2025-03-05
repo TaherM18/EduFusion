@@ -48,7 +48,7 @@
             // Logged-in user dropdown
             userDropdownContainer.innerHTML = `
                 <a class="nav-link dropdown-toggle" href="#" id="userDropdown" data-bs-toggle="dropdown">
-                    <img src="~/images/anonymous.png" class="rounded-circle" width="30" onerror="this.src='/profile_images/placeholder.jpg'"/> ${GetUserData().user? GetUserData().user.firstName : GetUserData().firstname}
+                    <img src="~/images/anonymous.png" class="rounded-circle" width="30" onerror="this.src='/profile_images/placeholder.jpg'"/> ${GetUserData().user? GetUserData().user.firstName : GetUserData().firstName}
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
                     <li><a class="dropdown-item" href="#">👤 Profile</a></li>

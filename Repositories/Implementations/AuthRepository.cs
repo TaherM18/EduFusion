@@ -12,7 +12,70 @@ namespace Repositories.Implementations
 
         private readonly DatabaseHelper _helper;
 
-        public AuthRepository(NpgsqlConnection con) => _helper = new DatabaseHelper(con);
+        private readonly NpgsqlConnection _con;
+
+        public AuthRepository(NpgsqlConnection con)
+        {
+            _helper = new DatabaseHelper(con);
+            _con = con;
+        }
+
+        #region GetOne
+        public async Task<User?> GetOne(int id)
+        {
+            const string query = @"
+            SELECT 
+                u.c_userid, u.c_first_name, u.c_last_name, u.c_birth_date, 
+                u.c_contact, u.c_email, u.c_gender, u.c_image, u.c_address, u.c_pincode, u.c_role
+            FROM t_user u
+            WHERE u.c_userid = @id;";
+
+            try
+            {
+                await _con.CloseAsync();
+                await _con.OpenAsync();
+
+                await using var cmd = new NpgsqlCommand(query, _con);
+                cmd.Parameters.AddWithValue("@id", id);
+
+                await using var reader = await cmd.ExecuteReaderAsync();
+
+                if (await reader.ReadAsync())
+                {
+                    // ✅ Fixed ternary operation
+                    System.Console.WriteLine("Firstname: " + (reader.IsDBNull("c_first_name") ? "" : reader.GetString("c_first_name")));
+                    System.Console.WriteLine("Lastname: " + (reader.IsDBNull("c_last_name") ? "" : reader.GetString("c_last_name")));
+
+                    return new User
+                    {
+                        UserID = reader.GetInt32("c_userid"),
+                        FirstName = reader.IsDBNull("c_first_name") ? "" : reader.GetString("c_first_name"),
+                        LastName = reader.IsDBNull("c_last_name") ? "" : reader.GetString("c_last_name"),
+                        BirthDate = reader.IsDBNull("c_birth_date") ? null : reader.GetDateTime("c_birth_date"),
+                        Contact = reader.IsDBNull("c_contact") ? "" : reader.GetString("c_contact"),
+                        Email = reader.IsDBNull("c_email") ? "" : reader.GetString("c_email"),
+                        Gender = reader.IsDBNull("c_gender") ? "" : reader.GetString("c_gender"),
+                        Image = reader.IsDBNull("c_image") ? null : reader.GetString("c_image"),
+                        Address = reader.IsDBNull("c_address") ? "" : reader.GetString("c_address"),
+                        Pincode = reader.IsDBNull("c_pincode") ? "" : reader.GetString("c_pincode"),
+                        Role = reader.GetString("c_role")
+                    };
+                }
+
+                return null; // Student not found
+            }
+            catch (Exception ex)
+            {
+                // Log the error (assuming you have a LoggerHelper or any logging mechanism)
+                Console.WriteLine($"StudentRepository - GetOne() : {ex.Message}");
+                return null;
+            }
+            finally
+            {
+                await _con.CloseAsync();
+            }
+        }
+        #endregion
 
         public async Task<Student> GetStudent(User user, int sid)
         {

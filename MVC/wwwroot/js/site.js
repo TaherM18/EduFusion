@@ -3,14 +3,24 @@
 }
 
 function CheckLogin() {
-    const url = window.location.href.split("/")[3];
-    console.log( url[0]);
-    if (!IsAuth() || GetUserData().user.role.toLowerCase() != url[0].toLowerCase()) {
-        console.log("Logged out")
-        // window.location.href = "/auth/login"
+    const urlPath = window.location.pathname.split("/"); // Get URL segments
+    const firstSegment = urlPath[1]?.toLowerCase(); // First part of URL (e.g., "teacher")
+    const secondSegment = urlPath[2]?.toLowerCase(); // Second part of URL (e.g., "register")
+
+    // Allow "teacher/register" without redirection
+    if (firstSegment === "teacher" && secondSegment === "register" ||  firstSegment === "home" || firstSegment === "") {
+        console.log("Allowing teacher registration page");
+        return;
     }
-    console.log("Logged in")
+
+    if (!IsAuth() || GetUserData().user.role.toLowerCase() !== firstSegment) {
+        console.log("Logged out");
+        window.location.href = "/auth/login";
+    } else {
+        console.log("Logged in");
+    }
 }
+
 
 function Logout() {
     localStorage.clear()
