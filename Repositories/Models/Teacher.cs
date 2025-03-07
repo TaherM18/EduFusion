@@ -23,5 +23,7 @@ namespace Repositories.Models
 
         [ForeignKey("TeacherID")]
         public User? User { get; set; }
+
+        public bool IsApproved { get; set; }
     }
 }

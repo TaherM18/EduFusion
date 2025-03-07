@@ -120,7 +120,8 @@ namespace Repositories.Implementations
                 u.c_userid, u.c_first_name, u.c_last_name, u.c_birth_date, 
                 u.c_contact, u.c_email, u.c_gender, u.c_image, u.c_address, 
                 u.c_is_active, u.c_role, u.c_pincode, 
-                t.c_salary, t.c_qualification, t.c_experience_years, t.c_expertise
+                t.c_salary, t.c_qualification, t.c_experience_years, t.c_expertise,
+                t.c_is_approved
             FROM t_user u
             INNER JOIN t_teacher t ON u.c_userid = t.c_teacherid
             WHERE u.c_userid = @Id AND u.c_is_active = TRUE;";
@@ -157,7 +158,8 @@ namespace Repositories.Implementations
                         Salary = reader.IsDBNull("c_salary") ? 0f : reader.GetFloat("c_salary"),
                         Qualification = reader.IsDBNull("c_qualification") ? "" : reader.GetString("c_qualification"),
                         ExperienceYears = reader.IsDBNull("c_experience_years") ? 0 : reader.GetInt32("c_experience_years"),
-                        Expertise = reader.IsDBNull("c_expertise") ? "" : reader.GetString("c_expertise")
+                        Expertise = reader.IsDBNull("c_expertise") ? "" : reader.GetString("c_expertise"),
+                        IsApproved = reader.GetBoolean("c_is_approved"),
                     };
                 }
                 return null; // Teacher not found
@@ -184,7 +186,8 @@ namespace Repositories.Implementations
                 u.c_userid, u.c_first_name, u.c_last_name, u.c_birth_date, 
                 u.c_contact, u.c_email, u.c_gender, u.c_image, u.c_address, 
                 u.c_is_active, u.c_role, u.c_pincode, 
-                t.c_salary, t.c_qualification, t.c_experience_years, t.c_expertise
+                t.c_salary, t.c_qualification, t.c_experience_years, t.c_expertise,
+                t.c_is_approved
             FROM t_user u
             INNER JOIN t_teacher t ON u.c_userid = t.c_teacherid
             WHERE u.c_is_active = TRUE;";
@@ -219,7 +222,8 @@ namespace Repositories.Implementations
                         Salary = reader.IsDBNull("c_salary") ? 0f : reader.GetFloat("c_salary"),
                         Qualification = reader.IsDBNull("c_qualification") ? "" : reader.GetString("c_qualification"),
                         ExperienceYears = reader.IsDBNull("c_experience_years") ? 0 : reader.GetInt32("c_experience_years"),
-                        Expertise = reader.IsDBNull("c_expertise") ? "" : reader.GetString("c_expertise")
+                        Expertise = reader.IsDBNull("c_expertise") ? "" : reader.GetString("c_expertise"),
+                        IsApproved = reader.GetBoolean("c_is_approved"),
                     });
                 }
             }
