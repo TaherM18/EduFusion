@@ -30,6 +30,33 @@ function loadWindowAndNotification() {
 // Load Kendo Grid
 function loadStudentGrid() {
     $("#studentGrid").kendoGrid({
+        toolbar: [
+            {
+                template: `<button id="addStudentBtn" class="k-button k-grid-toolbar-button p-1">
+                            <span class="k-icon k-i-plus"></span> Add
+                           </button>`
+            },
+            "pdf",
+            "excel",
+            {
+                template: `<button id="refreshGridBtn" class="k-button k-grid-toolbar-button p-1">
+                            <span class="k-icon k-i-refresh"></span> Refresh
+                           </button>`
+            },
+        ],
+        dataBound: function () {
+            // Ensure event binding only happens once for refresh
+            $("#refreshGridBtn").off("click").on("click", function () {
+                console.log("Refreshing Grid...");
+                $("#studentGrid").data("kendoGrid").dataSource.read();
+            });
+        
+            // Ensure event binding for Add button
+            $("#addStudentBtn").off("click").on("click", function () {
+                console.log("Opening Add Form...");
+                openAddForm();
+            });
+        },        
         dataSource: {
             transport: {
                 read: {
@@ -55,7 +82,6 @@ function loadStudentGrid() {
             },
             pageSize: 10
         },
-        height: 400,
         pageable: true,
         sortable: true,
         filterable: true,
@@ -197,8 +223,8 @@ function loadStudentForm(studentData) {
                 hidden: true,
                 label: false,
             },
-            { 
-                field: "user", 
+            {
+                field: "user",
                 defaultValue: {},
                 editor: function (container) {
                     $(container).append('<input type="hidden" name="userObj" readonly/>');
@@ -300,8 +326,8 @@ function closeModal() {
 
 // Save Student (Create/Update)
 function saveStudent(model) {
-    console.log("saveStudent(model)",model);
-    
+    console.log("saveStudent(model)", model);
+
     var formData = new FormData();
 
     // Append scalar fields
@@ -314,15 +340,15 @@ function saveStudent(model) {
 
     // Append user object fields
     // if (model.user) {
-        formData.append("firstName", model.user.firstName);
-        formData.append("lastName", model.user.lastName);
-        formData.append("birthDate", model.user.birthDate);
-        formData.append("gender", model.user.gender);
-        formData.append("email", model.user.email);
-        formData.append("contact", model.user.contact);
-        formData.append("address", model.user.address);
-        formData.append("pincode", model.user.pincode);
-        formData.append("password", null);
+    formData.append("firstName", model.user.firstName);
+    formData.append("lastName", model.user.lastName);
+    formData.append("birthDate", model.user.birthDate);
+    formData.append("gender", model.user.gender);
+    formData.append("email", model.user.email);
+    formData.append("contact", model.user.contact);
+    formData.append("address", model.user.address);
+    formData.append("pincode", model.user.pincode);
+    formData.append("password", null);
     // }
 
     // Append image file if selected

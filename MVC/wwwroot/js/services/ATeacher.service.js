@@ -63,11 +63,12 @@ function loadStudentGrid() {
         },
         toolbar: [
             "pdf",
+            "excel",
             {
                 template: '<button id="refreshGridBtn" class="k-button k-grid-toolbar-button p-1">' +
-                          '<span class="k-icon k-i-refresh"></span> Refresh' +
-                          '</button>'
-            }
+                    '<span class="k-icon k-i-refresh"></span> Refresh' +
+                    '</button>'
+            },
         ],
         dataBound: function () {
             // Ensure event binding only happens once
@@ -75,8 +76,7 @@ function loadStudentGrid() {
                 console.log("Refreshing Grid...");
                 $("#teacherGrid").data("kendoGrid").dataSource.read();
             });
-        }
-,        
+        },
         // height: 400,
         pageable: true,
         sortable: true,
@@ -113,6 +113,7 @@ async function ApproveT(id) {
         method: "PUT",
         success: function (response) {
             showNotification("Approved Successfully", "success");
+            $("#teacherGrid").data("kendoGrid").dataSource.read();
         },
         error: function (xhr) {
             showNotification(xhr.responseJSON.message, "error");
@@ -126,6 +127,7 @@ async function UnApproveT(id) {
         method: "PUT",
         success: function (response) {
             showNotification("Approved Successfully", "success");
+            $("#teacherGrid").data("kendoGrid").dataSource.read();
         },
         error: function (xhr) {
             showNotification(xhr.responseJSON.message, "error");
