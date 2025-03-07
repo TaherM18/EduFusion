@@ -194,6 +194,7 @@ namespace Helpers.Databases
                 }
                 Console.WriteLine();
 
+		await _con.CloseAsync();
                 await _con.OpenAsync();
                 await cmd.ExecuteNonQueryAsync();
                 return 1;
@@ -235,6 +236,7 @@ namespace Helpers.Databases
                 {
                     cmd.Parameters.AddWithValue($"@p{i}", values[i]);
                 }
+		await _con.CloseAsync();
 
                 await _con.OpenAsync();
                 object result = await cmd.ExecuteScalarAsync();
@@ -282,6 +284,7 @@ namespace Helpers.Databases
                         cm.Parameters.AddWithValue("@" + colnames[i], value);
                         Console.WriteLine($"Param {colnames[i]} ==> {value}");
                     }
+		    await _con.CloseAsync();
 		    await _con.OpenAsync();
                     await cm.ExecuteNonQueryAsync();
 		    await _con.CloseAsync();

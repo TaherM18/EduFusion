@@ -3,6 +3,7 @@ using Repositories.Models;
 using Npgsql;
 using Helpers.Databases;
 using System.Data;
+using System.Collections;
 
 namespace Repositories.Implementations
 {
@@ -80,6 +81,34 @@ namespace Repositories.Implementations
 
             return userId;
         }
+        #endregion
+
+        #region Approve
+
+        public async Task<int> Approve(int sid)
+        {
+            return await _helper.UpdateOne("t_teacher", new string[]{
+                "c_is_approved"
+            },
+            new ArrayList{
+                true
+            }, "c_teacherid", sid.ToString());
+        }
+
+        #endregion
+
+        #region UnApprove
+
+        public async Task<int> UnApprove(int sid)
+        {
+            return await _helper.UpdateOne("t_teacher", new string[]{
+                "c_is_approved"
+            },
+            new ArrayList{
+                false
+            }, "c_teacherid", sid.ToString());
+        }
+
         #endregion
 
 

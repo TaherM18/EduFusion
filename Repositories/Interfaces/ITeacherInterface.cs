@@ -10,5 +10,8 @@ namespace Repositories.Interfaces
         public Task<Teacher> GetTeacherBySubject(int c_subjectID);
         public Task<List<TimeTable>> GetTimeTable();
         public Task<int> AddTimeTable(TimeTable timeTable);
+
+        public Task<int> Approve(int tid);
+        public Task<int> UnApprove(int tid);
     }
 }

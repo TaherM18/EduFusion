@@ -20,6 +20,56 @@ namespace API.Controller
             _fileHelper = new FileHelper();
         }
 
+         #region Approve
+        // GET: api/student
+        [HttpPut("approve/{id}")]
+        public async Task<ActionResult<IEnumerable<Teacher>>> ApproveStudent(int id)
+        {
+            int result = await _teacherRepo.Approve(id);
+            if (result == 1)
+            {
+                return Ok(new
+                {
+                    message = "Teacher Aprroved successfully",
+                    success = "true"
+                });
+            }
+            else
+            {
+                return BadRequest(new
+                {
+                    message = "Something went wrong",
+                    success = "false"
+                });
+            }
+        }
+        #endregion
+
+        #region UnApprove
+        // GET: api/student
+        [HttpPut("unapprove/{id}")]
+        public async Task<ActionResult<IEnumerable<Teacher>>> UnApproveStudent(int id)
+        {
+            int result = await _teacherRepo.UnApprove(id);
+            if (result == 1)
+            {
+                return Ok(new
+                {
+                    message = "Teacher UnAprroved successfully",
+                    success = "true"
+                });
+            }
+            else
+            {
+                return BadRequest(new
+                {
+                    message = "Something went wrong",
+                    success = "false"
+                });
+            }
+        }
+        #endregion
+
         #region Register
         [HttpPost("Register")]
         public async Task<IActionResult> Register([FromForm] Teacher teacher)

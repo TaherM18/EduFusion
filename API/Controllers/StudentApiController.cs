@@ -100,7 +100,7 @@ namespace API.Controller
             {
                 return Ok(new
                 {
-                    message = "Student Aprroved successfully",
+                    message = "Student UnAprroved successfully",
                     success = "true"
                 });
             }
