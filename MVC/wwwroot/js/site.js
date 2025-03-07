@@ -15,8 +15,9 @@ function CheckLogin() {
 
     let role = GetUserData().user ? GetUserData().user.role : GetUserData().role
 
-    if (!IsAuth() || role.toLowerCase() !== firstSegment) {
+    if (!IsAuth() || role.toLowerCase() !== firstSegment[0].toLowerCase()) {
         console.log("Logged out");
+        console.log(role);
         window.location.href = "/auth/login";
     } else {
         console.log("Logged in");
