@@ -8,6 +8,8 @@ namespace Repositories.Interfaces
         public Task<Teacher> GetTeacher(User user, int tid);
         public Task<User> GetOne(int id);
 
-        public Task<List<User>> GetUsers(int adminId);
+        public Task<List<User>> GetUsers();
+
+        public Task<int> GetAdmin(int id);
     }
 }

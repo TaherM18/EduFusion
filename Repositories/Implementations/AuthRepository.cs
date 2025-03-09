@@ -181,48 +181,54 @@ namespace Repositories.Implementations
             return data;
         }
 
-        public async Task<List<User>> GetUsers(int adminId)
+        public async Task<int> GetAdmin(int id)
         {
-            List<User> users = new List<User>();
             DataTable dt = await _helper.GetTableWithCondition("t_user", new Dictionary<string, object>
     {
-        { "c_userid", adminId }
+        { "c_userid", id }
     });
 
             if (dt.Rows.Count > 0)
             {
                 if (dt.Rows[0]["c_role"].ToString() != "A") //role a for admin only adming can retrive users
                 {
-                    return null;
+                    return 0;
                 }
                 else
                 {
-                    DataTable dtt = await _helper.GetTableAll("t_user");
-
-                    if (dtt.Rows.Count > 0)
-                    {
-                        users = (
-                            from DataRow row in dtt.Rows
-                            select new User
-                            {
-                                UserID = row["c_userid"].ToString().ToInt(),
-                                FirstName = row["c_first_name"].ToString(),
-                                LastName = row["c_last_name"].ToString(),
-                                BirthDate = row["c_birth_date"] != DBNull.Value ? Convert.ToDateTime(row["c_birth_date"]) : null,
-                                Gender = row["c_gender"].ToString(),
-                                Image = row["c_image"].ToString(),
-                                Email = row["c_email"].ToString(),
-                                Contact = row["c_contact"].ToString(),
-                                Role = row["c_role"].ToString(),
-                                Address = row["c_address"].ToString(),
-                                Pincode = row["c_pincode"].ToString(),
-                                IsActive = row["c_is_active"].ToString() == "1",
-                                CreatedAt = row["c_created_at"] != DBNull.Value ? Convert.ToDateTime(row["c_created_at"]) : DateTime.UtcNow,
-                                UpdatedAt = row["c_updated_at"] != DBNull.Value ? Convert.ToDateTime(row["c_updated_at"]) : DateTime.UtcNow
-                            }
-                        ).ToList();
-                    }
+                    return 1;
                 }
+            }
+            return 0;
+        }
+
+        public async Task<List<User>> GetUsers()
+        {
+            List<User> users = new List<User>();
+            DataTable dtt = await _helper.GetTableAll("t_user");
+
+            if (dtt.Rows.Count > 0)
+            {
+                users = (
+                    from DataRow row in dtt.Rows
+                    select new User
+                    {
+                        UserID = row["c_userid"].ToString().ToInt(),
+                        FirstName = row["c_first_name"].ToString(),
+                        LastName = row["c_last_name"].ToString(),
+                        BirthDate = row["c_birth_date"] != DBNull.Value ? Convert.ToDateTime(row["c_birth_date"]) : null,
+                        Gender = row["c_gender"].ToString(),
+                        Image = row["c_image"].ToString(),
+                        Email = row["c_email"].ToString(),
+                        Contact = row["c_contact"].ToString(),
+                        Role = row["c_role"].ToString(),
+                        Address = row["c_address"].ToString(),
+                        Pincode = row["c_pincode"].ToString(),
+                        IsActive = row["c_is_active"].ToString() == "1",
+                        CreatedAt = row["c_created_at"] != DBNull.Value ? Convert.ToDateTime(row["c_created_at"]) : DateTime.UtcNow,
+                        UpdatedAt = row["c_updated_at"] != DBNull.Value ? Convert.ToDateTime(row["c_updated_at"]) : DateTime.UtcNow
+                    }
+                ).ToList();
             }
 
             return users;

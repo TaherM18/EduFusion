@@ -1,25 +1,30 @@
 @{
-    ViewData["Title"] = "Notifications for admin";
+    ViewData["Title"] = "Notifications for Admin";
     Layout = "~/Views/Shared/_AdminLayout.cshtml";
 }
+<div class="container-fluid">
+    <button class="btn btn-sm k-button k-button-solid-primary col-auto m-2" onclick="openAddNotificationWindow()">➕ Add
+        Notification</button>
+    <div id="splitter">
+        <div class="row p-2">
+            <div class="d-flex border-bottom row align-items-center justify-content-between">
+                <h4 class="col-auto">Pending Notifications</h4>
+                <div>
+                    <button class="btn btn-sm k-button k-button-solid-primary col-auto">↻ Refresh</button>
+                </div>
+            </div>
 
-<div id="splitter">
-    <div class="row p-2">
-        <div class="d-flex border-bottom row align-items-center justify-content-between">
-            <h4 class="col-auto">Pending Notifications</h4>
-            <button class="btn btn-sm k-button k-button-solid-primary col-auto">↻ Refresh</button>
+            <!-- Notification List -->
+            <div id="notification-list">
+                <!-- Dynamic Notifications Will Be Added Here -->
+            </div>
         </div>
 
-        <!-- Notification List -->
-        <div id="notification-list">
-            <!-- Dynamic Notifications Will Be Added Here -->
-        </div>
-    </div>
-
-    <div class="row p-2">
-        <div class="d-flex border-bottom row align-items-center justify-content-between">
-            <h4 class="col-auto">Recent Notifications</h4>
-            <button class="btn btn-sm k-button k-button-solid-primary col-auto">↻ Refresh</button>
+        <div class="row p-2">
+            <div class="d-flex border-bottom row align-items-center justify-content-between">
+                <h4 class="col-auto">Recent Notifications</h4>
+                <button class="btn btn-sm k-button k-button-solid-primary col-auto">↻ Refresh</button>
+            </div>
         </div>
     </div>
 </div>
@@ -27,21 +32,83 @@
 <!-- Kendo UI Splitter -->
 <script>
     $("#splitter").kendoSplitter({
-        panes: [{ size: "50%" }, { size: "50%", min: "50px" }],
+        panes: [{ size: "60%" }, { size: "40%", min: "50px" }],
         orientation: "horizontal"
     });
 </script>
 
-<!-- Kendo Window (Hidden Initially) -->
+<!-- Kendo Window for Notification Details -->
 <div id="notificationWindow" style="display: none;">
     <div id="notificationContent">
         <!-- Content will be injected dynamically -->
     </div>
 </div>
 
+<!-- Kendo Window for Adding a Notification -->
+<div id="addNotificationWindow" style="display: none;">
+    <form id="addNotificationForm">
+        <div class="mb-3">
+            <label for="userSelect" class="form-label">Select User</label>
+            <input id="userSelect" style="width: 100%;" />
+        </div>
+
+        <div class="mb-3">
+            <label for="notificationTitle" class="form-label">Title</label>
+            <input type="text" id="notificationTitle" class="form-control k-textbox" required />
+        </div>
+        <div class="mb-3">
+            <label for="notificationMessage" class="form-label">Message</label>
+            <textarea id="notificationMessage" class="form-control k-textarea" required></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label for="notificationAction" class="form-label">Action</label>
+            <input id="notificationAction" class="form-control k-textarea" required />
+        </div>
+
+        <button type="button" class="btn btn-sm k-button k-button-solid-primary" onclick="submitNotification()">🚀
+            Send</button>
+    </form>
+</div>
+
 @section Scripts {
     <script>
         $(document).ready(function () {
+            const adminId = GetUserData().userID;
+
+            function loadUsers() {
+                $.ajax({
+                    url: `${baseUrl}/user/${adminId}`,
+                    type: "GET",
+                    success: function (response) {
+                        if (response.length > 0) {
+                            var userData = response.map(user => ({
+                                id: user.userID,
+                                text: `${user.firstName} ${user.lastName} (${user.email})`
+                            }));
+
+                            $("#userSelect").kendoDropDownList({
+                                dataSource: userData,
+                                dataTextField: "text",
+                                dataValueField: "id",
+                                filter: "contains",
+                                suggest: true,
+                                optionLabel: "Select a user...",
+                                height: 400
+                            });
+                        } else {
+                            alert("No users found!");
+                        }
+                    },
+                    error: function (err) {
+                        console.error("Error loading users:", err);
+                        alert("Failed to load users. Please check your admin privileges.");
+                    }
+                });
+            }
+
+            loadUsers(); // Load users when the page loads
+
             const notifications = [
                 {
                     id: 1,
@@ -63,26 +130,26 @@
                 let notificationHTML = "";
                 notifications.forEach((notif) => {
                     notificationHTML += `
-                                    <div class="card notification-card mb-3 shadow-sm">
-                                        <div class="card-body d-flex align-items-center">
-                                            <div class="me-3">
-                                                <img src="${notif.userImage}" class="rounded-circle" width="50" height="50" alt="User">
-                                            </div>
+                                                    <div class="card notification-card mb-3 shadow-sm">
+                                                        <div class="card-body d-flex align-items-center">
+                                                            <div class="me-3">
+                                                                <img src="${notif.userImage}" class="rounded-circle" width="50" height="50" alt="User">
+                                                            </div>
 
-                                            <div class="flex-grow-1">
-                                                <h6 class="mb-1">${notif.title}</h6>
-                                                <p class="text-muted mb-0">${notif.description}</p>
-                                                <small class="text-muted">${notif.time}</small>
-                                            </div>
+                                                            <div class="flex-grow-1">
+                                                                <h6 class="mb-1">${notif.title}</h6>
+                                                                <p class="text-muted mb-0">${notif.description}</p>
+                                                                <small class="text-muted">${notif.time}</small>
+                                                            </div>
 
-                                            <div class="text-end">
-                                                <button class="btn btn-sm btn-success me-2" onclick="markAsRead(${notif.id})">✔ Mark as Read</button>
-                                                <button class="btn btn-sm btn-primary me-2" onclick="goToNotification(${notif.id})">🔗 Go</button>
-                                                <button class="btn btn-sm btn-info" onclick="showDetails('${notif.title}', '${notif.description}')">ℹ Details</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                `;
+                                                            <div class="text-end">
+                                                                <button class="btn btn-sm btn-success me-2" onclick="markAsRead(${notif.id})">✔ Mark as Read</button>
+                                                                <button class="btn btn-sm btn-primary me-2" onclick="goToNotification(${notif.id})">🔗 Go</button>
+                                                                <button class="btn btn-sm btn-info" onclick="showDetails('${notif.title}', '${notif.description}')">ℹ Details</button>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                `;
                 });
 
                 $("#notification-list").html(notificationHTML);
@@ -103,9 +170,43 @@
                 modal: true,
                 actions: ["Close"]
             });
+
+            $("#addNotificationWindow").kendoWindow({
+                width: "450px",
+                title: "Add Notification",
+                visible: false,
+                modal: true,
+                actions: ["Close"]
+            });
         });
 
-        // ✅ Make showDetails a global function
+        // ✅ Open Add Notification Window
+        function openAddNotificationWindow() {
+            var window = $("#addNotificationWindow").data("kendoWindow");
+            window.center().open();
+        }
+
+        // ✅ Submit New Notification
+        function submitNotification() {
+            var user = $("#userSelect").val();
+            var title = $("#notificationTitle").val();
+            var message = $("#notificationMessage").val();
+
+            if (title.trim() === "" || message.trim() === "") {
+                alert("Please fill out all fields.");
+                return;
+            }
+
+            // Here, you'd send the notification to your backend API (e.g., via AJAX)
+            console.log("Sending Notification:", { user, title, message });
+
+            $("#notification").data("kendoNotification").show("Notification Sent!", "success");
+
+            var window = $("#addNotificationWindow").data("kendoWindow");
+            window.close();
+        }
+
+        // ✅ Show Notification Details
         function showDetails(title, description) {
             $("#notificationContent").html(`<strong>${title}</strong><br>${description}`);
 

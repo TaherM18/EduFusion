@@ -98,11 +98,20 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<List<User>> GetUsers(int id)
+        public async Task<IActionResult> GetUsers(int id)
         {
             List<User> users = new List<User>();
-            users = await _user.GetUsers(id);
-            return users;
+            if (await _user.GetAdmin(id) == 1)
+            {
+                users = await _user.GetUsers();
+                return Ok(users);
+            }
+            else return BadRequest(new
+            {
+                success = "false",
+                message = "Only admin can call this api."
+            });
+
         }
 
     }
