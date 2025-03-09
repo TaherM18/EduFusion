@@ -17,12 +17,6 @@ function loadWindowAndNotification() {
         modal: true,
         actions: ["Close"]
     });
-
-    $("#notification").kendoNotification({
-        allowHideAfter: 1000,
-        width: 300,
-        position: { pinned: true, top: 30, right: 30 }
-    });
 }
 
 // Load Kendo Grid

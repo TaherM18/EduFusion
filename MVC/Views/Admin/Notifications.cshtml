@@ -1,0 +1,125 @@
+@{
+    ViewData["Title"] = "Notifications for admin";
+    Layout = "~/Views/Shared/_AdminLayout.cshtml";
+}
+
+<div id="splitter">
+    <div class="row p-2">
+        <div class="d-flex border-bottom row align-items-center justify-content-between">
+            <h4 class="col-auto">Pending Notifications</h4>
+            <button class="btn btn-sm k-button k-button-solid-primary col-auto">↻ Refresh</button>
+        </div>
+
+        <!-- Notification List -->
+        <div id="notification-list">
+            <!-- Dynamic Notifications Will Be Added Here -->
+        </div>
+    </div>
+
+    <div class="row p-2">
+        <div class="d-flex border-bottom row align-items-center justify-content-between">
+            <h4 class="col-auto">Recent Notifications</h4>
+            <button class="btn btn-sm k-button k-button-solid-primary col-auto">↻ Refresh</button>
+        </div>
+    </div>
+</div>
+
+<!-- Kendo UI Splitter -->
+<script>
+    $("#splitter").kendoSplitter({
+        panes: [{ size: "50%" }, { size: "50%", min: "50px" }],
+        orientation: "horizontal"
+    });
+</script>
+
+<!-- Kendo Window (Hidden Initially) -->
+<div id="notificationWindow" style="display: none;">
+    <div id="notificationContent">
+        <!-- Content will be injected dynamically -->
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            const notifications = [
+                {
+                    id: 1,
+                    userImage: "user.png",
+                    title: "New Assignment Added",
+                    description: "You have a new assignment in Mathematics.",
+                    time: "2 hours ago"
+                },
+                {
+                    id: 2,
+                    userImage: "user.png",
+                    title: "Upcoming Exam",
+                    description: "Physics exam is scheduled for next Monday.",
+                    time: "5 hours ago"
+                }
+            ];
+
+            function renderNotifications() {
+                let notificationHTML = "";
+                notifications.forEach((notif) => {
+                    notificationHTML += `
+                                    <div class="card notification-card mb-3 shadow-sm">
+                                        <div class="card-body d-flex align-items-center">
+                                            <div class="me-3">
+                                                <img src="${notif.userImage}" class="rounded-circle" width="50" height="50" alt="User">
+                                            </div>
+
+                                            <div class="flex-grow-1">
+                                                <h6 class="mb-1">${notif.title}</h6>
+                                                <p class="text-muted mb-0">${notif.description}</p>
+                                                <small class="text-muted">${notif.time}</small>
+                                            </div>
+
+                                            <div class="text-end">
+                                                <button class="btn btn-sm btn-success me-2" onclick="markAsRead(${notif.id})">✔ Mark as Read</button>
+                                                <button class="btn btn-sm btn-primary me-2" onclick="goToNotification(${notif.id})">🔗 Go</button>
+                                                <button class="btn btn-sm btn-info" onclick="showDetails('${notif.title}', '${notif.description}')">ℹ Details</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `;
+                });
+
+                $("#notification-list").html(notificationHTML);
+            }
+
+            renderNotifications(); // Load notifications
+
+            $("#notification").kendoNotification({
+                autoHideAfter: 3000,
+                width: 300,
+                position: { pinned: true, top: 30, right: 30 }
+            });
+
+            $("#notificationWindow").kendoWindow({
+                width: "400px",
+                title: "Notification Details",
+                visible: false,
+                modal: true,
+                actions: ["Close"]
+            });
+        });
+
+        // ✅ Make showDetails a global function
+        function showDetails(title, description) {
+            $("#notificationContent").html(`<strong>${title}</strong><br>${description}`);
+
+            var window = $("#notificationWindow").data("kendoWindow");
+            window.center().open();
+        }
+
+        function markAsRead(id) {
+            $("#notification").data("kendoNotification").show("Notification marked as read!", "info");
+        }
+
+        function goToNotification(id) {
+            $("#notification").data("kendoNotification").show("Redirecting to notification page...", "success");
+            window.location.href = "/notifications/" + id;
+        }
+    </script>
+}

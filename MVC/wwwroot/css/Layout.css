@@ -138,6 +138,7 @@ body {
 /* Main Content */
 /* Adjust Content Padding to Prevent Overlap */
 .content {
+    padding: 80px 20px 20px;
     /* Adjust padding to match navbar height */
     transition: margin-left 0.3s ease-in-out;
 }

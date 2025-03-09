@@ -97,5 +97,13 @@ namespace API.Controllers
             });
         }
 
+        [HttpGet("{id}")]
+        public async Task<List<User>> GetUsers(int id)
+        {
+            List<User> users = new List<User>();
+            users = await _user.GetUsers(id);
+            return users;
+        }
+
     }
 }

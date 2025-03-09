@@ -8,7 +8,7 @@ function CheckLogin() {
     const secondSegment = urlPath[2]?.toLowerCase(); // Second part of URL (e.g., "register")
 
     // Allow "teacher/register" without redirection
-    if (firstSegment === "teacher" && secondSegment === "register" ||  firstSegment === "home" || firstSegment === "") {
+    if (firstSegment === "teacher" && secondSegment === "register" || firstSegment === "home" || firstSegment === "") {
         console.log("Allowing teacher registration page");
         return;
     }
@@ -35,5 +35,25 @@ function GetUserData() {
     return user;
 }
 
-const baseUrl = "http://localhost:5190/api"
-const url = "http://localhost:5190/api"
+const baseUrl = "http://localhost:5190/api";
+const url = "http://localhost:5190/api";
+
+$(document).ready(function () {
+    console.log("Document ready. Initializing notification...");
+
+    if ($("#notification").length) {
+        $("#notification").kendoNotification({
+            autoHideAfter: 3000,
+            width: 300,
+            position: { pinned: true, top: 62, right: 30 }
+        });
+        console.log("Notification initialized.");
+    } else {
+        console.log("Error: #notification element not found.");
+    }
+});
+
+
+function showNotification(message, type) {
+    $("#notification").data("kendoNotification").show(message, type);
+}
